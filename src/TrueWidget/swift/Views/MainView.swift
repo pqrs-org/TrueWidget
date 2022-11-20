@@ -4,6 +4,7 @@ struct MainView: View {
   @ObservedObject var operatingSystem = WidgetSource.OperatingSystem.shared
   @ObservedObject var cpuUsage = WidgetSource.CPUUsage.shared
   @ObservedObject var localTime = WidgetSource.LocalTime.shared
+  @State var opacity = 0.8
 
   var body: some View {
     VStack {
@@ -72,7 +73,10 @@ struct MainView: View {
         .fill(Color(NSColor.black))
     )
     .foregroundColor(Color.white)
-    .opacity(0.8)
+    .opacity(opacity)
+    .whenHovered { hover in
+      opacity = hover ? 0.2 : 0.8
+    }
   }
 }
 
