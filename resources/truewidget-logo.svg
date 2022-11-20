@@ -35,16 +35,16 @@
   <sodipodi:namedview
      units="px"
      inkscape:window-maximized="0"
-     inkscape:window-y="1759"
-     inkscape:window-x="706"
+     inkscape:window-y="57"
+     inkscape:window-x="674"
      inkscape:window-height="1359"
      inkscape:window-width="1716"
      showgrid="true"
      inkscape:document-rotation="0"
-     inkscape:current-layer="g485"
+     inkscape:current-layer="layer2"
      inkscape:document-units="px"
      inkscape:cy="519"
-     inkscape:cx="79"
+     inkscape:cx="13"
      inkscape:zoom="0.5"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -98,13 +98,14 @@
        inkscape:export-xdpi="96"
        inkscape:export-filename="./bg.png"
        ry="52.916668"
-       y="23.8125"
-       x="23.8125"
-       height="223.30833"
-       width="223.30833"
+       y="28.04583"
+       x="28.04583"
+       height="214.84167"
+       width="214.84167"
        id="bg"
        style="display:inline;opacity:1;fill:#000051;fill-opacity:1;fill-rule:evenodd;stroke:#0042a5;stroke-width:4.23333;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       inkscape:label="#bg" />
+       inkscape:label="#bg"
+       rx="52.916668" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -127,7 +128,7 @@
          y="0"><tspan
            x="543.00864"
            y="569.85433"
-           id="tspan1106">􀫥</tspan></text>
+           id="tspan335">􀫥</tspan></text>
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,29.697158,102.71881)"
@@ -138,7 +139,7 @@
          y="0"><tspan
            x="551.25864"
            y="569.85433"
-           id="tspan1108">􀐫</tspan></text>
+           id="tspan337">􀐫</tspan></text>
     </g>
   </g>
 </svg>
