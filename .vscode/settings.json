@@ -1,0 +1,16 @@
+{
+    "files.exclude": {
+        ".vscode/browse.*": true,
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/*.dmg": true,
+        "**/build_xcode/": true,
+        "**/build/": true,
+        "tmp/": true
+    },
+    "files.watcherExclude": {
+        "**/build_xcode/**": true,
+        "**/build/**": true,
+        "**/tmp/**": true
+    }
+}

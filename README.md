@@ -1,0 +1,64 @@
+[![Build Status](https://github.com/pqrs-org/TrueWidget/workflows/TrueWidget%20CI/badge.svg)](https://github.com/pqrs-org/TrueWidget/actions)
+[![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://github.com/pqrs-org/TrueWidget/blob/main/LICENSE.md)
+
+# TrueWidget
+
+TrueWidget displays macOS version at the left bottom of the screen.
+
+## System requirements
+
+macOS 11 Big Sur or later
+
+## How to build
+
+System Requirements:
+
+-   macOS 11.0+
+-   Xcode 13.1+
+-   Command Line Tools for Xcode
+-   [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+-   [create-dmg](https://github.com/sindresorhus/create-dmg)
+
+### Steps
+
+1.  Get source code by executing a following command in Terminal.app.
+
+    ```shell
+    git clone --depth 1 https://github.com/pqrs-org/TrueWidget.git
+    cd TrueWidget
+    git submodule update --init --recursive --depth 1
+    ```
+
+2.  Find your codesign identity if you have one.<br />
+    (Skip this step if you don't have your codesign identity.)
+
+    ```shell
+    security find-identity -p codesigning -v | grep 'Developer ID Application'
+    ```
+
+    The result is as follows.
+
+    ```text
+    1) 8D660191481C98F5C56630847A6C39D95C166F22 "Developer ID Application: Fumihiko Takayama (G43BCU2T37)"
+    ```
+
+    Your codesign identity is `8D660191481C98F5C56630847A6C39D95C166F22` in the above case.
+
+3.  Set environment variable to use your codesign identity.<br />
+    (Skip this step if you don't have your codesign identity.)
+
+    ```shell
+    export PQRS_ORG_CODE_SIGN_IDENTITY=8D660191481C98F5C56630847A6C39D95C166F22
+    ```
+
+4.  Build a package by executing a following command in Terminal.app.
+
+    ```shell
+    cd TrueWidget
+    make clean all
+    ```
+
+    Then, TrueWidget-VERSION.dmg has been created in the current directory.
+    It's a distributable package.
+
+    Note: If you don't have codesign identity, the dmg works only on your machine.

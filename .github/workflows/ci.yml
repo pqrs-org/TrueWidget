@@ -1,0 +1,17 @@
+name: TrueWidget CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-12
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+          submodules: recursive
+      - name: brew install
+        run: brew install xcodegen
+      - name: package
+        run: make clean build

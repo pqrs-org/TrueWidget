@@ -1,0 +1,5 @@
+.DS_Store
+build/
+build_xcode/
+*.dmg
+/tmp/
