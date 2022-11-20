@@ -25,20 +25,26 @@
        width="859.5493"
        height="550.28169"
        id="rect2782" />
+    <rect
+       x="302.8169"
+       y="263.38028"
+       width="859.5493"
+       height="550.28169"
+       id="rect487" />
   </defs>
   <sodipodi:namedview
      units="px"
      inkscape:window-maximized="0"
-     inkscape:window-y="1787"
+     inkscape:window-y="1759"
      inkscape:window-x="706"
      inkscape:window-height="1359"
      inkscape:window-width="1716"
      showgrid="true"
      inkscape:document-rotation="0"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g485"
      inkscape:document-units="px"
      inkscape:cy="519"
-     inkscape:cx="175"
+     inkscape:cx="79"
      inkscape:zoom="0.5"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -103,21 +109,36 @@
   <g
      inkscape:groupmode="layer"
      id="layer1"
-     inkscape:label="font">
-    <text
-       xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,-57.736525,10.834076)"
-       id="text2780"
-       style="font-weight:bold;font-size:170.667px;line-height:1.2;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;white-space:pre;shape-inside:url(#rect2782);display:inline;fill:#e6e6e6"
-       inkscape:label="text2780"
-       x="320.5423"
-       y="0"><tspan
-         x="401.92447"
-         y="414.81887"
-         id="tspan341">macOS
-</tspan><tspan
-         x="343.84102"
-         y="619.61929"
-         id="tspan343">xx.yy.zz</tspan></text>
+     inkscape:label="font" />
+  <g
+     inkscape:groupmode="layer"
+     id="g485"
+     inkscape:label="font copy">
+    <g
+       id="g514"
+       transform="translate(-44.538151,-44.538151)">
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-58.342861,14.789035)"
+         id="text2780"
+         style="font-weight:bold;font-size:341.333px;line-height:1.2;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;white-space:pre;shape-inside:url(#rect2782);display:inline;fill:#e6e6e6"
+         inkscape:label="text2780"
+         x="320.5423"
+         y="0"><tspan
+           x="543.00864"
+           y="569.85433"
+           id="tspan1106">􀫥</tspan></text>
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,29.697158,102.71881)"
+         id="text483"
+         style="font-weight:bold;font-size:341.333px;line-height:1.2;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;white-space:pre;shape-inside:url(#rect487);display:inline;fill:#e6e6e6"
+         inkscape:label="text2780"
+         x="320.5423"
+         y="0"><tspan
+           x="551.25864"
+           y="569.85433"
+           id="tspan1108">􀐫</tspan></text>
+    </g>
   </g>
 </svg>
