@@ -26,4 +26,4 @@ staple:
 	xcrun stapler staple TrueWidget-$(VERSION).dmg
 
 swift-format:
-	find src -name '*.swift' -print0 | xargs -0 swift-format -i
+	$(MAKE) -C src swift-format

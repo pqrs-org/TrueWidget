@@ -18,8 +18,8 @@ run:
 	bash ../scripts/codesign.sh build/Release
 	open build/Release/TrueWidget.app
 
-swiftformat:
-	find . -name '*.swift' -print0 | xargs -0 swiftformat
+swift-format:
+	find TrueWidget -name '*.swift' -print0 | xargs -0 swift-format -i
 
 install:
 	bash ../scripts/codesign.sh build/Release
