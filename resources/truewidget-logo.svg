@@ -35,7 +35,7 @@
   <sodipodi:namedview
      units="px"
      inkscape:window-maximized="0"
-     inkscape:window-y="57"
+     inkscape:window-y="29"
      inkscape:window-x="674"
      inkscape:window-height="1359"
      inkscape:window-width="1716"
@@ -44,7 +44,7 @@
      inkscape:current-layer="layer2"
      inkscape:document-units="px"
      inkscape:cy="519"
-     inkscape:cx="13"
+     inkscape:cx="15"
      inkscape:zoom="0.5"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -128,7 +128,7 @@
          y="0"><tspan
            x="543.00864"
            y="569.85433"
-           id="tspan335">􀫥</tspan></text>
+           id="tspan157">􀫥</tspan></text>
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,29.697158,102.71881)"
@@ -139,7 +139,7 @@
          y="0"><tspan
            x="551.25864"
            y="569.85433"
-           id="tspan337">􀐫</tspan></text>
+           id="tspan159">􀐫</tspan></text>
     </g>
   </g>
 </svg>
