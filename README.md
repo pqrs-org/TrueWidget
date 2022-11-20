@@ -3,7 +3,9 @@
 
 # TrueWidget
 
-TrueWidget displays macOS version at the left bottom of the screen.
+TrueWidget displays macOS version, CPU usage and local time at the left bottom of the screen.
+
+![screenshot](docs/screenshot.png)
 
 ## System requirements
 
