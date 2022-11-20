@@ -10,6 +10,9 @@ extension WidgetSource {
     @Published public var idle: Double = 0.0
     @Published public var nice: Double = 0.0
 
+    @Published public var usageInteger: Int = 0
+    @Published public var usageDecimal: Int = 0
+
     private let host = mach_host_self()
     private var previousLoad: host_cpu_load_info
     private var timer: Timer?
@@ -46,13 +49,14 @@ extension WidgetSource {
       let niceTicks = Double(load.cpu_ticks.3 - previousLoad.cpu_ticks.3)
       let totalTicks = userTicks + systemTicks + idleTicks + niceTicks
 
-      print(load)
-
       if totalTicks > 0 {
         user = 100.0 * userTicks / totalTicks
         system = 100.0 * systemTicks / totalTicks
         idle = 100.0 * idleTicks / totalTicks
         nice = 100.0 * niceTicks / totalTicks
+
+        usageInteger = Int(floor(user + system))
+        usageDecimal = Int(floor((user + system) * 100)) % 100
       }
 
       previousLoad = load

@@ -8,8 +8,14 @@ struct MainView: View {
 
   var body: some View {
     VStack {
-      VStack(alignment: .leading) {
-        Text(operatingSystemVersion)
+      VStack(alignment: .leading, spacing: 0.0) {
+        HStack(alignment: .center, spacing: 0) {
+          Text("macOS")
+          Text(operatingSystemVersion)
+        }
+
+        Divider()
+          .padding(.vertical, 2.0)
 
         HStack(alignment: .center, spacing: 0) {
           Image(systemName: "cpu")
@@ -17,16 +23,19 @@ struct MainView: View {
 
           Spacer()
 
-          HStack(alignment: .bottom, spacing: 0) {
-            Text(
-              String(format: "% 6.2f", cpuUsage.system + cpuUsage.user)
-            )
-            .font(.custom("Menlo", size: 24.0))
+          HStack(alignment: .firstTextBaseline, spacing: 0) {
+            Text(String(format: "%d", cpuUsage.usageInteger))
+              .font(.custom("Menlo", size: 36.0))
+
+            Text(String(format: ".%02d", cpuUsage.usageDecimal))
+              .font(.custom("Menlo", size: 14.0))
 
             Text("%")
           }
-
         }
+
+        Divider()
+          .padding(.vertical, 2.0)
 
         HStack(alignment: .center, spacing: 0) {
           Image(systemName: "clock")
@@ -34,7 +43,7 @@ struct MainView: View {
 
           Spacer()
 
-          HStack(alignment: .center, spacing: 0) {
+          HStack(alignment: .firstTextBaseline, spacing: 0) {
             Text(
               String(
                 format: " %02d:%02d",
@@ -46,7 +55,7 @@ struct MainView: View {
 
             Text(
               String(
-                format: ":%02d",
+                format: "%02d",
                 localTime.second
               )
             )

@@ -59,8 +59,6 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
         )
 
         w.orderFront(self)
-
-        print(w.frame)
       }
     }
   }
