@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
-  let operatingSystemVersion: String
-
+  @ObservedObject var operatingSystem = WidgetSource.OperatingSystem.shared
   @ObservedObject var cpuUsage = WidgetSource.CPUUsage.shared
   @ObservedObject var localTime = WidgetSource.LocalTime.shared
 
@@ -11,11 +10,11 @@ struct MainView: View {
       VStack(alignment: .leading, spacing: 0.0) {
         HStack(alignment: .center, spacing: 0) {
           Text("macOS")
-          Text(operatingSystemVersion)
+          Text(operatingSystem.version)
         }
 
         Divider()
-          .padding(.vertical, 2.0)
+          .padding(.vertical, 4.0)
 
         HStack(alignment: .center, spacing: 0) {
           Image(systemName: "cpu")
@@ -27,15 +26,13 @@ struct MainView: View {
             Text(String(format: "%d", cpuUsage.usageInteger))
               .font(.custom("Menlo", size: 36.0))
 
-            Text(String(format: ".%02d", cpuUsage.usageDecimal))
+            Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
               .font(.custom("Menlo", size: 14.0))
-
-            Text("%")
           }
         }
 
         Divider()
-          .padding(.vertical, 2.0)
+          .padding(.vertical, 4.0)
 
         HStack(alignment: .center, spacing: 0) {
           Image(systemName: "clock")
@@ -55,7 +52,7 @@ struct MainView: View {
 
             Text(
               String(
-                format: "%02d",
+                format: " %02d",
                 localTime.second
               )
             )
@@ -67,24 +64,21 @@ struct MainView: View {
       .padding(.vertical, 10.0)
     }
     .frame(
-      minWidth: 0,
-      maxWidth: .infinity,
-      minHeight: 0,
-      maxHeight: .infinity,
       alignment: .center
     )
+    .frame(width: 250.0)
     .background(
       RoundedRectangle(cornerRadius: 12)
         .fill(Color(NSColor.black))
     )
     .foregroundColor(Color.white)
-    .opacity(0.5)
+    .opacity(0.8)
   }
 }
 
 struct MainView_Previews: PreviewProvider {
   static var previews: some View {
-    MainView(operatingSystemVersion: "macOS 98.76.54 (Build 99A999)")
-      .previewLayout(.fixed(width: 250.0, height: 100.0))
+    MainView()
+      .previewLayout(.sizeThatFits)
   }
 }

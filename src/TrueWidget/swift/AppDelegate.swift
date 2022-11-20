@@ -8,8 +8,6 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
   private func setupWindows() {
     let screens = NSScreen.screens
 
-    let operatingSystemVersion = "macOS \(operatingSystemVersionString())"
-
     while windows.count < screens.count {
       let w = NSWindow(
         contentRect: .zero,
@@ -32,8 +30,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
       w.collectionBehavior.insert(.canJoinAllSpaces)
       w.collectionBehavior.insert(.ignoresCycle)
       w.collectionBehavior.insert(.stationary)
-      w.contentView = NSHostingView(
-        rootView: MainView(operatingSystemVersion: operatingSystemVersion))
+      w.contentView = NSHostingView(rootView: MainView())
 
       windows.append(w)
     }
@@ -77,9 +74,5 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     setupWindows()
-  }
-
-  private func operatingSystemVersionString() -> String {
-    return ProcessInfo.processInfo.operatingSystemVersionString
   }
 }
