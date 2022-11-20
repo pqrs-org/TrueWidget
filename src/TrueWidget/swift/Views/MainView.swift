@@ -9,15 +9,20 @@ struct MainView: View {
     VStack {
       VStack {
         Text(operatingSystemVersion)
-        Text(
-          String(
-            format: "CPU: system %.2f%% user %.2f%% idle %.2f%% nice %.2f%%",
-            cpuUsage.system,
-            cpuUsage.user,
-            cpuUsage.idle,
-            cpuUsage.nice
-          )
-        )
+
+          HStack(alignment: .center, spacing: 0) {
+              Image(systemName: "cpu")
+                  .font(.custom("Menlo", size: 24.0))
+
+              HStack(alignment: .bottom, spacing: 0) {
+            Text(
+              String(format: "% 6.2f", cpuUsage.system + cpuUsage.user)
+            )
+            .font(.custom("Menlo", size: 24.0))
+
+            Text("%")
+          }
+        }
       }
       .padding(.horizontal, 20.0)
       .padding(.vertical, 10.0)
