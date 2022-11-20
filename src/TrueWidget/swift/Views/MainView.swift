@@ -9,7 +9,7 @@ struct MainView: View {
     VStack {
       VStack(alignment: .leading, spacing: 0.0) {
         HStack(alignment: .center, spacing: 0) {
-          Text("macOS")
+          Text("macOS ")
           Text(operatingSystem.version)
         }
 

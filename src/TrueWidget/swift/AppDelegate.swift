@@ -42,17 +42,12 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
     for (i, w) in windows.enumerated() {
       if i < screens.count {
         let screenFrame = screens[i].frame
-        let width = 250.0
-        let height = 100.0
 
-        w.setFrame(
-          NSMakeRect(
+        w.setFrameOrigin(
+          NSMakePoint(
             screenFrame.origin.x + 10,
-            screenFrame.origin.y + 10,
-            width,
-            height
-          ),
-          display: true
+            screenFrame.origin.y + 10
+          )
         )
 
         w.orderFront(self)
