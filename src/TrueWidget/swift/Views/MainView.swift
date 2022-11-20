@@ -2,12 +2,25 @@ import SwiftUI
 
 struct MainView: View {
   let operatingSystemVersion: String
+
+  @ObservedObject var cpuUsage = WidgetSource.CPUUsage.shared
+
   var body: some View {
     VStack {
-      Text(operatingSystemVersion)
-        .foregroundColor(Color.white)
-        .padding(.horizontal, 20.0)
-        .padding(.vertical, 10.0)
+      VStack {
+        Text(operatingSystemVersion)
+        Text(
+          String(
+            format: "CPU: system %.2f%% user %.2f%% idle %.2f%% nice %.2f%%",
+            cpuUsage.system,
+            cpuUsage.user,
+            cpuUsage.idle,
+            cpuUsage.nice
+          )
+        )
+      }
+      .padding(.horizontal, 20.0)
+      .padding(.vertical, 10.0)
     }
     .frame(
       minWidth: 0,
@@ -20,6 +33,7 @@ struct MainView: View {
       RoundedRectangle(cornerRadius: 12)
         .fill(Color(NSColor.black))
     )
+    .foregroundColor(Color.white)
     .opacity(0.5)
   }
 }
