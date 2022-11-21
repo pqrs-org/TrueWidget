@@ -12,6 +12,10 @@ struct MainView: View {
         HStack(alignment: .center, spacing: 0) {
           Text("macOS ")
           Text(operatingSystem.version)
+
+          Spacer()
+
+          Text(operatingSystem.hostName)
         }
 
         Divider()

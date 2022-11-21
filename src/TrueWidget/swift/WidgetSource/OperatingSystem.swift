@@ -6,6 +6,7 @@ extension WidgetSource {
     static let shared = OperatingSystem()
 
     @Published public var version: String
+    @Published public var hostName: String
 
     private init() {
       let operatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
@@ -15,6 +16,13 @@ extension WidgetSource {
         operatingSystemVersion.minorVersion,
         operatingSystemVersion.patchVersion
       )
+
+      let name = ProcessInfo.processInfo.hostName
+      if let index = name.firstIndex(of: ".") {
+        hostName = String(name[...index].dropLast())
+      } else {
+        hostName = name
+      }
     }
   }
 }
