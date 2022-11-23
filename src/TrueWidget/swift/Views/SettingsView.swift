@@ -24,6 +24,17 @@ struct SettingsView: View {
           }
 
           HStack {
+            Picker(selection: $userSettings.widgetPosition, label: Text("Widget position: ")) {
+              Text("Bottom Left").tag(WidgetPosition.bottomLeft.rawValue)
+              Text("Bottom Right (Default)").tag(WidgetPosition.bottomRight.rawValue)
+              Text("Top Left").tag(WidgetPosition.topLeft.rawValue)
+              Text("Top Right").tag(WidgetPosition.topRight.rawValue)
+            }
+
+            Spacer()
+          }
+
+          HStack {
             Text("Widget width: ")
 
             DoubleTextField(

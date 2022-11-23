@@ -44,15 +44,30 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     for (i, w) in windows.enumerated() {
       if i < screens.count {
-        let screenFrame = screens[i].frame
+        let screenFrame = screens[i].visibleFrame
 
-        w.setFrameOrigin(
-          NSMakePoint(
-            screenFrame.origin.x + 10,
-            screenFrame.origin.y + 10
-          )
-        )
+        var origin = NSZeroPoint
 
+        switch UserSettings.shared.widgetPosition {
+        case WidgetPosition.bottomLeft.rawValue:
+          origin.x = screenFrame.origin.x + 10
+          origin.y = screenFrame.origin.y + 10
+
+        case WidgetPosition.topLeft.rawValue:
+          origin.x = screenFrame.origin.x + 10
+          origin.y = screenFrame.origin.y + screenFrame.size.height - w.frame.height - 10
+
+        case WidgetPosition.topRight.rawValue:
+          origin.x = screenFrame.origin.x + screenFrame.size.width - w.frame.width - 10
+          origin.y = screenFrame.origin.y + screenFrame.size.height - w.frame.height - 10
+
+        default:
+          // WidgetPosition.bottomRight
+          origin.x = screenFrame.origin.x + screenFrame.size.width - w.frame.width - 10
+          origin.y = screenFrame.origin.y + 10
+        }
+
+        w.setFrameOrigin(origin)
         w.orderFront(self)
       }
     }
@@ -63,6 +78,16 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     NotificationCenter.default.addObserver(
       forName: NSApplication.didChangeScreenParametersNotification,
+      object: nil,
+      queue: .main
+    ) { [weak self] _ in
+      guard let self = self else { return }
+
+      self.setupWindows()
+    }
+
+    NotificationCenter.default.addObserver(
+      forName: UserSettings.widgetPositionSettingChanged,
       object: nil,
       queue: .main
     ) { [weak self] _ in

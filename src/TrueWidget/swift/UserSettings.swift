@@ -1,9 +1,17 @@
 import Combine
 import Foundation
 
+enum WidgetPosition: String {
+  case bottomLeft
+  case bottomRight
+  case topLeft
+  case topRight
+}
+
 final class UserSettings: ObservableObject {
   static let shared = UserSettings()
   static let showMenuSettingChanged = Notification.Name("ShowMenuSettingChanged")
+  static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
 
   @Published var openAtLogin = OpenAtLogin.enabled {
     didSet {
@@ -31,6 +39,19 @@ final class UserSettings: ObservableObject {
   //
   // Layout
   //
+
+  @UserDefault("widgetPosition", defaultValue: WidgetPosition.bottomRight.rawValue)
+  var widgetPosition: String {
+    willSet {
+      objectWillChange.send()
+    }
+    didSet {
+      NotificationCenter.default.post(
+        name: UserSettings.widgetPositionSettingChanged,
+        object: nil
+      )
+    }
+  }
 
   @UserDefault("widgetWidth", defaultValue: 250.0)
   var widgetWidth: Double {
