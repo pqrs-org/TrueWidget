@@ -4,7 +4,6 @@ import Foundation
 final class UserSettings: ObservableObject {
   static let shared = UserSettings()
   static let showMenuSettingChanged = Notification.Name("ShowMenuSettingChanged")
-  static let uiLayoutChanged = Notification.Name("UILayoutChanged")
 
   @Published var openAtLogin = OpenAtLogin.enabled {
     didSet {
@@ -38,12 +37,6 @@ final class UserSettings: ObservableObject {
     willSet {
       objectWillChange.send()
     }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.uiLayoutChanged,
-        object: nil
-      )
-    }
   }
 
   //
@@ -55,24 +48,12 @@ final class UserSettings: ObservableObject {
     willSet {
       objectWillChange.send()
     }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.uiLayoutChanged,
-        object: nil
-      )
-    }
   }
 
   @UserDefault("operatingSystemFontSize", defaultValue: 14.0)
   var operatingSystemFontSize: Double {
     willSet {
       objectWillChange.send()
-    }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.uiLayoutChanged,
-        object: nil
-      )
     }
   }
 
@@ -85,24 +66,12 @@ final class UserSettings: ObservableObject {
     willSet {
       objectWillChange.send()
     }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.uiLayoutChanged,
-        object: nil
-      )
-    }
   }
 
   @UserDefault("cpuUsageFontSize", defaultValue: 36.0)
   var cpuUsageFontSize: Double {
     willSet {
       objectWillChange.send()
-    }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.uiLayoutChanged,
-        object: nil
-      )
     }
   }
 
@@ -115,24 +84,12 @@ final class UserSettings: ObservableObject {
     willSet {
       objectWillChange.send()
     }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.uiLayoutChanged,
-        object: nil
-      )
-    }
   }
 
   @UserDefault("localTimeFontSize", defaultValue: 36.0)
   var localTimeFontSize: Double {
     willSet {
       objectWillChange.send()
-    }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.uiLayoutChanged,
-        object: nil
-      )
     }
   }
 }
