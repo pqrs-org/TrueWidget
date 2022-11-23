@@ -8,7 +8,7 @@ struct MainView: View {
 
   var body: some View {
     VStack {
-      VStack(alignment: .leading, spacing: 0.0) {
+      VStack(alignment: .leading, spacing: 8.0) {
         HStack(alignment: .center, spacing: 0) {
           Text("macOS ")
           Text(operatingSystem.version)
@@ -17,9 +17,6 @@ struct MainView: View {
 
           Text(operatingSystem.hostName)
         }
-
-        Divider()
-          .padding(.vertical, 4.0)
 
         HStack(alignment: .center, spacing: 0) {
           Image(systemName: "cpu")
@@ -35,9 +32,6 @@ struct MainView: View {
               .font(.custom("Menlo", size: 14.0))
           }
         }
-
-        Divider()
-          .padding(.vertical, 4.0)
 
         HStack(alignment: .center, spacing: 0) {
           Image(systemName: "clock")
