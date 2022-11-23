@@ -69,6 +69,16 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     NotificationCenter.default.addObserver(
+      forName: UserSettings.uiLayoutChanged,
+      object: nil,
+      queue: .main
+    ) { [weak self] _ in
+      guard let self = self else { return }
+
+      self.setupWindows()
+    }
+
+    NotificationCenter.default.addObserver(
       forName: UserSettings.showMenuSettingChanged,
       object: nil,
       queue: .main

@@ -23,12 +23,115 @@ struct SettingsView: View {
 
             Spacer()
           }
+
+          HStack {
+            Text("Widget width: ")
+
+            DoubleTextField(
+              value: $userSettings.widgetWidth,
+              range: 0...10000,
+              step: 50,
+              width: 50)
+
+            Text("pt")
+
+            Text("(Default: 250 pt)")
+
+            Spacer()
+          }
+        }
+        .padding()
+      }
+
+      GroupBox(label: Text("Operating system")) {
+        VStack(alignment: .leading, spacing: 10.0) {
+          HStack {
+            Toggle(isOn: $userSettings.showOperatingSystem) {
+              Text("Show macOS version")
+            }
+
+            Spacer()
+          }
+
+          HStack {
+            Text("Font size: ")
+
+            DoubleTextField(
+              value: $userSettings.operatingSystemFontSize,
+              range: 0...1000,
+              step: 2,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 14 pt)")
+
+            Spacer()
+          }
+        }
+        .padding()
+      }
+
+      GroupBox(label: Text("CPU usage")) {
+        VStack(alignment: .leading, spacing: 10.0) {
+          HStack {
+            Toggle(isOn: $userSettings.showCPUUsage) {
+              Text("Show CPU usage")
+            }
+
+            Spacer()
+          }
+
+          HStack {
+            Text("Font size: ")
+
+            DoubleTextField(
+              value: $userSettings.cpuUsageFontSize,
+              range: 0...1000,
+              step: 2,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 36 pt)")
+
+            Spacer()
+          }
+        }
+        .padding()
+      }
+
+      GroupBox(label: Text("Local time")) {
+        VStack(alignment: .leading, spacing: 10.0) {
+          HStack {
+            Toggle(isOn: $userSettings.showLocalTime) {
+              Text("Show local time")
+            }
+
+            Spacer()
+          }
+
+          HStack {
+            Text("Font size: ")
+
+            DoubleTextField(
+              value: $userSettings.localTimeFontSize,
+              range: 0...1000,
+              step: 2,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 36 pt)")
+
+            Spacer()
+          }
         }
         .padding()
       }
     }
     .padding()
-    .frame(width: 400)
+    .frame(width: 450)
   }
 }
 

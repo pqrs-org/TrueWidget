@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
+  @ObservedObject var userSettings = UserSettings.shared
   @ObservedObject var operatingSystem = WidgetSource.OperatingSystem.shared
   @ObservedObject var cpuUsage = WidgetSource.CPUUsage.shared
   @ObservedObject var localTime = WidgetSource.LocalTime.shared
@@ -8,54 +9,68 @@ struct MainView: View {
 
   var body: some View {
     VStack {
-      VStack(alignment: .leading, spacing: 8.0) {
-        HStack(alignment: .center, spacing: 0) {
-          Text("macOS ")
-          Text(operatingSystem.version)
+      VStack(alignment: .leading, spacing: 10.0) {
+        //
+        // Operating system
+        //
 
-          Spacer()
-
-          Text(operatingSystem.hostName)
-        }
-
-        HStack(alignment: .center, spacing: 0) {
-          Image(systemName: "cpu")
-            .font(.custom("Menlo", size: 24.0))
-
-          Spacer()
-
-          HStack(alignment: .firstTextBaseline, spacing: 0) {
-            Text(String(format: "%d", cpuUsage.usageInteger))
-              .font(.custom("Menlo", size: 36.0))
-
-            Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
-              .font(.custom("Menlo", size: 14.0))
+        if userSettings.showOperatingSystem {
+          HStack(alignment: .center, spacing: 0) {
+            Text("macOS ")
+            Text(operatingSystem.version)
+            Spacer()
+            Text(operatingSystem.hostName)
           }
+          .font(.system(size: userSettings.operatingSystemFontSize))
         }
 
-        HStack(alignment: .center, spacing: 0) {
-          Image(systemName: "clock")
-            .font(.custom("Menlo", size: 24.0))
+        //
+        // CPU usage
+        //
 
-          Spacer()
+        if userSettings.showCPUUsage {
+          HStack(alignment: .center, spacing: 0) {
+            Spacer()
 
-          HStack(alignment: .firstTextBaseline, spacing: 0) {
-            Text(
-              String(
-                format: " %02d:%02d",
-                localTime.hour,
-                localTime.minute
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+              Text("CPU")
+                .font(.system(size: userSettings.cpuUsageFontSize / 2))
+
+              Text(String(format: "% 3d", cpuUsage.usageInteger))
+
+              Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
+                .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
+            }
+          }
+          .font(.custom("Menlo", size: userSettings.cpuUsageFontSize))
+        }
+
+        //
+        // Local time
+        //
+
+        if userSettings.showLocalTime {
+          HStack(alignment: .center, spacing: 0) {
+            Spacer()
+
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+              Text(
+                String(
+                  format: " %02d:%02d",
+                  localTime.hour,
+                  localTime.minute
+                )
               )
-            )
-            .font(.custom("Menlo", size: 36.0))
+              .font(.custom("Menlo", size: userSettings.localTimeFontSize))
 
-            Text(
-              String(
-                format: " %02d",
-                localTime.second
+              Text(
+                String(
+                  format: " %02d",
+                  localTime.second
+                )
               )
-            )
-            .font(.custom("Menlo", size: 14.0))
+              .font(.custom("Menlo", size: userSettings.localTimeFontSize / 2))
+            }
           }
         }
       }
@@ -65,7 +80,7 @@ struct MainView: View {
     .frame(
       alignment: .center
     )
-    .frame(width: 250.0)
+    .frame(width: userSettings.widgetWidth)
     .background(
       RoundedRectangle(cornerRadius: 12)
         .fill(Color(NSColor.black))
