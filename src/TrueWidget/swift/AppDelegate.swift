@@ -68,6 +68,16 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
       self.setupWindows()
     }
 
+    NotificationCenter.default.addObserver(
+      forName: UserSettings.showMenuSettingChanged,
+      object: nil,
+      queue: .main
+    ) { _ in
+      MenuController.shared.show()
+    }
+
     setupWindows()
+
+    MenuController.shared.show()
   }
 }
