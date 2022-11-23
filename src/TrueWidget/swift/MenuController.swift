@@ -19,12 +19,12 @@ class MenuController: NSObject {
 
       menu.addItem(NSMenuItem.separator())
 
-      let preferencesMenuItem = NSMenuItem(
-        title: "Preferences...",
-        action: #selector(showPreferences),
+      let settingsMenuItem = NSMenuItem(
+        title: "Settings...",
+        action: #selector(showSettings),
         keyEquivalent: "")
-      preferencesMenuItem.target = self
-      menu.addItem(preferencesMenuItem)
+      settingsMenuItem.target = self
+      menu.addItem(settingsMenuItem)
 
       menu.addItem(NSMenuItem.separator())
 
@@ -44,7 +44,7 @@ class MenuController: NSObject {
     statusItem?.isVisible = UserSettings.shared.showMenu
   }
 
-  @objc private func showPreferences(sender _: AnyObject?) {
-    //PreferencesWindowManager.shared.show()
+  @objc private func showSettings(sender _: AnyObject?) {
+    SettingsWindowManager.shared.show()
   }
 }

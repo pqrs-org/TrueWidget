@@ -80,4 +80,12 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
 
     MenuController.shared.show()
   }
+
+  public func applicationShouldHandleReopen(
+    _: NSApplication,
+    hasVisibleWindows _: Bool
+  ) -> Bool {
+    SettingsWindowManager.shared.show()
+    return true
+  }
 }
