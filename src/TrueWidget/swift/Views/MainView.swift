@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct MainView: View {
-  @ObservedObject var userSettings = UserSettings.shared
-  @ObservedObject var operatingSystem = WidgetSource.OperatingSystem.shared
-  @ObservedObject var cpuUsage = WidgetSource.CPUUsage.shared
-  @ObservedObject var localTime = WidgetSource.LocalTime.shared
-  @State var opacity = 0.8
+  @ObservedObject private var userSettings = UserSettings.shared
+  @ObservedObject private var operatingSystem = WidgetSource.OperatingSystem.shared
+  @ObservedObject private var cpuUsage = WidgetSource.CPUUsage.shared
+  @ObservedObject private var localTime = WidgetSource.LocalTime.shared
+  @State private var opacity = 0.8
 
   var body: some View {
     VStack {

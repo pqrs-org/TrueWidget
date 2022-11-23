@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-  let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-  @ObservedObject var userSettings = UserSettings.shared
+  @ObservedObject private var userSettings = UserSettings.shared
 
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
