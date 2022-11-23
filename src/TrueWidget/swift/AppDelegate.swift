@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @NSApplicationMain
-public class AppDelegate: NSObject, NSApplicationDelegate {
+public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
   private var windows: [NSWindow] = []
 
   private func setupWindows() {
@@ -31,13 +31,16 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
       w.collectionBehavior.insert(.ignoresCycle)
       w.collectionBehavior.insert(.stationary)
       w.contentView = NSHostingView(rootView: MainView())
+      w.delegate = self
 
       windows.append(w)
     }
 
-    //
-    // Update frame
-    //
+    updateWindowsFrame()
+  }
+
+  public func updateWindowsFrame() {
+    let screens = NSScreen.screens
 
     for (i, w) in windows.enumerated() {
       if i < screens.count {
@@ -97,5 +100,13 @@ public class AppDelegate: NSObject, NSApplicationDelegate {
   ) -> Bool {
     SettingsWindowManager.shared.show()
     return true
+  }
+
+  public func windowDidResize(_ notification: Notification) {
+    DispatchQueue.main.async { [weak self] in
+      guard let self = self else { return }
+
+      self.updateWindowsFrame()
+    }
   }
 }
