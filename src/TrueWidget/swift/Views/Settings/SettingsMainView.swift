@@ -40,7 +40,7 @@ struct SettingsMainView: View {
             DoubleTextField(
               value: $userSettings.widgetWidth,
               range: 0...10000,
-              step: 50,
+              step: 10,
               width: 50)
 
             Text("pt")
