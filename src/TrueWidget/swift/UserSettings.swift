@@ -8,6 +8,11 @@ enum WidgetPosition: String {
   case topRight
 }
 
+enum CPUUsageType: String {
+  case movingAverage
+  case latest
+}
+
 final class UserSettings: ObservableObject {
   static let shared = UserSettings()
   static let showMenuSettingChanged = Notification.Name("ShowMenuSettingChanged")
@@ -91,6 +96,13 @@ final class UserSettings: ObservableObject {
 
   @UserDefault("cpuUsageFontSize", defaultValue: 36.0)
   var cpuUsageFontSize: Double {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  @UserDefault("cpuUsageType", defaultValue: CPUUsageType.movingAverage.rawValue)
+  var cpuUsageType: String {
     willSet {
       objectWillChange.send()
     }

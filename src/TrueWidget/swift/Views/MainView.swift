@@ -36,10 +36,18 @@ struct MainView: View {
               Text("CPU")
                 .font(.system(size: userSettings.cpuUsageFontSize / 2))
 
-              Text(String(format: "% 3d", cpuUsage.usageInteger))
+              if userSettings.cpuUsageType == CPUUsageType.latest.rawValue {
+                Text(String(format: "% 3d", cpuUsage.usageInteger))
 
-              Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
-                .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
+                Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
+                  .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
+              } else {
+                // Moving average
+                Text(String(format: "% 3d", cpuUsage.usageAverageInteger))
+
+                Text(String(format: ".%02d%%", cpuUsage.usageAverageDecimal))
+                  .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
+              }
             }
             .overlay(
               Rectangle()

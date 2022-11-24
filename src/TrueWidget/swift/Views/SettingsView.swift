@@ -107,6 +107,15 @@ struct SettingsView: View {
 
             Spacer()
           }
+
+          HStack {
+            Picker(selection: $userSettings.cpuUsageType, label: Text("Value: ")) {
+              Text("Moving Average (Default)").tag(CPUUsageType.movingAverage.rawValue)
+              Text("Latest").tag(CPUUsageType.latest.rawValue)
+            }
+
+            Spacer()
+          }
         }
         .padding()
       }
