@@ -41,6 +41,11 @@ struct MainView: View {
               Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
                 .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
             }
+            .overlay(
+              Rectangle()
+                .frame(height: 1.0),
+              alignment: .bottom
+            )
           }
           .font(.custom("Menlo", size: userSettings.cpuUsageFontSize))
         }
