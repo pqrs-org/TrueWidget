@@ -10,79 +10,19 @@ struct MainView: View {
   var body: some View {
     VStack {
       VStack(alignment: .leading, spacing: 10.0) {
-        //
-        // Operating system
-        //
-
         if userSettings.showOperatingSystem {
           MainOperatingSystemView()
         }
 
-        //
-        // CPU usage
-        //
-
         if userSettings.showCPUUsage {
-          HStack(alignment: .center, spacing: 0) {
-            Spacer()
-
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-              Text("CPU")
-                .font(.system(size: userSettings.cpuUsageFontSize / 2))
-
-              if userSettings.cpuUsageType == CPUUsageType.latest.rawValue {
-                Text(String(format: "% 3d", cpuUsage.usageInteger))
-
-                Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
-                  .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
-              } else {
-                // Moving average
-                Text(String(format: "% 3d", cpuUsage.usageAverageInteger))
-
-                Text(String(format: ".%02d%%", cpuUsage.usageAverageDecimal))
-                  .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
-              }
-            }
-            .overlay(
-              Rectangle()
-                .frame(height: 1.0),
-              alignment: .bottom
-            )
-          }
-          .font(.custom("Menlo", size: userSettings.cpuUsageFontSize))
+          MainCPUUsageView()
         }
-
-        //
-        // Local time
-        //
 
         if userSettings.showLocalTime {
-          HStack(alignment: .center, spacing: 0) {
-            Spacer()
-
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-              Text(
-                String(
-                  format: " %02d:%02d",
-                  localTime.hour,
-                  localTime.minute
-                )
-              )
-              .font(.custom("Menlo", size: userSettings.localTimeFontSize))
-
-              Text(
-                String(
-                  format: " %02d",
-                  localTime.second
-                )
-              )
-              .font(.custom("Menlo", size: userSettings.localTimeFontSize / 2))
-            }
-          }
+          MainLocalTimeView()
         }
       }
-      .padding(.horizontal, 20.0)
-      .padding(.vertical, 10.0)
+      .padding()
     }
     .frame(
       alignment: .center
