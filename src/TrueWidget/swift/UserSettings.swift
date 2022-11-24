@@ -83,6 +83,13 @@ final class UserSettings: ObservableObject {
     }
   }
 
+  @UserDefault("showHostName", defaultValue: true)
+  var showHostName: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
   //
   // CPU usage
   //

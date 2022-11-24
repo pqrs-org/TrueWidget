@@ -15,13 +15,7 @@ struct MainView: View {
         //
 
         if userSettings.showOperatingSystem {
-          HStack(alignment: .center, spacing: 0) {
-            Text("macOS ")
-            Text(operatingSystem.version)
-            Spacer()
-            Text(operatingSystem.hostName)
-          }
-          .font(.system(size: userSettings.operatingSystemFontSize))
+          MainOperatingSystemView()
         }
 
         //

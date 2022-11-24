@@ -78,6 +78,14 @@ struct SettingsView: View {
 
             Spacer()
           }
+
+          HStack {
+            Toggle(isOn: $userSettings.showHostName) {
+              Text("Show host name")
+            }
+
+            Spacer()
+          }
         }
         .padding()
       }
