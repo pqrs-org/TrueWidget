@@ -1,164 +1,70 @@
 import SwiftUI
 
+enum NavigationTag: String {
+  case main
+  case operatingSystem
+  case cpuUsage
+  case localTime
+}
+
 struct SettingsView: View {
   @ObservedObject private var userSettings = UserSettings.shared
+  @State private var selection: NavigationTag = NavigationTag.main
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 25.0) {
-      GroupBox(label: Text("Basic")) {
-        VStack(alignment: .leading, spacing: 10.0) {
-          HStack {
-            Toggle(isOn: $userSettings.openAtLogin) {
-              Text("Open at login")
-            }
-
-            Spacer()
-          }
-
-          HStack {
-            Toggle(isOn: $userSettings.showMenu) {
-              Text("Show icon in menu bar")
-            }
-
-            Spacer()
-          }
-
-          HStack {
-            Picker(selection: $userSettings.widgetPosition, label: Text("Widget position: ")) {
-              Text("Bottom Left").tag(WidgetPosition.bottomLeft.rawValue)
-              Text("Bottom Right (Default)").tag(WidgetPosition.bottomRight.rawValue)
-              Text("Top Left").tag(WidgetPosition.topLeft.rawValue)
-              Text("Top Right").tag(WidgetPosition.topRight.rawValue)
-            }
-
-            Spacer()
-          }
-
-          HStack {
-            Text("Widget width: ")
-
-            DoubleTextField(
-              value: $userSettings.widgetWidth,
-              range: 0...10000,
-              step: 50,
-              width: 50)
-
-            Text("pt")
-
-            Text("(Default: 250 pt)")
-
-            Spacer()
-          }
+    HStack {
+      VStack(alignment: .leading, spacing: 0) {
+        Button(action: {
+          selection = NavigationTag.main
+        }) {
+          SidebarLabelView(text: "Main", systemImage: "gear")
         }
-        .padding()
+        .sidebarButtonStyle(selected: selection == NavigationTag.main)
+
+        Divider()
+          .padding(.vertical, 10.0)
+
+        Button(action: {
+          selection = NavigationTag.operatingSystem
+        }) {
+          SidebarLabelView(text: "Operation System", systemImage: "cube")
+        }
+        .sidebarButtonStyle(selected: selection == NavigationTag.operatingSystem)
+
+        Button(action: {
+          selection = NavigationTag.cpuUsage
+        }) {
+          SidebarLabelView(text: "CPU Usage", systemImage: "cube")
+        }
+        .sidebarButtonStyle(selected: selection == NavigationTag.cpuUsage)
+
+        Button(action: {
+          selection = NavigationTag.localTime
+        }) {
+          SidebarLabelView(text: "Local Time", systemImage: "cube")
+        }
+        .sidebarButtonStyle(selected: selection == NavigationTag.localTime)
+
+        Divider()
+          .padding(.vertical, 10.0)
       }
+      .frame(width: 250)
 
-      GroupBox(label: Text("Operating system")) {
-        VStack(alignment: .leading, spacing: 10.0) {
-          HStack {
-            Toggle(isOn: $userSettings.showOperatingSystem) {
-              Text("Show macOS version")
-            }
+      Divider()
 
-            Spacer()
-          }
-
-          HStack {
-            Text("Font size: ")
-
-            DoubleTextField(
-              value: $userSettings.operatingSystemFontSize,
-              range: 0...1000,
-              step: 2,
-              width: 40)
-
-            Text("pt")
-
-            Text("(Default: 14 pt)")
-
-            Spacer()
-          }
-
-          HStack {
-            Toggle(isOn: $userSettings.showHostName) {
-              Text("Show host name")
-            }
-
-            Spacer()
-          }
-        }
-        .padding()
-      }
-
-      GroupBox(label: Text("CPU usage")) {
-        VStack(alignment: .leading, spacing: 10.0) {
-          HStack {
-            Toggle(isOn: $userSettings.showCPUUsage) {
-              Text("Show CPU usage")
-            }
-
-            Spacer()
-          }
-
-          HStack {
-            Text("Font size: ")
-
-            DoubleTextField(
-              value: $userSettings.cpuUsageFontSize,
-              range: 0...1000,
-              step: 2,
-              width: 40)
-
-            Text("pt")
-
-            Text("(Default: 36 pt)")
-
-            Spacer()
-          }
-
-          HStack {
-            Picker(selection: $userSettings.cpuUsageType, label: Text("Value: ")) {
-              Text("Moving Average (Default)").tag(CPUUsageType.movingAverage.rawValue)
-              Text("Latest").tag(CPUUsageType.latest.rawValue)
-            }
-
-            Spacer()
-          }
-        }
-        .padding()
-      }
-
-      GroupBox(label: Text("Local time")) {
-        VStack(alignment: .leading, spacing: 10.0) {
-          HStack {
-            Toggle(isOn: $userSettings.showLocalTime) {
-              Text("Show local time")
-            }
-
-            Spacer()
-          }
-
-          HStack {
-            Text("Font size: ")
-
-            DoubleTextField(
-              value: $userSettings.localTimeFontSize,
-              range: 0...1000,
-              step: 2,
-              width: 40)
-
-            Text("pt")
-
-            Text("(Default: 36 pt)")
-
-            Spacer()
-          }
-        }
-        .padding()
+      switch selection {
+      case NavigationTag.main:
+        SettingsMainView()
+      case NavigationTag.operatingSystem:
+        SettingsOperatingSystemView()
+      case NavigationTag.cpuUsage:
+        SettingsCPUUsageView()
+      case NavigationTag.localTime:
+        SettingsLocalTimeView()
       }
     }
     .padding()
-    .frame(width: 450)
+    .frame(width: 800)
   }
 }
 
