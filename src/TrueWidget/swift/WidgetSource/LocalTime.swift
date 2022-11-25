@@ -18,6 +18,10 @@ extension WidgetSource {
       ) { [weak self] (_: Timer) in
         guard let self = self else { return }
 
+        if !UserSettings.shared.showLocalTime {
+          return
+        }
+
         let now = Date()
         let calendar = Calendar.current
 

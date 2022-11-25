@@ -49,6 +49,21 @@ struct SettingsMainView: View {
 
             Spacer()
           }
+
+          HStack {
+            Picker(
+              selection: $userSettings.widgetScreen,
+              label: Text("Widget screen when using multiple displays: ")
+            ) {
+              Text("Primary screen (Default)").tag(WidgetScreen.primary.rawValue)
+              Text("Bottom Left screen").tag(WidgetScreen.bottomLeft.rawValue)
+              Text("Bottom Right screen").tag(WidgetScreen.bottomRight.rawValue)
+              Text("Top Left screen").tag(WidgetScreen.topLeft.rawValue)
+              Text("Top Right screen").tag(WidgetScreen.topRight.rawValue)
+            }
+
+            Spacer()
+          }
         }
         .padding()
       }

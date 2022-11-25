@@ -36,6 +36,10 @@ extension WidgetSource {
     }
 
     private func update() {
+      if !UserSettings.shared.showCPUUsage {
+        return
+      }
+
       var count = mach_msg_type_number_t(
         MemoryLayout<host_cpu_load_info_data_t>.size / MemoryLayout<integer_t>.size)
       let hostInfo = host_cpu_load_info_t.allocate(capacity: 1)
@@ -67,8 +71,9 @@ extension WidgetSource {
         // Calculate average
         //
 
+        let averageRange = max(UserSettings.shared.cpuUsageMovingAverageRange, 1)
         usageHistory.append(user + system)
-        if usageHistory.count > 10 {
+        while usageHistory.count > averageRange {
           usageHistory.remove(at: 0)
         }
 

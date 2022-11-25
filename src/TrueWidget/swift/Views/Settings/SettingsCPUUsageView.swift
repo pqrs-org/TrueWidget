@@ -39,6 +39,22 @@ struct SettingsCPUUsageView: View {
 
             Spacer()
           }
+
+          HStack {
+            Text("Moving Average periods: ")
+
+            IntTextField(
+              value: $userSettings.cpuUsageMovingAverageRange,
+              range: 0...1000,
+              step: 5,
+              width: 40)
+
+            Text("seconds")
+
+            Text("(Default: 30 seconds)")
+
+            Spacer()
+          }
         }
         .padding()
       }

@@ -27,21 +27,21 @@ struct SettingsView: View {
         Button(action: {
           selection = NavigationTag.operatingSystem
         }) {
-          SidebarLabelView(text: "Operation System", systemImage: "cube")
+          SidebarLabelView(text: "Layout > Operation System", systemImage: "cube")
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.operatingSystem)
 
         Button(action: {
           selection = NavigationTag.cpuUsage
         }) {
-          SidebarLabelView(text: "CPU Usage", systemImage: "cube")
+          SidebarLabelView(text: "Layout > CPU Usage", systemImage: "cube")
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.cpuUsage)
 
         Button(action: {
           selection = NavigationTag.localTime
         }) {
-          SidebarLabelView(text: "Local Time", systemImage: "cube")
+          SidebarLabelView(text: "Layout > Local Time", systemImage: "cube")
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.localTime)
 

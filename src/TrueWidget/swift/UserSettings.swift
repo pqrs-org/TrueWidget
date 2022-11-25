@@ -8,6 +8,14 @@ enum WidgetPosition: String {
   case topRight
 }
 
+enum WidgetScreen: String {
+  case primary
+  case bottomLeft
+  case bottomRight
+  case topLeft
+  case topRight
+}
+
 enum CPUUsageType: String {
   case movingAverage
   case latest
@@ -65,6 +73,19 @@ final class UserSettings: ObservableObject {
     }
   }
 
+  @UserDefault("widgetScreen", defaultValue: WidgetScreen.primary.rawValue)
+  var widgetScreen: String {
+    willSet {
+      objectWillChange.send()
+    }
+    didSet {
+      NotificationCenter.default.post(
+        name: UserSettings.widgetPositionSettingChanged,
+        object: nil
+      )
+    }
+  }
+
   //
   // Operating system
   //
@@ -110,6 +131,13 @@ final class UserSettings: ObservableObject {
 
   @UserDefault("cpuUsageType", defaultValue: CPUUsageType.movingAverage.rawValue)
   var cpuUsageType: String {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  @UserDefault("cpuUsageMovingAverageRange", defaultValue: 30)
+  var cpuUsageMovingAverageRange: Int {
     willSet {
       objectWillChange.send()
     }
