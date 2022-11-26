@@ -6,7 +6,7 @@ struct SettingsMainView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Basic")) {
-        VStack(alignment: .leading, spacing: 10.0) {
+        VStack(alignment: .leading) {
           HStack {
             Toggle(isOn: $userSettings.openAtLogin) {
               Text("Open at login")
@@ -22,7 +22,12 @@ struct SettingsMainView: View {
 
             Spacer()
           }
+        }
+        .padding()
+      }
 
+      GroupBox(label: Text("Widget")) {
+        VStack(alignment: .leading) {
           HStack {
             Picker(selection: $userSettings.widgetPosition, label: Text("Widget position: ")) {
               Text("Bottom Left").tag(WidgetPosition.bottomLeft.rawValue)
@@ -46,6 +51,23 @@ struct SettingsMainView: View {
             Text("pt")
 
             Text("(Default: 250 pt)")
+
+            Spacer()
+          }
+
+          HStack {
+            Text("Widget opacity: ")
+
+            Slider(
+              value: $userSettings.widgetOpacity,
+              in: 0.0...1.0,
+              step: 0.1,
+              minimumValueLabel: Text("Clear"),
+              maximumValueLabel: Text("Colored"),
+              label: {
+                Text("")
+              }
+            )
 
             Spacer()
           }

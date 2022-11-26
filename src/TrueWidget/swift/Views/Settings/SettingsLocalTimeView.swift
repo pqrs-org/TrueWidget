@@ -6,7 +6,7 @@ struct SettingsLocalTimeView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Local time")) {
-        VStack(alignment: .leading, spacing: 10.0) {
+        VStack(alignment: .leading) {
           HStack {
             Toggle(isOn: $userSettings.showLocalTime) {
               Text("Show local time")

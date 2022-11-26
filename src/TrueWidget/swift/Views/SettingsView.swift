@@ -21,9 +21,6 @@ struct SettingsView: View {
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.main)
 
-        Divider()
-          .padding(.vertical, 10.0)
-
         Button(action: {
           selection = NavigationTag.operatingSystem
         }) {
@@ -45,8 +42,7 @@ struct SettingsView: View {
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.localTime)
 
-        Divider()
-          .padding(.vertical, 10.0)
+        Spacer()
       }
       .frame(width: 250)
 

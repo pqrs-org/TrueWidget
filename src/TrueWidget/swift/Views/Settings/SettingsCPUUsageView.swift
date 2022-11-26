@@ -6,7 +6,7 @@ struct SettingsCPUUsageView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("CPU usage")) {
-        VStack(alignment: .leading, spacing: 10.0) {
+        VStack(alignment: .leading) {
           HStack {
             Toggle(isOn: $userSettings.showCPUUsage) {
               Text("Show CPU usage")
@@ -30,7 +30,12 @@ struct SettingsCPUUsageView: View {
 
             Spacer()
           }
+        }
+        .padding()
+      }
 
+      GroupBox(label: Text("Advanced")) {
+        VStack(alignment: .leading) {
           HStack {
             Picker(selection: $userSettings.cpuUsageType, label: Text("Value: ")) {
               Text("Moving Average (Default)").tag(CPUUsageType.movingAverage.rawValue)

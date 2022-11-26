@@ -5,7 +5,7 @@ struct MainView: View {
   @ObservedObject private var operatingSystem = WidgetSource.OperatingSystem.shared
   @ObservedObject private var cpuUsage = WidgetSource.CPUUsage.shared
   @ObservedObject private var localTime = WidgetSource.LocalTime.shared
-  @State private var opacity = 0.8
+  @State private var hidden = false
 
   var body: some View {
     VStack {
@@ -30,13 +30,18 @@ struct MainView: View {
     .frame(width: userSettings.widgetWidth)
     .background(
       RoundedRectangle(cornerRadius: 12)
-        .fill(Color(NSColor.black))
+        .fill(.black)
     )
-    .foregroundColor(Color.white)
-    .opacity(opacity)
+    .foregroundColor(.white)
+    .opacity(hidden ? 0.0 : userSettings.widgetOpacity)
     .whenHovered { hover in
-      opacity = hover ? 0.2 : 0.8
+      hidden = hover
     }
+    .overlay(
+      RoundedRectangle(cornerRadius: 12)
+        .stroke(.black, lineWidth: 4)
+    )
+    .clipShape(RoundedRectangle(cornerRadius: 12))
   }
 }
 

@@ -73,6 +73,13 @@ final class UserSettings: ObservableObject {
     }
   }
 
+  @UserDefault("widgetOpacity", defaultValue: 0.8)
+  var widgetOpacity: Double {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
   @UserDefault("widgetScreen", defaultValue: WidgetScreen.primary.rawValue)
   var widgetScreen: String {
     willSet {

@@ -76,7 +76,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         // Note: Do not set alpha value for window.
         // Window with alpha value causes glitch at switching a space (Mission Control).
 
-        window?.backgroundColor = NSColor.clear
+        window?.backgroundColor = .clear
         window?.isOpaque = false
         window?.hasShadow = false
         window?.ignoresMouseEvents = true

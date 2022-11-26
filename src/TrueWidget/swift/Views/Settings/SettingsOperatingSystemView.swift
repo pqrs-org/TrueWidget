@@ -6,7 +6,7 @@ struct SettingsOperatingSystemView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Operating system")) {
-        VStack(alignment: .leading, spacing: 10.0) {
+        VStack(alignment: .leading) {
           HStack {
             Toggle(isOn: $userSettings.showOperatingSystem) {
               Text("Show macOS version")
@@ -30,7 +30,11 @@ struct SettingsOperatingSystemView: View {
 
             Spacer()
           }
+        }.padding()
+      }
 
+      GroupBox(label: Text("Advanced")) {
+        VStack(alignment: .leading) {
           HStack {
             Toggle(isOn: $userSettings.showHostName) {
               Text("Show host name")
