@@ -6,6 +6,7 @@ enum NavigationTag: String {
   case cpuUsage
   case localTime
   case update
+  case action
 }
 
 struct SettingsView: View {
@@ -51,6 +52,13 @@ struct SettingsView: View {
         .sidebarButtonStyle(selected: selection == NavigationTag.update)
 
         Spacer()
+
+        Button(action: {
+          selection = NavigationTag.action
+        }) {
+          SidebarLabelView(text: "Quit, Restart", systemImage: "bolt.circle")
+        }
+        .sidebarButtonStyle(selected: selection == NavigationTag.action)
       }
       .frame(width: 250)
 
@@ -67,6 +75,8 @@ struct SettingsView: View {
         SettingsLocalTimeView()
       case NavigationTag.update:
         SettingsUpdateView()
+      case NavigationTag.action:
+        SettingsActionView()
       }
     }
     .padding()
