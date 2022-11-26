@@ -5,6 +5,7 @@ enum NavigationTag: String {
   case operatingSystem
   case cpuUsage
   case localTime
+  case update
 }
 
 struct SettingsView: View {
@@ -42,6 +43,13 @@ struct SettingsView: View {
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.localTime)
 
+        Button(action: {
+          selection = NavigationTag.update
+        }) {
+          SidebarLabelView(text: "Update", systemImage: "network")
+        }
+        .sidebarButtonStyle(selected: selection == NavigationTag.update)
+
         Spacer()
       }
       .frame(width: 250)
@@ -57,6 +65,8 @@ struct SettingsView: View {
         SettingsCPUUsageView()
       case NavigationTag.localTime:
         SettingsLocalTimeView()
+      case NavigationTag.update:
+        SettingsUpdateView()
       }
     }
     .padding()
