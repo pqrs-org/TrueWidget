@@ -57,7 +57,7 @@ final class Updater: ObservableObject {
       func feedURLString(for updater: SPUUpdater) -> String? {
         var url = "https://appcast.pqrs.org/truewidget-appcast.xml"
         if includingBetaVersions {
-          url = "https://appcast.pqrs.org/TrueWidget-appcast-devel.xml"
+          url = "https://appcast.pqrs.org/truewidget-appcast-devel.xml"
         }
 
         print("feedURLString \(url)")
