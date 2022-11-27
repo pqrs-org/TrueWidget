@@ -158,6 +158,8 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     setupWindow()
 
+    Updater.shared.checkForUpdatesInBackground()
+
     MenuController.shared.show()
   }
 
