@@ -11,7 +11,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
       // Determine screen
       //
 
-      var screenFrame = mainScreen.frame
+      var screen = mainScreen
       if let widgetScreen = WidgetScreen(rawValue: UserSettings.shared.widgetScreen) {
         NSScreen.screens.forEach { s in
           //
@@ -36,23 +36,27 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
           switch widgetScreen {
           case WidgetScreen.primary:
             if s.frame.origin == NSZeroPoint {
-              screenFrame = s.frame
+              screen = s
             }
           case WidgetScreen.bottomLeft:
-            if s.frame.origin.x <= screenFrame.origin.x, s.frame.origin.y <= screenFrame.origin.y {
-              screenFrame = s.frame
+            if s.frame.origin.x <= screen.frame.origin.x, s.frame.origin.y <= screen.frame.origin.y
+            {
+              screen = s
             }
           case WidgetScreen.bottomRight:
-            if s.frame.origin.x >= screenFrame.origin.x, s.frame.origin.y <= screenFrame.origin.y {
-              screenFrame = s.frame
+            if s.frame.origin.x >= screen.frame.origin.x, s.frame.origin.y <= screen.frame.origin.y
+            {
+              screen = s
             }
           case WidgetScreen.topLeft:
-            if s.frame.origin.x <= screenFrame.origin.x, s.frame.origin.y >= screenFrame.origin.y {
-              screenFrame = s.frame
+            if s.frame.origin.x <= screen.frame.origin.x, s.frame.origin.y >= screen.frame.origin.y
+            {
+              screen = s
             }
           case WidgetScreen.topRight:
-            if s.frame.origin.x >= screenFrame.origin.x, s.frame.origin.y >= screenFrame.origin.y {
-              screenFrame = s.frame
+            if s.frame.origin.x >= screen.frame.origin.x, s.frame.origin.y >= screen.frame.origin.y
+            {
+              screen = s
             }
           }
         }
@@ -93,6 +97,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
       //
 
       if let window = window {
+        let screenFrame = screen.visibleFrame
         var origin = NSZeroPoint
         if let widgetPosition = WidgetPosition(rawValue: UserSettings.shared.widgetPosition) {
           switch widgetPosition {
