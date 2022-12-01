@@ -4,6 +4,8 @@ include:
 targets:
   TrueWidget:
     settings:
+      base:
+        CODE_SIGN_ENTITLEMENTS: 'TrueWidget/TrueWidget.entitlements'
       configs:
         debug:
           SWIFT_ACTIVE_COMPILATION_CONDITIONS: 'USE_SPARKLE DEBUG'
