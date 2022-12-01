@@ -27,21 +27,15 @@ rm -f $dmg
 rm -rf tmp
 mkdir -p tmp
 
-# copy files
-rsync -a src/build/Release/TrueWidget.app tmp
-
-# codesign
-bash scripts/codesign.sh tmp
-
 # create-dmg
 if [[ -n "${PQRS_ORG_CODE_SIGN_IDENTITY:-}" ]]; then
     # find identity for create-dmg
     identity=$(security find-identity -v -p codesigning | grep "${PQRS_ORG_CODE_SIGN_IDENTITY}" | grep -oE '"[^"]+"$' | sed 's|^"||' | sed 's|"$||')
-    create-dmg --overwrite --identity="$identity" tmp/TrueWidget.app
+    create-dmg --overwrite --identity="$identity" src/build/Release/TrueWidget.app
 else
     # create-dmg is always failed if codesign identity is not found.
     set +e # allow command failure
-    create-dmg --overwrite tmp/TrueWidget.app
+    create-dmg --overwrite src/build/Release/TrueWidget.app
     set -e # forbid command failure
 fi
 
