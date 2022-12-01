@@ -40,5 +40,9 @@
     <integer>0</integer>
     <key>SUFeedURL</key>
     <string>https://appcast.pqrs.org/truewidget-appcast.xml</string>
+    <key>SUEnableInstallerLauncherService</key>
+    <true/>
+    <key>SUEnableDownloaderService</key>
+    <true/>
   </dict>
 </plist>
