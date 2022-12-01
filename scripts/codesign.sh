@@ -30,11 +30,17 @@ do_codesign() {
 
     set +e # allow command failure
 
+    local entitlements=""
+    if [[ -n "$2" ]]; then
+        entitlements="--entitlements $2"
+    fi
+
     codesign \
         --force \
         --deep \
         --options runtime \
         --sign "$CODE_SIGN_IDENTITY" \
+        $entitlements \
         "$1" 2>&1 |
         grep -v ': replacing existing signature'
 
@@ -52,6 +58,8 @@ main() {
         err "Invalid argument: '$1'"
         exit 1
     fi
+
+    local entitlements="$2"
 
     if [[ -d "$1" ]]; then
         #
@@ -72,7 +80,7 @@ main() {
             # codesign
             #
 
-            do_codesign "$f"
+            do_codesign "$f" "$entitlements"
         done
 
         #
@@ -97,4 +105,9 @@ main() {
 # Run
 #
 
-main "$1"
+set +u # allow undefined variables
+target_path="$1"
+entitlements_path="$2"
+set -u # forbid undefined variables
+
+main "$target_path" "$entitlements_path"
