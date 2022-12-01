@@ -2,6 +2,7 @@ VERSION = `head -n 1 version`
 
 all:
 	$(MAKE) gitclean
+	$(MAKE) clean
 	./make-package.sh
 
 build:
