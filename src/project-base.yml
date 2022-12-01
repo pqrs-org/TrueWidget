@@ -23,6 +23,7 @@ targets:
         excludes:
           - 'objc/*'
           - 'Info.plist.in'
+          - 'embedded.provisionprofile'
       - path: TrueWidget/objc
         compilerFlags:
           - '-Wall'
