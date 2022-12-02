@@ -26,5 +26,8 @@ notarize:
 staple:
 	xcrun stapler staple TrueWidget-$(VERSION).dmg
 
+check-staple:
+	@xcrun stapler validate TrueWidget-$(VERSION).dmg
+
 swift-format:
 	$(MAKE) -C src swift-format
