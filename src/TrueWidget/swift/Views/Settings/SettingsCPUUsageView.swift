@@ -11,6 +11,7 @@ struct SettingsCPUUsageView: View {
             Toggle(isOn: $userSettings.showCPUUsage) {
               Text("Show CPU usage")
             }
+            .switchToggleStyle()
 
             Spacer()
           }

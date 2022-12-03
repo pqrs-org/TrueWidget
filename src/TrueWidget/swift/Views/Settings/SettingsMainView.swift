@@ -11,6 +11,7 @@ struct SettingsMainView: View {
             Toggle(isOn: $userSettings.openAtLogin) {
               Text("Open at login")
             }
+            .switchToggleStyle()
 
             Spacer()
           }
@@ -19,6 +20,7 @@ struct SettingsMainView: View {
             Toggle(isOn: $userSettings.showMenu) {
               Text("Show icon in menu bar")
             }
+            .switchToggleStyle()
 
             Spacer()
           }

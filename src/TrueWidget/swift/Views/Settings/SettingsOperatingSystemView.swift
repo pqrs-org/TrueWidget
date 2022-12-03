@@ -11,6 +11,7 @@ struct SettingsOperatingSystemView: View {
             Toggle(isOn: $userSettings.showOperatingSystem) {
               Text("Show macOS version")
             }
+            .switchToggleStyle()
 
             Spacer()
           }
@@ -39,6 +40,7 @@ struct SettingsOperatingSystemView: View {
             Toggle(isOn: $userSettings.showHostName) {
               Text("Show host name")
             }
+            .switchToggleStyle()
 
             Spacer()
           }

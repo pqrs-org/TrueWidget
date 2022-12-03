@@ -11,6 +11,7 @@ struct SettingsLocalTimeView: View {
             Toggle(isOn: $userSettings.showLocalTime) {
               Text("Show local time")
             }
+            .switchToggleStyle()
 
             Spacer()
           }
