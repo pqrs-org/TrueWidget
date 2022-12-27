@@ -9,6 +9,9 @@ packages:
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     from: 2.3.0
+  SwiftShell:
+    url: https://github.com/kareman/SwiftShell
+    from: 5.1.0
 
 targets:
   TrueWidget:
@@ -33,3 +36,5 @@ targets:
       base:
         ASSETCATALOG_COMPILER_APPICON_NAME: ''
         SWIFT_OBJC_BRIDGING_HEADER: TrueWidget/objc/Bridging-Header.h
+    dependencies:
+      - package: SwiftShell
