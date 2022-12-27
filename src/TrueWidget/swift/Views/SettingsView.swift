@@ -3,6 +3,7 @@ import SwiftUI
 enum NavigationTag: String {
   case main
   case operatingSystem
+  case xcode
   case cpuUsage
   case localTime
   case update
@@ -29,6 +30,13 @@ struct SettingsView: View {
           SidebarLabelView(text: "Layout > Operation System", systemImage: "cube")
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.operatingSystem)
+
+        Button(action: {
+          selection = NavigationTag.xcode
+        }) {
+          SidebarLabelView(text: "Layout > Xcode", systemImage: "cube")
+        }
+        .sidebarButtonStyle(selected: selection == NavigationTag.xcode)
 
         Button(action: {
           selection = NavigationTag.cpuUsage
@@ -67,15 +75,17 @@ struct SettingsView: View {
       switch selection {
       case NavigationTag.main:
         SettingsMainView()
-      case NavigationTag.operatingSystem:
+      case .operatingSystem:
         SettingsOperatingSystemView()
-      case NavigationTag.cpuUsage:
+      case .xcode:
+        SettingsXcodeView()
+      case .cpuUsage:
         SettingsCPUUsageView()
-      case NavigationTag.localTime:
+      case .localTime:
         SettingsLocalTimeView()
-      case NavigationTag.update:
+      case .update:
         SettingsUpdateView()
-      case NavigationTag.action:
+      case .action:
         SettingsActionView()
       }
     }
