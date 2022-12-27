@@ -8,8 +8,6 @@ struct MainXcodeView: View {
     HStack(alignment: .center, spacing: 0) {
       Spacer()
 
-      Text("Xcode: ")
-
       Text(xcode.path)
         .foregroundColor(pathColor(xcode.pathState))
     }

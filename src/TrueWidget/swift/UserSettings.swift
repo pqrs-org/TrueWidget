@@ -129,7 +129,7 @@ final class UserSettings: ObservableObject {
     }
   }
 
-  @UserDefault("xcodeFontSize", defaultValue: 14.0)
+  @UserDefault("xcodeFontSize", defaultValue: 12.0)
   var xcodeFontSize: Double {
     willSet {
       objectWillChange.send()

@@ -60,7 +60,7 @@ extension WidgetSource {
           }
         }
 
-        self.path = "not installed"
+        self.path = "Xcode is not installed"
         self.pathState = .notInstalled
       }
     }
