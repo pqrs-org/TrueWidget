@@ -119,6 +119,31 @@ final class UserSettings: ObservableObject {
   }
 
   //
+  // Xcode
+  //
+
+  @UserDefault("showXcode", defaultValue: false)
+  var showXcode: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  @UserDefault("xcodeFontSize", defaultValue: 14.0)
+  var xcodeFontSize: Double {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  @UserDefault("highlightNonDefaultXcode", defaultValue: true)
+  var highlightNonDefaultXcode: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  //
   // CPU usage
   //
 
