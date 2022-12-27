@@ -136,13 +136,6 @@ final class UserSettings: ObservableObject {
     }
   }
 
-  @UserDefault("highlightNonDefaultXcode", defaultValue: true)
-  var highlightNonDefaultXcode: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
   //
   // CPU usage
   //

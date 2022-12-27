@@ -34,20 +34,6 @@ struct SettingsXcodeView: View {
         }.padding()
       }
 
-      GroupBox(label: Text("Advanced")) {
-        VStack(alignment: .leading) {
-          HStack {
-            Toggle(isOn: $userSettings.highlightNonDefaultXcode) {
-              Text("Highlight non-default Xcode bundle path")
-            }
-            .switchToggleStyle()
-
-            Spacer()
-          }
-        }
-        .padding()
-      }
-
       Spacer()
     }
   }

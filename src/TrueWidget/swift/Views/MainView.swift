@@ -2,9 +2,6 @@ import SwiftUI
 
 struct MainView: View {
   @ObservedObject private var userSettings = UserSettings.shared
-  @ObservedObject private var operatingSystem = WidgetSource.OperatingSystem.shared
-  @ObservedObject private var cpuUsage = WidgetSource.CPUUsage.shared
-  @ObservedObject private var localTime = WidgetSource.LocalTime.shared
   @State private var hidden = false
 
   var body: some View {
@@ -12,6 +9,10 @@ struct MainView: View {
       VStack(alignment: .leading, spacing: 10.0) {
         if userSettings.showOperatingSystem {
           MainOperatingSystemView()
+        }
+
+        if userSettings.showXcode {
+          MainXcodeView()
         }
 
         if userSettings.showCPUUsage {
