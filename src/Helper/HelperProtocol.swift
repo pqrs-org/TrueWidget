@@ -25,6 +25,7 @@ let HelperProcessesInitialValue: [[String: String]] = [
 ]
 
 @objc protocol HelperProtocol {
+  func exit(with reply: @escaping () -> Void)
   func cpuUsage(with reply: @escaping (Double) -> Void)
   func processes(with reply: @escaping ([[String: String]]) -> Void)
 }

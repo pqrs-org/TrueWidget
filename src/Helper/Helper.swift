@@ -110,6 +110,15 @@ class Helper: NSObject, HelperProtocol {
     }
   }
 
+  @objc func exit(with reply: @escaping () -> Void) {
+    reply()
+
+    // Wait for a while before exit for the client's NSXPCConnection invalidation.
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+      Darwin.exit(0)
+    }
+  }
+
   @objc func cpuUsage(with reply: @escaping (Double) -> Void) {
     topLock.lock()
     defer { topLock.unlock() }
