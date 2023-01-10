@@ -207,7 +207,7 @@ final class UserSettings: ObservableObject {
     }
   }
 
-  @UserDefault("localDateFontSize", defaultValue: 14.0)
+  @UserDefault("localDateFontSize", defaultValue: 12.0)
   var localDateFontSize: Double {
     willSet {
       objectWillChange.send()

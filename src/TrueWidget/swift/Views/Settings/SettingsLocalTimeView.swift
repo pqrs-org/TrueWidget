@@ -58,7 +58,7 @@ struct SettingsLocalTimeView: View {
 
               Text("pt")
 
-              Text("(Default: 14 pt)")
+              Text("(Default: 12 pt)")
 
               Spacer()
             }
