@@ -13,6 +13,7 @@ struct MainLocalTimeView: View {
           Text(localTime.date)
         }
         .font(.custom("Menlo", size: userSettings.localDateFontSize))
+        .padding(.bottom, 4.0)
       }
 
       HStack(alignment: .center, spacing: 0) {
