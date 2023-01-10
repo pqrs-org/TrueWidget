@@ -39,16 +39,22 @@ struct MainCPUUsageView: View {
       .font(.custom("Menlo", size: userSettings.cpuUsageFontSize))
 
       if userSettings.showProcesses {
-        VStack(alignment: .leading, spacing: 0) {
-          ForEach($cpuUsage.processes, id: \.self) { $process in
-            HStack(alignment: .center, spacing: 0) {
-              Spacer()
-              Text("\(process["name"] ?? "---")")
-              Text("\((process["cpu"] ?? "---").leftPadding(toLength: 6, withPad: " "))%")
+        HStack {
+          Spacer()
+
+          VStack(alignment: .trailing, spacing: 0) {
+            ForEach($cpuUsage.processes, id: \.self) { $process in
+              HStack(alignment: .center, spacing: 0) {
+                Text("\(process["name"] ?? "---")")
+                Text("\((process["cpu"] ?? "---").leftPadding(toLength: 6, withPad: " "))%")
+              }
             }
           }
+          .padding(.vertical, 4.0)
+          .padding(.horizontal, 10.0)
+          .font(.custom("Menlo", size: userSettings.processesFontSize))
+          .border(.gray)
         }
-        .font(.custom("Menlo", size: userSettings.processesFontSize))
       }
     }
   }
