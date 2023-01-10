@@ -199,4 +199,18 @@ final class UserSettings: ObservableObject {
       objectWillChange.send()
     }
   }
+
+  @UserDefault("showLocalDate", defaultValue: true)
+  var showLocalDate: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  @UserDefault("localDateFontSize", defaultValue: 14.0)
+  var localDateFontSize: Double {
+    willSet {
+      objectWillChange.send()
+    }
+  }
 }

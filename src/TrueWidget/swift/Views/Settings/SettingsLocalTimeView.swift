@@ -35,6 +35,38 @@ struct SettingsLocalTimeView: View {
         .padding()
       }
 
+      if userSettings.showLocalTime {
+        GroupBox(label: Text("Advanced")) {
+          VStack(alignment: .leading) {
+            HStack {
+              Toggle(isOn: $userSettings.showLocalDate) {
+                Text("Show local date")
+              }
+              .switchToggleStyle()
+
+              Spacer()
+            }
+
+            HStack {
+              Text("Local date font size: ")
+
+              DoubleTextField(
+                value: $userSettings.localDateFontSize,
+                range: 0...1000,
+                step: 2,
+                width: 40)
+
+              Text("pt")
+
+              Text("(Default: 14 pt)")
+
+              Spacer()
+            }
+          }
+          .padding()
+        }
+      }
+
       Spacer()
     }
   }
