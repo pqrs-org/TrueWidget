@@ -15,7 +15,7 @@ class Helper: NSObject, HelperProtocol {
 
   private let topLock = NSLock()
   private var topCPUUsage = 0.0
-  private var topProcesses = [[String: String]]()
+  private var topProcesses: [[String: String]] = HelperProcessesInitialValue
 
   override init() {
     topCommandDispatchQueue = DispatchQueue(
