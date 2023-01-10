@@ -34,18 +34,20 @@ struct SettingsOperatingSystemView: View {
         }.padding()
       }
 
-      GroupBox(label: Text("Advanced")) {
-        VStack(alignment: .leading) {
-          HStack {
-            Toggle(isOn: $userSettings.showHostName) {
-              Text("Show host name")
-            }
-            .switchToggleStyle()
+      if userSettings.showOperatingSystem {
+        GroupBox(label: Text("Advanced")) {
+          VStack(alignment: .leading) {
+            HStack {
+              Toggle(isOn: $userSettings.showHostName) {
+                Text("Show host name")
+              }
+              .switchToggleStyle()
 
-            Spacer()
+              Spacer()
+            }
           }
+          .padding()
         }
-        .padding()
       }
 
       Spacer()
