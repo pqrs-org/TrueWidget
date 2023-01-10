@@ -9,7 +9,7 @@ struct MainCPUUsageView: View {
     // CPU usage
     //
 
-    VStack(alignment: .leading, spacing: 4.0) {
+    VStack(alignment: .leading, spacing: 0.0) {
       HStack(alignment: .center, spacing: 0) {
         Spacer()
 
@@ -30,11 +30,13 @@ struct MainCPUUsageView: View {
               .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
           }
         }
-        .overlay(
-          Rectangle()
-            .frame(height: 1.0),
-          alignment: .bottom
-        )
+        .if(!userSettings.showProcesses) {
+          $0.overlay(
+            Rectangle()
+              .frame(height: 1.0),
+            alignment: .bottom
+          )
+        }
       }
       .font(.custom("Menlo", size: userSettings.cpuUsageFontSize))
 
