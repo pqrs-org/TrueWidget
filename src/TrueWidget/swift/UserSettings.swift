@@ -168,6 +168,20 @@ final class UserSettings: ObservableObject {
     }
   }
 
+  @UserDefault("showProcesses", defaultValue: true)
+  var showProcesses: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  @UserDefault("processesFontSize", defaultValue: 12.0)
+  var processesFontSize: Double {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
   //
   // Local time
   //
