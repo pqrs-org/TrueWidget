@@ -43,10 +43,13 @@ extension WidgetSource {
       let error = gethostname(&buffer, length)
       if error == 0 {
         if let name = String(utf8String: buffer) {
+          var h = name
           if let index = name.firstIndex(of: ".") {
-            hostName = String(name[...index].dropLast())
-          } else {
-            hostName = name
+            h = String(name[...index].dropLast())
+          }
+
+          if hostName != h {
+            hostName = h
           }
         }
       }

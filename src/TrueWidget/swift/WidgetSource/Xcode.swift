@@ -38,31 +38,43 @@ extension WidgetSource {
       DispatchQueue.main.async { [weak self] in
         guard let self = self else { return }
 
-        let command = "/usr/bin/xcode-select"
-        if FileManager.default.fileExists(atPath: command) {
-          let fullPath = run(command, "--print-path").stdout
-          if fullPath.count > 0 {
-            if let range = fullPath.range(of: ".app/") {
-              let startIndex = fullPath.startIndex
-              let endIndex = fullPath.index(before: range.upperBound)
-              self.path = String(fullPath[startIndex..<endIndex])
-            } else {
-              self.path = fullPath
-            }
+        let (bundlePath, pathState) = self.xcodePath()
 
-            if self.path == "/Applications/Xcode.app" {
-              self.pathState = .defaultPath
-            } else {
-              self.pathState = .nonDefaultPath
-            }
-
-            return
-          }
+        if self.path != bundlePath {
+          self.path = bundlePath
         }
 
-        self.path = "Xcode is not installed"
-        self.pathState = .notInstalled
+        if self.pathState != pathState {
+          self.pathState = pathState
+        }
       }
+    }
+
+    private func xcodePath() -> (String, PathState) {
+      let command = "/usr/bin/xcode-select"
+
+      if FileManager.default.fileExists(atPath: command) {
+        let fullPath = run(command, "--print-path").stdout
+        if fullPath.count > 0 {
+          var bundlePath = ""
+
+          if let range = fullPath.range(of: ".app/") {
+            let startIndex = fullPath.startIndex
+            let endIndex = fullPath.index(before: range.upperBound)
+            bundlePath = String(fullPath[startIndex..<endIndex])
+          } else {
+            bundlePath = fullPath
+          }
+
+          if bundlePath == "/Applications/Xcode.app" {
+            return (bundlePath, .defaultPath)
+          } else {
+            return (bundlePath, .nonDefaultPath)
+          }
+        }
+      }
+
+      return ("Xcode is not installed", .notInstalled)
     }
   }
 }
