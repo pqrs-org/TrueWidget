@@ -213,4 +213,22 @@ final class UserSettings: ObservableObject {
       objectWillChange.send()
     }
   }
+
+  //
+  // UTC time
+  //
+
+  @UserDefault("showUTCTime", defaultValue: true)
+  var showUTCTime: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  @UserDefault("utcTimeFontSize", defaultValue: 12.0)
+  var utcTimeFontSize: Double {
+    willSet {
+      objectWillChange.send()
+    }
+  }
 }

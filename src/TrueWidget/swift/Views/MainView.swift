@@ -22,6 +22,13 @@ struct MainView: View {
         if userSettings.showLocalTime {
           MainLocalTimeView()
         }
+
+        if userSettings.showUTCTime {
+          MainUTCTimeView()
+            .if(userSettings.showLocalTime) {
+              $0.padding(.top, -10.0)
+            }
+        }
       }
       .padding()
     }
