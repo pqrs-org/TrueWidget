@@ -25,16 +25,38 @@ extension WidgetSource {
 
         let now = Date()
         let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute, .second, .weekday], from: now)
 
-        self.hour = calendar.component(.hour, from: now)
-        self.minute = calendar.component(.minute, from: now)
-        self.second = calendar.component(.second, from: now)
+        if let hour = components.hour {
+          if self.hour != hour {
+            self.hour = hour
+          }
+        }
 
-        let date = ISO8601DateFormatter.string(
-          from: now, timeZone: TimeZone.current, formatOptions: .withFullDate)
-        let weekday = calendar.component(.weekday, from: now)
-        let weekdaySymbol = calendar.shortWeekdaySymbols[weekday - 1]
-        self.date = "\(date) (\(weekdaySymbol))"
+        if let minute = components.minute {
+          if self.minute != minute {
+            self.minute = minute
+          }
+        }
+
+        if let second = components.second {
+          if self.second != second {
+            self.second = second
+          }
+        }
+
+        if let weekday = components.weekday {
+          let date = ISO8601DateFormatter.string(
+            from: now,
+            timeZone: TimeZone.current,
+            formatOptions: .withFullDate
+          )
+          let weekdaySymbol = calendar.shortWeekdaySymbols[weekday - 1]
+          let text = "\(date) (\(weekdaySymbol))"
+          if self.date != text {
+            self.date = "\(date) (\(weekdaySymbol))"
+          }
+        }
       }
     }
   }
