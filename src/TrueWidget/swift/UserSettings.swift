@@ -218,7 +218,7 @@ final class UserSettings: ObservableObject {
   // UTC time
   //
 
-  @UserDefault("showUTCTime", defaultValue: true)
+  @UserDefault("showUTCTime", defaultValue: false)
   var showUTCTime: Bool {
     willSet {
       objectWillChange.send()
