@@ -7,6 +7,7 @@ extension WidgetSource {
 
     @Published public var version = ""
     @Published public var hostName = ""
+    @Published public var rootVolumeName = ""
 
     private var timer: Timer?
 
@@ -19,6 +20,8 @@ extension WidgetSource {
         operatingSystemVersion.patchVersion
       )
 
+      rootVolumeName = volumeName("/")
+
       timer = Timer.scheduledTimer(
         withTimeInterval: 3.0,
         repeats: true
@@ -29,6 +32,15 @@ extension WidgetSource {
       }
 
       self.update()
+    }
+
+    private func volumeName(_ path: String) -> String {
+      let rootURL = NSURL.fileURL(withPath: "/", isDirectory: true)
+      if let resourceValues = try? rootURL.resourceValues(forKeys: [.volumeNameKey]) {
+        return resourceValues.volumeName ?? ""
+      }
+
+      return ""
     }
 
     private func update() {

@@ -9,15 +9,25 @@ struct MainOperatingSystemView: View {
     // Operating system
     //
 
-    HStack(alignment: .center, spacing: 0) {
-      Text("macOS ")
+    VStack(spacing: 0) {
+      HStack(alignment: .center, spacing: 0) {
+        Text("macOS ")
 
-      Text(operatingSystem.version)
+        Text(operatingSystem.version)
 
-      Spacer()
+        Spacer()
 
-      if userSettings.showHostName {
-        Text(operatingSystem.hostName)
+        if userSettings.showHostName {
+          Text(operatingSystem.hostName)
+        }
+      }
+
+      if userSettings.showRootVolumeName {
+        HStack {
+          Spacer()
+
+          Text("/Volumes/\(operatingSystem.rootVolumeName)")
+        }
       }
     }
     .font(.system(size: userSettings.operatingSystemFontSize))

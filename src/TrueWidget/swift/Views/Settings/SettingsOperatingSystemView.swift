@@ -45,6 +45,15 @@ struct SettingsOperatingSystemView: View {
 
               Spacer()
             }
+
+            HStack {
+              Toggle(isOn: $userSettings.showRootVolumeName) {
+                Text("Show root volume name")
+              }
+              .switchToggleStyle()
+
+              Spacer()
+            }
           }
           .padding()
         }

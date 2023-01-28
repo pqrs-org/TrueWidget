@@ -118,6 +118,13 @@ final class UserSettings: ObservableObject {
     }
   }
 
+  @UserDefault("showRootVolumeName", defaultValue: false)
+  var showRootVolumeName: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
   //
   // Xcode
   //
