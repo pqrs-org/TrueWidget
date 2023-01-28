@@ -1,5 +1,11 @@
 # Changelog
 
+## Beta
+
+-   ✨ New Features
+    -   Added option to show UTC time.
+    -   Added option to show the root volume name.
+
 ## TrueWidget 1.1.0
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.1.0/TrueWidget-1.1.0.dmg)
