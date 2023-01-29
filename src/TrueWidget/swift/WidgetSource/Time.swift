@@ -105,9 +105,10 @@ extension WidgetSource {
     private func updateTimeZoneTimes(_ now: Date) {
       var times: [TimeZoneTime] = []
 
-      if UserSettings.shared.showTimeZoneTime0 {
-        times.append(
-          TimeZoneTime(time: now, abbreviation: UserSettings.shared.timeZoneTime0Abbreviation))
+      UserSettings.shared.timeZoneTimeSettings.forEach { setting in
+        if setting.show {
+          times.append(TimeZoneTime(time: now, abbreviation: setting.abbreviation))
+        }
       }
 
       if timeZoneTimes != times {

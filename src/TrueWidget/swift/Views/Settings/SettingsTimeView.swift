@@ -3,6 +3,12 @@ import SwiftUI
 struct SettingsTimeView: View {
   @ObservedObject private var userSettings = UserSettings.shared
 
+  init() {
+    DispatchQueue.main.async {
+      UserSettings.shared.initializeTimeZoneTimeSettings()
+    }
+  }
+
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Local time")) {
@@ -62,24 +68,43 @@ struct SettingsTimeView: View {
 
               Spacer()
             }
+          }
+          .padding()
+        }
+      }
 
+      GroupBox(label: Text("Other time zones")) {
+        VStack(alignment: .leading) {
+          ForEach($userSettings.timeZoneTimeSettings) { timeZoneTimeSetting in
             HStack {
-              Toggle(isOn: $userSettings.showTimeZoneTime0) {
-                Text("Show time zone time")
+              Toggle(isOn: timeZoneTimeSetting.show) {
+                Text("Show")
               }
               .switchToggleStyle()
 
-              Spacer()
-            }
-
-            HStack {
-              TimeZonePickerView(abbreviation: $userSettings.timeZoneTime0Abbreviation)
+              TimeZonePickerView(abbreviation: timeZoneTimeSetting.abbreviation)
 
               Spacer()
             }
           }
-          .padding()
+
+          HStack {
+            Text("Font size: ")
+
+            DoubleTextField(
+              value: $userSettings.timeZoneTimeFontSize,
+              range: 0...1000,
+              step: 2,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 12 pt)")
+
+            Spacer()
+          }
         }
+        .padding()
       }
 
       Spacer()

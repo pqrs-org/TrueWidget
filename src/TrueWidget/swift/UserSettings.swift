@@ -26,6 +26,10 @@ final class UserSettings: ObservableObject {
   static let showMenuSettingChanged = Notification.Name("ShowMenuSettingChanged")
   static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
 
+  //
+  // Open at login
+  //
+
   @Published var openAtLogin = OpenAtLogin.enabled {
     didSet {
       OpenAtLogin.enabled = openAtLogin
@@ -225,17 +229,23 @@ final class UserSettings: ObservableObject {
   // Another time zone time
   //
 
-  @UserDefault("showTimeZoneTime0", defaultValue: false)
-  var showTimeZoneTime0: Bool {
+  struct TimeZoneTimeSetting: Identifiable, Codable {
+    var id = UUID().uuidString
+    var show = false
+    var abbreviation: String = "UTC"
+  }
+
+  @UserDefaultJson("timeZoneTimeSettings", defaultValue: [])
+  var timeZoneTimeSettings: [TimeZoneTimeSetting] {
     willSet {
       objectWillChange.send()
     }
   }
 
-  @UserDefault("timeZoneTime0Abbreviation", defaultValue: "UTC")
-  var timeZoneTime0Abbreviation: String {
-    willSet {
-      objectWillChange.send()
+  func initializeTimeZoneTimeSettings() {
+    let maxCount = 5
+    while timeZoneTimeSettings.count < maxCount {
+      timeZoneTimeSettings.append(TimeZoneTimeSetting())
     }
   }
 

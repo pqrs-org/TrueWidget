@@ -39,22 +39,20 @@ struct MainTimeView: View {
         }
       }
 
-      if userSettings.showTimeZoneTime0 {
-        ForEach(time.timeZoneTimes) { timeZoneTime in
-          HStack(alignment: .center, spacing: 0) {
-            Spacer()
+      ForEach(time.timeZoneTimes) { timeZoneTime in
+        HStack(alignment: .center, spacing: 0) {
+          Spacer()
 
-            Text(
-              String(
-                format: "%@ %02d:%02d:%02d",
-                timeZoneTime.abbreviation,
-                timeZoneTime.hour,
-                timeZoneTime.minute,
-                timeZoneTime.second
-              )
+          Text(
+            String(
+              format: "%@ %02d:%02d:%02d",
+              timeZoneTime.abbreviation,
+              timeZoneTime.hour,
+              timeZoneTime.minute,
+              timeZoneTime.second
             )
-            .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
-          }
+          )
+          .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
         }
       }
     }
