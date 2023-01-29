@@ -222,18 +222,25 @@ final class UserSettings: ObservableObject {
   }
 
   //
-  // UTC time
+  // Another time zone time
   //
 
-  @UserDefault("showUTCTime", defaultValue: false)
-  var showUTCTime: Bool {
+  @UserDefault("showTimeZoneTime0", defaultValue: false)
+  var showTimeZoneTime0: Bool {
     willSet {
       objectWillChange.send()
     }
   }
 
-  @UserDefault("utcTimeFontSize", defaultValue: 12.0)
-  var utcTimeFontSize: Double {
+  @UserDefault("timeZoneTime0Abbreviation", defaultValue: "UTC")
+  var timeZoneTime0Abbreviation: String {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  @UserDefault("timeZoneTimeFontSize", defaultValue: 12.0)
+  var timeZoneTimeFontSize: Double {
     willSet {
       objectWillChange.send()
     }

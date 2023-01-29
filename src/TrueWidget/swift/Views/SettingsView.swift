@@ -5,8 +5,7 @@ enum NavigationTag: String {
   case operatingSystem
   case xcode
   case cpuUsage
-  case localTime
-  case utcTime
+  case time
   case update
   case action
 }
@@ -47,18 +46,11 @@ struct SettingsView: View {
         .sidebarButtonStyle(selected: selection == NavigationTag.cpuUsage)
 
         Button(action: {
-          selection = NavigationTag.localTime
+          selection = NavigationTag.time
         }) {
-          SidebarLabelView(text: "Layout > Local Time", systemImage: "cube")
+          SidebarLabelView(text: "Layout > Time", systemImage: "cube")
         }
-        .sidebarButtonStyle(selected: selection == NavigationTag.localTime)
-
-        Button(action: {
-          selection = NavigationTag.utcTime
-        }) {
-          SidebarLabelView(text: "Layout > UTC Time", systemImage: "cube")
-        }
-        .sidebarButtonStyle(selected: selection == NavigationTag.utcTime)
+        .sidebarButtonStyle(selected: selection == NavigationTag.time)
 
         Button(action: {
           selection = NavigationTag.update
@@ -89,10 +81,8 @@ struct SettingsView: View {
         SettingsXcodeView()
       case .cpuUsage:
         SettingsCPUUsageView()
-      case .localTime:
-        SettingsLocalTimeView()
-      case .utcTime:
-        SettingsUTCTimeView()
+      case .time:
+        SettingsTimeView()
       case .update:
         SettingsUpdateView()
       case .action:

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SettingsLocalTimeView: View {
+struct SettingsTimeView: View {
   @ObservedObject private var userSettings = UserSettings.shared
 
   var body: some View {
@@ -62,6 +62,21 @@ struct SettingsLocalTimeView: View {
 
               Spacer()
             }
+
+            HStack {
+              Toggle(isOn: $userSettings.showTimeZoneTime0) {
+                Text("Show time zone time")
+              }
+              .switchToggleStyle()
+
+              Spacer()
+            }
+
+            HStack {
+              TimeZonePickerView(abbreviation: $userSettings.timeZoneTime0Abbreviation)
+
+              Spacer()
+            }
           }
           .padding()
         }
@@ -72,9 +87,9 @@ struct SettingsLocalTimeView: View {
   }
 }
 
-struct SettingsLocalTimeView_Previews: PreviewProvider {
+struct SettingsTimeView_Previews: PreviewProvider {
   static var previews: some View {
-    SettingsLocalTimeView()
+    SettingsTimeView()
       .previewLayout(.sizeThatFits)
   }
 }
