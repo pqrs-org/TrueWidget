@@ -6,18 +6,32 @@ struct TimeZonePickerView: View {
       let id = UUID()
       let abbreviation: String  // JST
       let identifier: String  // Asia/Tokyo
+      let secondsFromGMT: Int
       let label: String
 
       init(abbreviation: String, identifier: String) {
         self.abbreviation = abbreviation
         self.identifier = identifier
 
+        let timeZone = TimeZone(identifier: identifier)
+        secondsFromGMT = timeZone?.secondsFromGMT() ?? 0
+        let minutesFromGMT = abs(secondsFromGMT) / 60
+
+        var label = String(
+          format: "GMT%@%02d:%02d\t",
+          secondsFromGMT < 0 ? "-" : "+",
+          minutesFromGMT / 60,
+          minutesFromGMT % 60
+        )
+
         if abbreviation == identifier {
-          label = abbreviation
+          label = "\(label)\(abbreviation)"
         } else {
           label =
-            "\(abbreviation.padding(toLength: 7, withPad: " ", startingAt: 0))\t(\(identifier))"
+            "\(label)\(abbreviation.padding(toLength: 7, withPad: " ", startingAt: 0))\t(\(identifier))"
         }
+
+        self.label = label
       }
     }
 
@@ -32,7 +46,12 @@ struct TimeZonePickerView: View {
         timeZones.append(TZ(abbreviation: abbreviation, identifier: identifier))
       }
 
-      timeZones.sort { return $0.abbreviation < $1.abbreviation }
+      timeZones.sort {
+        if $0.secondsFromGMT != $1.secondsFromGMT {
+          return $0.secondsFromGMT < $1.secondsFromGMT
+        }
+        return $0.abbreviation < $1.abbreviation
+      }
     }
   }
 
