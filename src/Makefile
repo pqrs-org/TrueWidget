@@ -2,6 +2,10 @@ all:
 	/usr/bin/python3 ../scripts/update-version.py
 	bash run-xcodegen.sh
 	xcodebuild -configuration Release -alltargets SYMROOT="$(CURDIR)/build"
+	# Copy Launcher
+	mkdir -p build/Release/TrueWidget.app/Contents/Library/LoginItems
+	cp -r 'build/Release/TrueWidget Launcher.app' build/Release/TrueWidget.app/Contents/Library/LoginItems
+	# Copy embedded.provisionprofile
 	cp TrueWidget/embedded.provisionprofile build/Release/TrueWidget.app/Contents
 	$(MAKE) codesign
 
@@ -12,6 +16,8 @@ clean: purge-swift-package-manager-cache
 codesign:
 	# Helper
 	bash ../scripts/codesign.sh 'build/Release/TrueWidget.app/Contents/XPCServices/TrueWidget Helper.xpc' $(CURDIR)/Helper/Helper.entitlements
+	# Launcher
+	bash ../scripts/codesign.sh 'build/Release/TrueWidget.app/Contents/Library/LoginItems/TrueWidget Launcher.app' $(CURDIR)/Launcher/Launcher.entitlements
 	# Sparkle
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc $(CURDIR)/org.sparkle-project.Downloader.entitlements

@@ -54,3 +54,15 @@ targets:
       PRODUCT_BUNDLE_IDENTIFIER: org.pqrs.TrueWidget.Helper
     dependencies:
       - package: SwiftShell
+
+  TrueWidget Launcher:
+    type: application
+    platform: macOS
+    deploymentTarget: '11.0'
+    sources:
+      - path: Launcher
+        compilerFlags:
+          - '-Wall'
+          - '-Werror'
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: org.pqrs.TrueWidget.Launcher
