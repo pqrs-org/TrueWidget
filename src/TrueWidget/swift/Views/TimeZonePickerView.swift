@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TimeZonePickerView: View {
   class Source: ObservableObject {
-    class TZ: Identifiable {
+    struct TZ: Identifiable {
       let id = UUID()
       let abbreviation: String  // JST
       let identifier: String  // Asia/Tokyo
