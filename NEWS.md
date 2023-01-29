@@ -3,7 +3,7 @@
 ## Beta
 
 -   ✨ New Features
-    -   Added option to show UTC time.
+    -   Added option to show time of other time zones.
     -   Added option to show the root volume name.
 
 ## TrueWidget 1.1.0
