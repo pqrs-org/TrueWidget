@@ -4,6 +4,7 @@ all:
 	$(MAKE) gitclean
 	$(MAKE) clean
 	./make-package.sh
+	$(MAKE) clean-launch-services-database
 
 build:
 	$(MAKE) -C src
@@ -11,6 +12,9 @@ build:
 clean:
 	$(MAKE) -C src clean
 	rm -f *.dmg
+
+clean-launch-services-database:
+	bash scripts/clean-launch-services-database.sh
 
 gitclean:
 	git clean -f -x -d
