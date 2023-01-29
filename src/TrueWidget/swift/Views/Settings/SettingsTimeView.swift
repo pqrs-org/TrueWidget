@@ -88,6 +88,8 @@ struct SettingsTimeView: View {
             }
           }
 
+          Divider()
+
           HStack {
             Text("Font size: ")
 
