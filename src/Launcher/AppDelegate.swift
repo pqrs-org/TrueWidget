@@ -1,6 +1,6 @@
 import AppKit
 
-public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+public class AppDelegate: NSObject, NSApplicationDelegate {
   public func applicationDidFinishLaunching(_: Notification) {
     NSApplication.shared.disableRelaunchOnLogin()
 
@@ -16,7 +16,10 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
       {
         let configuration = NSWorkspace.OpenConfiguration()
         NSWorkspace.shared.openApplication(at: url, configuration: configuration) { _, _ in
-          NSApplication.shared.terminate(self)
+          DispatchQueue.main.async {
+            // NSApplication.shared.terminate must be called in the UI thread.
+            NSApplication.shared.terminate(self)
+          }
         }
 
         return
