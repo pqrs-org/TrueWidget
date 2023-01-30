@@ -30,9 +30,13 @@ final class UserSettings: ObservableObject {
   // Open at login
   //
 
-  @Published var openAtLogin = OpenAtLogin.enabled {
+  @UserDefault("openAtLogin", defaultValue: false)
+  var openAtLogin: Bool {
+    willSet {
+      objectWillChange.send()
+    }
     didSet {
-      OpenAtLogin.enabled = openAtLogin
+      OpenAtLogin.shared.registerLauncher(enabled: openAtLogin)
     }
   }
 

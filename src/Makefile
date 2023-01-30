@@ -8,6 +8,7 @@ all:
 	# Copy embedded.provisionprofile
 	cp TrueWidget/embedded.provisionprofile build/Release/TrueWidget.app/Contents
 	$(MAKE) codesign
+	$(MAKE) -C .. clean-launch-services-database
 
 clean: purge-swift-package-manager-cache
 	rm -rf TrueWidget.xcodeproj
