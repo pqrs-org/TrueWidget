@@ -1,7 +1,10 @@
 # Changelog
 
-## Beta
+## TrueWidget 1.2.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.2.0/TrueWidget-1.2.0.dmg)
+-   📅 Release date
+    -   Feb 4, 2022
 -   🐛 Bug Fixes
     -   Fixed an issue that `Open at login` option does not work properly.
 -   ✨ New Features
