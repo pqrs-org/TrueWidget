@@ -54,6 +54,15 @@ struct SettingsOperatingSystemView: View {
 
               Spacer()
             }
+
+            HStack {
+              Toggle(isOn: $userSettings.showUserName) {
+                Text("Show user name")
+              }
+              .switchToggleStyle()
+
+              Spacer()
+            }
           }
           .padding()
         }

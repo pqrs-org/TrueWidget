@@ -29,6 +29,14 @@ struct MainOperatingSystemView: View {
           Text("/Volumes/\(operatingSystem.rootVolumeName)")
         }
       }
+
+      if userSettings.showUserName {
+        HStack {
+          Spacer()
+
+          Text(operatingSystem.userName)
+        }
+      }
     }
     .font(.system(size: userSettings.operatingSystemFontSize))
   }

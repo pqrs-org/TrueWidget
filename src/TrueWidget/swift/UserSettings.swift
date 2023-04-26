@@ -133,6 +133,13 @@ final class UserSettings: ObservableObject {
     }
   }
 
+  @UserDefault("showUserName", defaultValue: false)
+  var showUserName: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
   //
   // Xcode
   //

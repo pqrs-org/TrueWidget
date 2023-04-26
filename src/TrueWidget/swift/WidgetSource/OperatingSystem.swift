@@ -8,6 +8,7 @@ extension WidgetSource {
     @Published public var version = ""
     @Published public var hostName = ""
     @Published public var rootVolumeName = ""
+    @Published public var userName = ""
 
     private var timer: Timer?
 
@@ -21,6 +22,8 @@ extension WidgetSource {
       )
 
       rootVolumeName = volumeName("/")
+
+      userName = NSUserName()
 
       timer = Timer.scheduledTimer(
         withTimeInterval: 3.0,
