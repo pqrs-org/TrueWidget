@@ -9,7 +9,7 @@
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.2.0/TrueWidget-1.2.0.dmg)
 -   📅 Release date
-    -   Feb 4, 2022
+    -   Feb 4, 2023
 -   🐛 Bug Fixes
     -   Fixed an issue that `Open at login` option does not work properly.
 -   ✨ New Features
@@ -20,7 +20,7 @@
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.1.0/TrueWidget-1.1.0.dmg)
 -   📅 Release date
-    -   Jan 11, 2022
+    -   Jan 11, 2023
 -   ✨ New Features
     -   Added option to show local date.
     -   Added option to show processes using CPU.
