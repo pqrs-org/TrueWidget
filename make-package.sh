@@ -24,8 +24,6 @@ fi
 dmg=TrueWidget-$version.dmg
 
 rm -f $dmg
-rm -rf tmp
-mkdir -p tmp
 
 # create-dmg
 if [[ -n "${PQRS_ORG_CODE_SIGN_IDENTITY:-}" ]]; then
@@ -39,6 +37,4 @@ else
     set -e # forbid command failure
 fi
 
-# clean
-rm -rf tmp
 mv "TrueWidget $version.dmg" TrueWidget-$version.dmg
