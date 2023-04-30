@@ -39,7 +39,7 @@ run:
 	open build/Release/TrueWidget.app
 
 swift-format:
-	find TrueWidget -name '*.swift' -print0 | xargs -0 swift-format -i
+	find . -name '*.swift' -print0 | xargs -0 swift-format -i
 
 install:
 	rsync -a --delete build/Release/TrueWidget.app /Applications
