@@ -13,13 +13,15 @@ extension WidgetSource {
     private var timer: Timer?
 
     private init() {
-      let operatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-      version = String(
-        format: "%d.%d.%d",
-        operatingSystemVersion.majorVersion,
-        operatingSystemVersion.minorVersion,
-        operatingSystemVersion.patchVersion
-      )
+      // We have to `operatingSystemVersionString` instead of `operatingSystemVersion` because
+      // `operatingSystemVersion` does not have a security update version, such as "(a)" in "13.3.1 (a)".
+      //
+      // Note: operatingSystemVersionString returns "Version 13.3.1 (a) (Build 22E772610a)"
+      version = ProcessInfo.processInfo.operatingSystemVersionString.replacingOccurrences(
+        of: "Version ", with: "")
+      if let index = version.range(of: "(Build ")?.lowerBound {
+        version = String(version[..<index])
+      }
 
       rootVolumeName = volumeName("/")
 
