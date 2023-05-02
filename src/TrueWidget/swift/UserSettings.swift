@@ -30,7 +30,7 @@ final class UserSettings: ObservableObject {
   // Open at login
   //
 
-  @UserDefault("openAtLogin", defaultValue: false)
+  @UserDefault("openAtLogin", defaultValue: true)
   var openAtLogin: Bool {
     willSet {
       objectWillChange.send()
