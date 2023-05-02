@@ -4,6 +4,9 @@
 
 -   ✨ New Features
     -   Added option to show user name.
+-   ⚡️ Improvements
+    -   Improved the operating system version display.
+    -   Sparkle Framework has been updated.
 
 ## TrueWidget 1.2.0
 
