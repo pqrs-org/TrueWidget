@@ -59,7 +59,8 @@ struct SettingsView: View {
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.update)
 
-        Spacer()
+        Divider()
+          .padding(.vertical, 10.0)
 
         Button(action: {
           selection = NavigationTag.action
@@ -67,6 +68,8 @@ struct SettingsView: View {
           SidebarLabelView(text: "Quit, Restart", systemImage: "bolt.circle")
         }
         .sidebarButtonStyle(selected: selection == NavigationTag.action)
+
+        Spacer()
       }
       .frame(width: 250)
 
