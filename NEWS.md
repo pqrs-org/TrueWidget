@@ -1,7 +1,10 @@
 # Changelog
 
-## Beta
+## TrueWidget 1.3.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.3.0/TrueWidget-1.3.0.dmg)
+-   📅 Release date
+    -   May 2, 2023
 -   ✨ New Features
     -   Added option to show user name.
 -   ⚡️ Improvements
