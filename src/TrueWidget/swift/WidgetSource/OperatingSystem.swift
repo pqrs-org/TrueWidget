@@ -13,7 +13,7 @@ extension WidgetSource {
     private var timer: Timer?
 
     private init() {
-      // We have to `operatingSystemVersionString` instead of `operatingSystemVersion` because
+      // We have to use `operatingSystemVersionString` instead of `operatingSystemVersion` because
       // `operatingSystemVersion` does not have a security update version, such as "(a)" in "13.3.1 (a)".
       //
       // Note: operatingSystemVersionString returns "Version 13.3.1 (a) (Build 22E772610a)"
