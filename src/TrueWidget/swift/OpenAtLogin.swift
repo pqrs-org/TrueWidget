@@ -11,12 +11,22 @@ final class OpenAtLogin: ObservableObject {
     error = ""
 
     if #available(macOS 13.0, *) {
+      //
+      // Unregister a helper that was registered on macOS 12 or earlier.
+      //
+
+      let service = SMAppService.loginItem(identifier: launcherBundleIdentifier)
+      try? service.unregister()
+
+      //
+      // Register mainApp
+      //
+
       do {
-        let service = SMAppService.loginItem(identifier: launcherBundleIdentifier)
         if enabled {
-          try service.register()
+          try SMAppService.mainApp.register()
         } else {
-          try service.unregister()
+          try SMAppService.mainApp.unregister()
         }
       } catch {
         self.error = error.localizedDescription
