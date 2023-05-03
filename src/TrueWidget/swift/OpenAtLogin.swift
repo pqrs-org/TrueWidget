@@ -26,7 +26,15 @@ final class OpenAtLogin: ObservableObject {
         if enabled {
           try SMAppService.mainApp.register()
         } else {
-          try SMAppService.mainApp.unregister()
+          // `unregister` throws `Operation not permitted` error in the following cases.
+          //
+          // 1. `unregister` is called.
+          // 2. macOS is restarted to clean up login items entries.
+          // 3. `unregister` is called again.
+          //
+          // So, we ignore the error of `unregister`.
+
+          try? SMAppService.mainApp.unregister()
         }
       } catch {
         self.error = error.localizedDescription
