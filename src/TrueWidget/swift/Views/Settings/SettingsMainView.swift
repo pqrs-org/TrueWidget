@@ -13,6 +13,7 @@ struct SettingsMainView: View {
               Text("Open at login")
             }
             .switchToggleStyle()
+            .disabled(openAtLogin.developmentBinary())
 
             Spacer()
           }
