@@ -26,6 +26,18 @@ final class UserSettings: ObservableObject {
   static let showMenuSettingChanged = Notification.Name("ShowMenuSettingChanged")
   static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
 
+  init() {
+    NotificationCenter.default.addObserver(
+      forName: OpenAtLogin.registeredChanged,
+      object: nil,
+      queue: .main
+    ) { [weak self] _ in
+      guard let self = self else { return }
+
+      self.openAtLogin = OpenAtLogin.shared.registered
+    }
+  }
+
   //
   // Open at login
   //

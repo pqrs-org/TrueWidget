@@ -4,16 +4,15 @@ import ServiceManagement
 // For macOS 12 or prior
 final class DeprecatedOpenAtLogin {
   private static let serviceName = "org.pqrs.TrueWidget.DeprecatedOpenAtLoginHelper"
-  private static let dispatchQueue: DispatchQueue = DispatchQueue(
-    label: serviceName, qos: .background)
-  private static let lock = NSLock()
 
   static func updateRegistered() {
     runHelper { proxy in
       proxy.registered(appURL: Bundle.main.bundleURL) { registered in
         OpenAtLogin.shared.registered = registered
 
-        lock.unlock()
+        NotificationCenter.default.post(
+          name: OpenAtLogin.registeredChanged,
+          object: nil)
       }
     }
   }
@@ -22,8 +21,6 @@ final class DeprecatedOpenAtLogin {
     runHelper { proxy in
       proxy.update(appURL: Bundle.main.bundleURL, register: register) {
         OpenAtLogin.shared.registered = register
-
-        lock.unlock()
       }
     }
   }
@@ -31,25 +28,17 @@ final class DeprecatedOpenAtLogin {
   private static func runHelper(
     _ callback: @escaping (DeprecatedOpenAtLoginHelperProtocol) -> Void
   ) {
-    dispatchQueue.async {
+    Task.detached {
       let connection = NSXPCConnection(serviceName: serviceName)
       connection.remoteObjectInterface = NSXPCInterface(
         with: DeprecatedOpenAtLoginHelperProtocol.self)
       connection.resume()
 
-      if let proxy = connection.remoteObjectProxy as? DeprecatedOpenAtLoginHelperProtocol {
-        do {
-          lock.lock()  // Unlocked at the end of callback
-
-          callback(proxy)
-        }
-
-        do {
-          lock.lock()  // Wait until callback is called.
-          defer { lock.unlock() }
-
-          connection.invalidate()
-        }
+      if let proxy = connection.synchronousRemoteObjectProxyWithErrorHandler({ error in
+        OpenAtLogin.shared.error = error.localizedDescription
+      }) as? DeprecatedOpenAtLoginHelperProtocol {
+        callback(proxy)
+        connection.invalidate()
       }
     }
   }
