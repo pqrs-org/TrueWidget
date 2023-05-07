@@ -2,7 +2,7 @@ import Foundation
 import SwiftShell
 
 class Helper: NSObject, HelperProtocol {
-  private let topCommandDispatchQueue: DispatchQueue
+  private var topCommandTask: Task<Void, Never>?
 
   // CPU usage: 10.84% user, 8.27% sys, 80.88% idle
   private let topCPUUsageRegex: NSRegularExpression
@@ -18,9 +18,6 @@ class Helper: NSObject, HelperProtocol {
   private var topProcesses: [[String: String]] = HelperProcessesInitialValue
 
   override init() {
-    topCommandDispatchQueue = DispatchQueue(
-      label: "org.pqrs.truewidget.helper.top", qos: .background)
-
     topCPUUsageRegex = try! NSRegularExpression(
       pattern: "^CPU usage: ([\\d\\.]+)% user, ([\\d\\.]+)% sys, ")
 
@@ -32,9 +29,7 @@ class Helper: NSObject, HelperProtocol {
 
     super.init()
 
-    topCommandDispatchQueue.async { [weak self] in
-      guard let self = self else { return }
-
+    topCommandTask = Task {
       var context = CustomContext(main)
       context.env["LC_ALL"] = "C"
 
