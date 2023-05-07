@@ -3,7 +3,6 @@ import ServiceManagement
 
 final class OpenAtLogin: ObservableObject {
   static let shared = OpenAtLogin()
-  static let registeredChanged = Notification.Name("OpenAtLoginRegisteredChanged")
 
   @Published var registered = false
 
