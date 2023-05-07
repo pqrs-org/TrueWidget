@@ -8,11 +8,9 @@ final class DeprecatedOpenAtLogin {
   static func updateRegistered() {
     runHelper { proxy in
       proxy.registered(appURL: Bundle.main.bundleURL) { registered in
-        OpenAtLogin.shared.registered = registered
-
-        NotificationCenter.default.post(
-          name: OpenAtLogin.registeredChanged,
-          object: nil)
+        Task { @MainActor in
+          OpenAtLogin.shared.registered = registered
+        }
       }
     }
   }
@@ -20,7 +18,9 @@ final class DeprecatedOpenAtLogin {
   static func update(register: Bool) {
     runHelper { proxy in
       proxy.update(appURL: Bundle.main.bundleURL, register: register) {
-        OpenAtLogin.shared.registered = register
+        Task { @MainActor in
+          OpenAtLogin.shared.registered = register
+        }
       }
     }
   }
