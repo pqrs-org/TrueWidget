@@ -177,9 +177,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
   }
 
   public func windowDidResize(_ notification: Notification) {
-    DispatchQueue.main.async { [weak self] in
-      guard let self = self else { return }
-
+    Task { @MainActor in
       self.setupWindow()
     }
   }

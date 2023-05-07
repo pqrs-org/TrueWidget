@@ -4,7 +4,7 @@ struct SettingsTimeView: View {
   @ObservedObject private var userSettings = UserSettings.shared
 
   init() {
-    DispatchQueue.main.async {
+    Task { @MainActor in
       UserSettings.shared.initializeTimeZoneTimeSettings()
     }
   }

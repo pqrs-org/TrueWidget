@@ -62,9 +62,7 @@ extension WidgetSource {
       helperProxy?.cpuUsage { [weak self] cpuUsage in
         guard let self = self else { return }
 
-        DispatchQueue.main.async { [weak self] in
-          guard let self = self else { return }
-
+        Task { @MainActor in
           self.usageInteger = Int(floor(cpuUsage))
           self.usageDecimal = Int(floor((cpuUsage) * 100)) % 100
 
@@ -91,9 +89,7 @@ extension WidgetSource {
       helperProxy?.processes { [weak self] processes in
         guard let self = self else { return }
 
-        DispatchQueue.main.async { [weak self] in
-          guard let self = self else { return }
-
+        Task { @MainActor in
           self.processes = processes
         }
       }

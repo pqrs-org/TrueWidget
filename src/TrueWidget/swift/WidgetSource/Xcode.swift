@@ -35,9 +35,7 @@ extension WidgetSource {
         return
       }
 
-      DispatchQueue.main.async { [weak self] in
-        guard let self = self else { return }
-
+      Task { @MainActor in
         let (bundlePath, pathState) = self.xcodePath()
 
         if self.path != bundlePath {
