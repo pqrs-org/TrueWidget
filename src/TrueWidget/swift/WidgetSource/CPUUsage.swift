@@ -37,14 +37,10 @@ extension WidgetSource {
 
     private func update() {
       if !UserSettings.shared.showCPUUsage {
-        helperProxy?.exit { [weak self] in
-          guard let self = self else { return }
+        self.helperConnection?.invalidate()
 
-          self.helperConnection?.invalidate()
-
-          self.helperProxy = nil
-          self.helperConnection = nil
-        }
+        self.helperProxy = nil
+        self.helperConnection = nil
 
         return
       }
