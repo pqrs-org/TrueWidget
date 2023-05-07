@@ -2,7 +2,7 @@ import CoreServices
 import Foundation
 import ServiceManagement
 
-final class DeprecatedOpenAtLoginHelper: NSObject, DeprecatedOpenAtLoginHelperProtocol {
+final class OpenAtLoginHelper: NSObject, OpenAtLoginHelperProtocol {
   //
   // For macOS 12 or prior.
   // There are no alternative exists on macOS 11 and macOS 12, deprecated methods have to be used.
@@ -12,14 +12,14 @@ final class DeprecatedOpenAtLoginHelper: NSObject, DeprecatedOpenAtLoginHelperPr
   //
 
   @objc func registered(appURL: URL, with reply: @escaping (Bool) -> Void) {
-    reply(DeprecatedOpenAtLoginHelperObjc.registered(appURL))
+    reply(OpenAtLoginHelperObjc.registered(appURL))
   }
 
   @objc func update(appURL: URL, register: Bool, with reply: @escaping () -> Void) {
     if register {
-      DeprecatedOpenAtLoginHelperObjc.register(appURL)
+      OpenAtLoginHelperObjc.register(appURL)
     } else {
-      DeprecatedOpenAtLoginHelperObjc.unregister(appURL)
+      OpenAtLoginHelperObjc.unregister(appURL)
     }
 
     reply()

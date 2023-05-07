@@ -2,7 +2,7 @@
 
 @import AppKit;
 
-@interface DeprecatedOpenAtLoginHelperObjc : NSObject
+@interface OpenAtLoginHelperObjc : NSObject
 
 + (BOOL)registered:(NSURL *)appURL;
 

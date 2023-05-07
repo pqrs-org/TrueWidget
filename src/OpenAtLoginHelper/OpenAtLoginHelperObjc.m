@@ -1,4 +1,4 @@
-#import "DeprecatedOpenAtLoginHelperObjc.h"
+#import "OpenAtLoginHelperObjc.h"
 
 // Note:
 // There is a bug in the swift binding of kLSSharedFileListItemLast that causes EXC_BAD_ACCESS on macOS 12 and above with the following code
@@ -7,7 +7,7 @@
 //
 // Therefore, we have to implement in Objective-C.
 
-@implementation DeprecatedOpenAtLoginHelperObjc
+@implementation OpenAtLoginHelperObjc
 
 + (LSSharedFileListItemRef)copyLSSharedFileListItemRef:(LSSharedFileListRef)loginItems appURL:(NSURL*)appURL {
   if (!loginItems) return NULL;

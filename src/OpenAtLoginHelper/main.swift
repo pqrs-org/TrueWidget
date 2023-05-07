@@ -4,9 +4,9 @@ class ServiceDelegate: NSObject, NSXPCListenerDelegate {
   func listener(_ listener: NSXPCListener, shouldAcceptNewConnection newConnection: NSXPCConnection)
     -> Bool
   {
-    newConnection.exportedInterface = NSXPCInterface(with: DeprecatedOpenAtLoginHelperProtocol.self)
+    newConnection.exportedInterface = NSXPCInterface(with: OpenAtLoginHelperProtocol.self)
 
-    let exportedObject = DeprecatedOpenAtLoginHelper()
+    let exportedObject = OpenAtLoginHelper()
     newConnection.exportedObject = exportedObject
 
     newConnection.resume()
