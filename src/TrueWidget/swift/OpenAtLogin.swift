@@ -37,6 +37,7 @@ final class OpenAtLogin: ObservableObject {
     return false
   }
 
+  @MainActor
   func update(register: Bool) {
     error = ""
 
@@ -55,6 +56,8 @@ final class OpenAtLogin: ObservableObject {
 
           try? SMAppService.mainApp.unregister()
         }
+
+        registered = register
       } catch {
         self.error = error.localizedDescription
       }

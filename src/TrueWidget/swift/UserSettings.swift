@@ -27,6 +27,17 @@ final class UserSettings: ObservableObject {
   static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
 
   //
+  // Initial Open At Login
+  //
+
+  @UserDefault("initialOpenAtLoginRegistered", defaultValue: false)
+  var initialOpenAtLoginRegistered: Bool {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  //
   // Menu settings
   //
 
