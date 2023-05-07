@@ -22,6 +22,8 @@ codesign:
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework
+# libswift_Concurrency.dylib
+	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/libswift_Concurrency.dylib
 # TrueWidget
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app $(CURDIR)/TrueWidget/TrueWidget.entitlements
 
