@@ -65,3 +65,15 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: org.pqrs.TrueWidget.OpenAtLoginHelper
         SWIFT_OBJC_BRIDGING_HEADER: 'OpenAtLoginHelper/OpenAtLoginHelper-Bridging-Header.h'
+
+  TrueWidget Launcher:
+    type: application
+    platform: macOS
+    deploymentTarget: '11.0'
+    sources:
+      - path: Launcher
+        compilerFlags:
+          - '-Wall'
+          - '-Werror'
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: org.pqrs.TrueWidget.Launcher
