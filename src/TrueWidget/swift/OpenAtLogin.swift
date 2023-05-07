@@ -3,27 +3,46 @@ import ServiceManagement
 
 final class OpenAtLogin: ObservableObject {
   static let shared = OpenAtLogin()
+
+  @Published var registered = false
+
   var error = ""
 
-  func registerLauncher(enabled: Bool) {
-    let launcherBundleIdentifier = "org.pqrs.TrueWidget.Launcher"
+  init() {
+    if #available(macOS 13.0, *) {
+      registered = SMAppService.mainApp.status == .enabled
+    } else {
+      Task {
+        await OpenAtLoginHelperManager.shared.updateRegistered()
+      }
+    }
+  }
 
+  func developmentBinary() -> Bool {
+    let bundlePath = Bundle.main.bundlePath
+
+    // Xcode builds
+    // - /Build/Products/Debug/*.app
+    // - /Build/Products/Release/*.app
+    if bundlePath.contains("/Build/") {
+      return true
+    }
+
+    // Command line builds
+    // - /build/Release/*.app
+    if bundlePath.contains("/build/") {
+      return true
+    }
+
+    return false
+  }
+
+  func update(register: Bool) {
     error = ""
 
     if #available(macOS 13.0, *) {
-      //
-      // Unregister a helper that was registered on macOS 12 or earlier.
-      //
-
-      let service = SMAppService.loginItem(identifier: launcherBundleIdentifier)
-      try? service.unregister()
-
-      //
-      // Register mainApp
-      //
-
       do {
-        if enabled {
+        if register {
           try SMAppService.mainApp.register()
         } else {
           // `unregister` throws `Operation not permitted` error in the following cases.
@@ -40,9 +59,8 @@ final class OpenAtLogin: ObservableObject {
         self.error = error.localizedDescription
       }
     } else {
-      let result = SMLoginItemSetEnabled(launcherBundleIdentifier as CFString, enabled)
-      if !result {
-        error = "SMLoginItemSetEnabled error"
+      Task {
+        await OpenAtLoginHelperManager.shared.update(register: register)
       }
     }
   }

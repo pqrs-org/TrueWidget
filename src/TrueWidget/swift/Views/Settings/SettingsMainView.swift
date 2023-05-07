@@ -9,10 +9,14 @@ struct SettingsMainView: View {
       GroupBox(label: Text("Basic")) {
         VStack(alignment: .leading) {
           HStack {
-            Toggle(isOn: $userSettings.openAtLogin) {
+            Toggle(isOn: $openAtLogin.registered) {
               Text("Open at login")
             }
             .switchToggleStyle()
+            .disabled(openAtLogin.developmentBinary())
+            .onChange(of: openAtLogin.registered) { value in
+              OpenAtLogin.shared.update(register: value)
+            }
 
             Spacer()
           }

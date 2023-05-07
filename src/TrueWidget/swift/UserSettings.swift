@@ -27,20 +27,6 @@ final class UserSettings: ObservableObject {
   static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
 
   //
-  // Open at login
-  //
-
-  @UserDefault("openAtLogin", defaultValue: true)
-  var openAtLogin: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-    didSet {
-      OpenAtLogin.shared.registerLauncher(enabled: openAtLogin)
-    }
-  }
-
-  //
   // Menu settings
   //
 
