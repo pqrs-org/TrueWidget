@@ -3,9 +3,11 @@ import ServiceManagement
 
 // For macOS 12 or prior
 final class DeprecatedOpenAtLogin {
-  private static let serviceName = "org.pqrs.TrueWidget.DeprecatedOpenAtLoginHelper"
+  static let shared = DeprecatedOpenAtLogin()
 
-  static func updateRegistered() {
+  private let serviceName = "org.pqrs.TrueWidget.DeprecatedOpenAtLoginHelper"
+
+  func updateRegistered() {
     runHelper { proxy in
       proxy.registered(appURL: Bundle.main.bundleURL) { registered in
         Task { @MainActor in
@@ -15,7 +17,7 @@ final class DeprecatedOpenAtLogin {
     }
   }
 
-  static func update(register: Bool) {
+  func update(register: Bool) {
     runHelper { proxy in
       proxy.update(appURL: Bundle.main.bundleURL, register: register) {
         Task { @MainActor in
@@ -25,11 +27,11 @@ final class DeprecatedOpenAtLogin {
     }
   }
 
-  private static func runHelper(
+  private func runHelper(
     _ callback: @escaping (DeprecatedOpenAtLoginHelperProtocol) -> Void
   ) {
     Task.detached {
-      let connection = NSXPCConnection(serviceName: serviceName)
+      let connection = NSXPCConnection(serviceName: self.serviceName)
       connection.remoteObjectInterface = NSXPCInterface(
         with: DeprecatedOpenAtLoginHelperProtocol.self)
       connection.resume()
