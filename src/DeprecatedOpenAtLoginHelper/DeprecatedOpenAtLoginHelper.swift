@@ -13,8 +13,6 @@ final class DeprecatedOpenAtLoginHelper: NSObject, DeprecatedOpenAtLoginHelperPr
 
   @objc func registered(appURL: URL, with reply: @escaping (Bool) -> Void) {
     reply(DeprecatedOpenAtLoginHelperObjc.registered(appURL))
-
-    exit()
   }
 
   @objc func update(appURL: URL, register: Bool, with reply: @escaping () -> Void) {
@@ -25,14 +23,5 @@ final class DeprecatedOpenAtLoginHelper: NSObject, DeprecatedOpenAtLoginHelperPr
     }
 
     reply()
-
-    exit()
-  }
-
-  private func exit() {
-    // Wait for a while before exit for the client's NSXPCConnection invalidation.
-    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-      Darwin.exit(0)
-    }
   }
 }
