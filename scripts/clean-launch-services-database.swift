@@ -15,7 +15,6 @@ let bundleIdentifiers = [
   "org.pqrs.TrueWidget",
   "org.pqrs.TrueWidget.Helper",
   "org.pqrs.TrueWidget.OpenAtLoginHelper",
-  "org.pqrs.TrueWidget.Launcher",
 ]
 
 let lsregisterCommandPath =
