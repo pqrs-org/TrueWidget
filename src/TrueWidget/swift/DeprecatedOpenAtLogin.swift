@@ -2,7 +2,7 @@ import Foundation
 import ServiceManagement
 
 // For macOS 12 or prior
-final class DeprecatedOpenAtLogin {
+actor DeprecatedOpenAtLogin {
   static let shared = DeprecatedOpenAtLogin()
 
   private let serviceName = "org.pqrs.TrueWidget.DeprecatedOpenAtLoginHelper"
@@ -30,18 +30,17 @@ final class DeprecatedOpenAtLogin {
   private func runHelper(
     _ callback: @escaping (DeprecatedOpenAtLoginHelperProtocol) -> Void
   ) {
-    Task.detached {
-      let connection = NSXPCConnection(serviceName: self.serviceName)
-      connection.remoteObjectInterface = NSXPCInterface(
-        with: DeprecatedOpenAtLoginHelperProtocol.self)
-      connection.resume()
+    let connection = NSXPCConnection(serviceName: self.serviceName)
+    connection.remoteObjectInterface = NSXPCInterface(
+      with: DeprecatedOpenAtLoginHelperProtocol.self)
+    connection.resume()
 
-      if let proxy = connection.synchronousRemoteObjectProxyWithErrorHandler({ error in
-        OpenAtLogin.shared.error = error.localizedDescription
-      }) as? DeprecatedOpenAtLoginHelperProtocol {
-        callback(proxy)
-        connection.invalidate()
-      }
+    if let proxy = connection.synchronousRemoteObjectProxyWithErrorHandler({ error in
+      OpenAtLogin.shared.error = error.localizedDescription
+    }) as? DeprecatedOpenAtLoginHelperProtocol {
+      callback(proxy)
     }
+
+    connection.invalidate()
   }
 }

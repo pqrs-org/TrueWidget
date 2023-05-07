@@ -12,7 +12,9 @@ final class OpenAtLogin: ObservableObject {
     if #available(macOS 13.0, *) {
       registered = SMAppService.mainApp.status == .enabled
     } else {
-      DeprecatedOpenAtLogin.shared.updateRegistered()
+      Task {
+        await DeprecatedOpenAtLogin.shared.updateRegistered()
+      }
     }
   }
 
@@ -57,7 +59,9 @@ final class OpenAtLogin: ObservableObject {
         self.error = error.localizedDescription
       }
     } else {
-      DeprecatedOpenAtLogin.shared.update(register: register)
+      Task {
+        await DeprecatedOpenAtLogin.shared.update(register: register)
+      }
     }
   }
 }
