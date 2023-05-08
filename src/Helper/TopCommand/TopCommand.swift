@@ -14,7 +14,7 @@ actor TopCommand {
   private let topProcessesEndRegex: NSRegularExpression
 
   var cpuUsage = 0.0
-  var processes: [[String: String]] = HelperProcessesInitialValue
+  var processes: [[String: String]] = TopCommandProcessesInitialValue
 
   init() {
     topCPUUsageRegex = try! NSRegularExpression(

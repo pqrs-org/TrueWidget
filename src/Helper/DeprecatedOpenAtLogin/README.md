@@ -1,6 +1,6 @@
-# OpenAtLoginHelper
+# DeprecatedOpenAtLogin
 
-OpenAtLoginHelper is a XPC Service for macOS 12 or prior.
+DeprecatedOpenAtLogin is for macOS 12 or prior.
 
 Since macOS 13, there are the following API that register/unregister the application to login items.
 

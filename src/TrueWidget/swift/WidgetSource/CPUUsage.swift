@@ -13,14 +13,14 @@ extension WidgetSource {
 
     private var usageHistory: [Double] = []
 
-    @Published public var processes: [[String: String]] = HelperProcessesInitialValue
+    @Published public var processes: [[String: String]] = TopCommandProcessesInitialValue
 
     // To get the CPU utilization of a process (especially kernel_task information),
     // as far as I've been able to find out, we need to use the results of the top command or need administrator privileges.
     // Since the top command has a setuid bit and can be used without privilege, we run top command in a helper process and use the result.
 
     private var helperConnection: NSXPCConnection?
-    private var helperProxy: HelperProtocol?
+    private var helperProxy: TopCommandHelperProtocol?
 
     private var timer: Timer?
 
@@ -46,20 +46,21 @@ extension WidgetSource {
       }
 
       if helperConnection == nil {
-        helperConnection = NSXPCConnection(serviceName: "org.pqrs.TrueWidget.Helper")
-        helperConnection?.remoteObjectInterface = NSXPCInterface(with: HelperProtocol.self)
+        helperConnection = NSXPCConnection(serviceName: helperServiceName)
+        helperConnection?.remoteObjectInterface = NSXPCInterface(
+          with: TopCommandHelperProtocol.self)
         helperConnection?.resume()
       }
 
       if helperProxy == nil {
-        helperProxy = helperConnection?.remoteObjectProxy as? HelperProtocol
+        helperProxy = helperConnection?.remoteObjectProxy as? TopCommandHelperProtocol
       }
 
       //
       // CPU Usage
       //
 
-      helperProxy?.cpuUsage { [weak self] cpuUsage in
+      helperProxy?.topCommandCPUUsage { [weak self] cpuUsage in
         guard let self = self else { return }
 
         Task { @MainActor in
@@ -86,7 +87,7 @@ extension WidgetSource {
       // Processes
       //
 
-      helperProxy?.processes { [weak self] processes in
+      helperProxy?.topCommandProcesses { [weak self] processes in
         guard let self = self else { return }
 
         Task { @MainActor in

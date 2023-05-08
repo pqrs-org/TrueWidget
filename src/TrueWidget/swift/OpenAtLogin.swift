@@ -13,7 +13,7 @@ final class OpenAtLogin: ObservableObject {
       registered = SMAppService.mainApp.status == .enabled
     } else {
       Task {
-        await OpenAtLoginHelperManager.shared.updateRegistered()
+        await DeprecatedOpenAtLogin.shared.updateRegistered()
       }
     }
   }
@@ -63,7 +63,7 @@ final class OpenAtLogin: ObservableObject {
       }
     } else {
       Task {
-        await OpenAtLoginHelperManager.shared.update(register: register)
+        await DeprecatedOpenAtLogin.shared.update(register: register)
       }
     }
   }
