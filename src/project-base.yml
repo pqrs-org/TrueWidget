@@ -47,6 +47,9 @@ targets:
           - '-Werror'
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: org.pqrs.TrueWidget.Helper
+      LD_RUNPATH_SEARCH_PATHS:
+        - "$(inherited)"
+        - "@loader_path/../../../../Frameworks"
     dependencies:
       - package: SwiftShell
 
