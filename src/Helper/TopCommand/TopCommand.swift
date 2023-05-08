@@ -1,7 +1,7 @@
 import Foundation
 import SwiftShell
 
-class TopCommand {
+actor TopCommand {
   static let shared = TopCommand()
 
   private let topCommandDispatchQueue: DispatchQueue
@@ -15,9 +15,8 @@ class TopCommand {
   // Processes: 652 total, 5 running, 647 sleeping, 3732 threads
   private let topProcessesEndRegex: NSRegularExpression
 
-  private let topLock = NSLock()
-  private var topCPUUsage = 0.0
-  private var topProcesses: [[String: String]] = HelperProcessesInitialValue
+  var cpuUsage = 0.0
+  var processes: [[String: String]] = HelperProcessesInitialValue
 
   init() {
     topCommandDispatchQueue = DispatchQueue(
@@ -57,12 +56,11 @@ class TopCommand {
           // Parse CPU usage
           //
 
-          let cpuUsage = line.capturedGroups(withRegex: self.topCPUUsageRegex)
-          if cpuUsage.count > 0 {
-            self.topLock.lock()
-            defer { self.topLock.unlock() }
-
-            self.topCPUUsage = Double(cpuUsage[0])! + Double(cpuUsage[1])!
+          let cpuUsages = line.capturedGroups(withRegex: self.topCPUUsageRegex)
+          if cpuUsages.count > 0 {
+            Task {
+              await self.update(cpuUsage: Double(cpuUsages[0])! + Double(cpuUsages[1])!)
+            }
           }
 
           //
@@ -75,10 +73,10 @@ class TopCommand {
             {
               inProcessesLine = false
 
-              self.topLock.lock()
-              defer { self.topLock.unlock() }
-
-              self.topProcesses = newProcesses
+              let copy = newProcesses
+              Task {
+                await self.update(processes: copy)
+              }
             }
 
             let process = line.capturedGroups(withRegex: self.topProcessRegex)
@@ -110,17 +108,11 @@ class TopCommand {
     }
   }
 
-  var cpuUsage: Double {
-    topLock.lock()
-    defer { topLock.unlock() }
-
-    return topCPUUsage
+  private func update(cpuUsage: Double) async {
+    self.cpuUsage = cpuUsage
   }
 
-  var processes: [[String: String]] {
-    topLock.lock()
-    defer { topLock.unlock() }
-
-    return topProcesses
+  private func update(processes: [[String: String]]) async {
+    self.processes = processes
   }
 }
