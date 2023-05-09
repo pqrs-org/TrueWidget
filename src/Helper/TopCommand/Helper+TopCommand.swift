@@ -1,5 +1,4 @@
 import Foundation
-import SwiftShell
 
 extension Helper {
   @objc func topCommandCPUUsage(with reply: @escaping (Double) -> Void) {
