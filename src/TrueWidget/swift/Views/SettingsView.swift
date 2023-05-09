@@ -12,62 +12,62 @@ enum NavigationTag: String {
 
 struct SettingsView: View {
   @ObservedObject private var userSettings = UserSettings.shared
-  @State private var selection: NavigationTag = NavigationTag.main
+  @State private var selection: NavigationTag = .main
 
   var body: some View {
     HStack {
       VStack(alignment: .leading, spacing: 0) {
         Button(action: {
-          selection = NavigationTag.main
+          selection = .main
         }) {
           SidebarLabelView(text: "Main", systemImage: "gear")
         }
-        .sidebarButtonStyle(selected: selection == NavigationTag.main)
+        .sidebarButtonStyle(selected: selection == .main)
 
         Button(action: {
-          selection = NavigationTag.operatingSystem
+          selection = .operatingSystem
         }) {
           SidebarLabelView(text: "Layout > Operation System", systemImage: "cube")
         }
-        .sidebarButtonStyle(selected: selection == NavigationTag.operatingSystem)
+        .sidebarButtonStyle(selected: selection == .operatingSystem)
 
         Button(action: {
-          selection = NavigationTag.xcode
+          selection = .xcode
         }) {
           SidebarLabelView(text: "Layout > Xcode", systemImage: "cube")
         }
-        .sidebarButtonStyle(selected: selection == NavigationTag.xcode)
+        .sidebarButtonStyle(selected: selection == .xcode)
 
         Button(action: {
-          selection = NavigationTag.cpuUsage
+          selection = .cpuUsage
         }) {
           SidebarLabelView(text: "Layout > CPU Usage", systemImage: "cube")
         }
-        .sidebarButtonStyle(selected: selection == NavigationTag.cpuUsage)
+        .sidebarButtonStyle(selected: selection == .cpuUsage)
 
         Button(action: {
-          selection = NavigationTag.time
+          selection = .time
         }) {
           SidebarLabelView(text: "Layout > Time", systemImage: "cube")
         }
-        .sidebarButtonStyle(selected: selection == NavigationTag.time)
+        .sidebarButtonStyle(selected: selection == .time)
 
         Button(action: {
-          selection = NavigationTag.update
+          selection = .update
         }) {
           SidebarLabelView(text: "Update", systemImage: "network")
         }
-        .sidebarButtonStyle(selected: selection == NavigationTag.update)
+        .sidebarButtonStyle(selected: selection == .update)
 
         Divider()
           .padding(.vertical, 10.0)
 
         Button(action: {
-          selection = NavigationTag.action
+          selection = .action
         }) {
           SidebarLabelView(text: "Quit, Restart", systemImage: "bolt.circle")
         }
-        .sidebarButtonStyle(selected: selection == NavigationTag.action)
+        .sidebarButtonStyle(selected: selection == .action)
 
         Spacer()
       }
@@ -76,7 +76,7 @@ struct SettingsView: View {
       Divider()
 
       switch selection {
-      case NavigationTag.main:
+      case .main:
         SettingsMainView()
       case .operatingSystem:
         SettingsOperatingSystemView()
