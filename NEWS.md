@@ -4,7 +4,7 @@
 
 -   ⚡️ Improvements
     -   Enabled the setting of `Open at login` by default.
-    -   Changed to open TrueWidget directly instead of via the helper app when opening at login on macOS 13 or later.
+    -   Changed to open TrueWidget directly instead of via the helper app when opening at login.
 
 ## TrueWidget 1.3.0
 
