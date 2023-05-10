@@ -54,7 +54,7 @@ targets:
         LD_RUNPATH_SEARCH_PATHS:
           - '$(inherited)'
           - '@loader_path/../../../../Frameworks'
-        SWIFT_OBJC_BRIDGING_HEADER: Helper/DeprecatedOpenAtLogin/objc/DeprecatedOpenAtLogin-Bridging-Header.h
         OTHER_SWIFT_FLAGS: '-warnings-as-errors'
+        SWIFT_OBJC_BRIDGING_HEADER: Helper/DeprecatedOpenAtLogin/objc/DeprecatedOpenAtLogin-Bridging-Header.h
     dependencies:
       - package: SwiftShell
