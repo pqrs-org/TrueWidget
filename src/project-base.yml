@@ -46,8 +46,8 @@ targets:
           - '-Wall'
           - '-Werror'
         excludes:
-          - DeprecatedOpenAtLogin/*
-      - path: Helper/DeprecatedOpenAtLogin
+          - DeprecatedOpenAtLogin/objc/*
+      - path: Helper/DeprecatedOpenAtLogin/objc
         compilerFlags:
           - '-Wall'
           - '-Werror'
@@ -58,6 +58,6 @@ targets:
       LD_RUNPATH_SEARCH_PATHS:
         - '$(inherited)'
         - '@loader_path/../../../../Frameworks'
-      SWIFT_OBJC_BRIDGING_HEADER: Helper/DeprecatedOpenAtLogin/DeprecatedOpenAtLogin-Bridging-Header.h
+      SWIFT_OBJC_BRIDGING_HEADER: Helper/DeprecatedOpenAtLogin/objc/DeprecatedOpenAtLogin-Bridging-Header.h
     dependencies:
       - package: SwiftShell
