@@ -98,6 +98,13 @@ final class UserSettings: ObservableObject {
     }
   }
 
+  @UserDefault("widgetFadeOutDuration", defaultValue: 500.0)
+  var widgetFadeOutDuration: Double {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
   //
   // Operating system
   //

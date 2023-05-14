@@ -36,7 +36,13 @@ struct MainView: View {
     .foregroundColor(.white)
     .opacity(hidden ? 0.0 : userSettings.widgetOpacity)
     .whenHovered { hover in
-      hidden = hover
+      if hover {
+        withAnimation(.easeInOut(duration: userSettings.widgetFadeOutDuration / 1000.0)) {
+          hidden = true
+        }
+      } else {
+        hidden = false
+      }
     }
     .overlay(
       RoundedRectangle(cornerRadius: 12)

@@ -105,6 +105,22 @@ struct SettingsMainView: View {
 
             Spacer()
           }
+
+          HStack {
+            Text("Widget fade-out duration: ")
+
+            DoubleTextField(
+              value: $userSettings.widgetFadeOutDuration,
+              range: 0...10000,
+              step: 100,
+              width: 50)
+
+            Text("milliseconds")
+
+            Text("(Default: 500 ms)")
+
+            Spacer()
+          }
         }
         .padding()
       }
