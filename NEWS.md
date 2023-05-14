@@ -1,7 +1,10 @@
 # Changelog
 
-## Beta
+## TrueWidget 1.4.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.4.0/TrueWidget-1.4.0.dmg)
+-   📅 Release date
+    -   May 14, 2023
 -   ✨ New Features
     -   Changed the widget to fade out on mouseover instead of hiding immediately.
 -   ⚡️ Improvements
