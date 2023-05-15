@@ -13,7 +13,7 @@ struct SettingsMainView: View {
               Text("Open at login")
             }
             .switchToggleStyle()
-            .disabled(openAtLogin.developmentBinary())
+            .disabled(openAtLogin.developmentBinary)
             .onChange(of: openAtLogin.registered) { value in
               OpenAtLogin.shared.update(register: value)
             }
