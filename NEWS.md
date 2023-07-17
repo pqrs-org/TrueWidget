@@ -1,5 +1,10 @@
 # Changelog
 
+## Beta
+
+-   ⚡️ Improvements
+    -   Sparkle Framework has been updated.
+
 ## TrueWidget 1.4.0
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.4.0/TrueWidget-1.4.0.dmg)
