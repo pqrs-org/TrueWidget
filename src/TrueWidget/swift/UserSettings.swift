@@ -14,6 +14,10 @@ enum WidgetScreen: String {
   case bottomRight
   case topLeft
   case topRight
+  case leftTop
+  case leftBottom
+  case rightTop
+  case rightBottom
 }
 
 enum CPUUsageType: String {

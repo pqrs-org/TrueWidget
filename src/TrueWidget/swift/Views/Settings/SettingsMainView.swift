@@ -101,6 +101,10 @@ struct SettingsMainView: View {
               Text("Bottom Right screen").tag(WidgetScreen.bottomRight.rawValue)
               Text("Top Left screen").tag(WidgetScreen.topLeft.rawValue)
               Text("Top Right screen").tag(WidgetScreen.topRight.rawValue)
+              Text("Leftmost (top)").tag(WidgetScreen.leftTop.rawValue)
+              Text("Leftmost (bottom)").tag(WidgetScreen.leftBottom.rawValue)
+              Text("Rightmost (top)").tag(WidgetScreen.rightTop.rawValue)
+              Text("Rightmost (bottom)").tag(WidgetScreen.rightBottom.rawValue)
             }
 
             Spacer()

@@ -58,6 +58,42 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             {
               screen = s
             }
+          case WidgetScreen.leftTop:
+            // Leftmost screen (top)
+            if s.frame.origin.x < screen.frame.origin.x {
+              screen = s
+            } else if s.frame.origin.x == screen.frame.origin.x {
+              if s.frame.origin.y > screen.frame.origin.y {
+                screen = s
+              }
+            }
+          case WidgetScreen.leftBottom:
+            // Leftmost screen (bottom)
+            if s.frame.origin.x < screen.frame.origin.x {
+              screen = s
+            } else if s.frame.origin.x == screen.frame.origin.x {
+              if s.frame.origin.y < screen.frame.origin.y {
+                screen = s
+              }
+            }
+          case WidgetScreen.rightTop:
+            // Rightmost screen (top)
+            if s.frame.origin.x > screen.frame.origin.x {
+              screen = s
+            } else if s.frame.origin.x == screen.frame.origin.x {
+              if s.frame.origin.y > screen.frame.origin.y {
+                screen = s
+              }
+            }
+          case WidgetScreen.rightBottom:
+            // Rightmost screen (bottom)
+            if s.frame.origin.x > screen.frame.origin.x {
+              screen = s
+            } else if s.frame.origin.x == screen.frame.origin.x {
+              if s.frame.origin.y < screen.frame.origin.y {
+                screen = s
+              }
+            }
           }
         }
       }
