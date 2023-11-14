@@ -17,56 +17,77 @@ struct SettingsView: View {
   var body: some View {
     HStack {
       VStack(alignment: .leading, spacing: 0) {
-        Button(action: {
-          selection = .main
-        }) {
-          SidebarLabelView(text: "Main", systemImage: "gear")
-        }
+        Button(
+          action: {
+            selection = .main
+          },
+          label: {
+            SidebarLabelView(text: "Main", systemImage: "gear")
+          }
+        )
         .sidebarButtonStyle(selected: selection == .main)
 
-        Button(action: {
-          selection = .operatingSystem
-        }) {
-          SidebarLabelView(text: "Layout > Operation System", systemImage: "cube")
-        }
+        Button(
+          action: {
+            selection = .operatingSystem
+          },
+          label: {
+            SidebarLabelView(text: "Layout > Operation System", systemImage: "cube")
+          }
+        )
         .sidebarButtonStyle(selected: selection == .operatingSystem)
 
-        Button(action: {
-          selection = .xcode
-        }) {
-          SidebarLabelView(text: "Layout > Xcode", systemImage: "cube")
-        }
+        Button(
+          action: {
+            selection = .xcode
+          },
+          label: {
+            SidebarLabelView(text: "Layout > Xcode", systemImage: "cube")
+          }
+        )
         .sidebarButtonStyle(selected: selection == .xcode)
 
-        Button(action: {
-          selection = .cpuUsage
-        }) {
-          SidebarLabelView(text: "Layout > CPU Usage", systemImage: "cube")
-        }
+        Button(
+          action: {
+            selection = .cpuUsage
+          },
+          label: {
+            SidebarLabelView(text: "Layout > CPU Usage", systemImage: "cube")
+          }
+        )
         .sidebarButtonStyle(selected: selection == .cpuUsage)
 
-        Button(action: {
-          selection = .time
-        }) {
-          SidebarLabelView(text: "Layout > Time", systemImage: "cube")
-        }
+        Button(
+          action: {
+            selection = .time
+          },
+          label: {
+            SidebarLabelView(text: "Layout > Time", systemImage: "cube")
+          }
+        )
         .sidebarButtonStyle(selected: selection == .time)
 
-        Button(action: {
-          selection = .update
-        }) {
-          SidebarLabelView(text: "Update", systemImage: "network")
-        }
+        Button(
+          action: {
+            selection = .update
+          },
+          label: {
+            SidebarLabelView(text: "Update", systemImage: "network")
+          }
+        )
         .sidebarButtonStyle(selected: selection == .update)
 
         Divider()
           .padding(.vertical, 10.0)
 
-        Button(action: {
-          selection = .action
-        }) {
-          SidebarLabelView(text: "Quit, Restart", systemImage: "bolt.circle")
-        }
+        Button(
+          action: {
+            selection = .action
+          },
+          label: {
+            SidebarLabelView(text: "Quit, Restart", systemImage: "bolt.circle")
+          }
+        )
         .sidebarButtonStyle(selected: selection == .action)
 
         Spacer()

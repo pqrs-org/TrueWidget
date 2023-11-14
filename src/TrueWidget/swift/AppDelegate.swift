@@ -35,7 +35,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
           switch widgetScreen {
           case WidgetScreen.primary:
-            if s.frame.origin == NSZeroPoint {
+            if s.frame.origin == NSPoint.zero {
               screen = s
             }
           case WidgetScreen.bottomLeft:
@@ -134,7 +134,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
       if let window = window {
         let screenFrame = screen.visibleFrame
-        var origin = NSZeroPoint
+        var origin = NSPoint.zero
         if let widgetPosition = WidgetPosition(rawValue: UserSettings.shared.widgetPosition) {
           switch widgetPosition {
           case WidgetPosition.bottomLeft:

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TimeZonePickerView: View {
   class Source: ObservableObject {
-    struct TZ: Identifiable {
+    struct TimeZoneEntry: Identifiable {
       let id = UUID()
       let abbreviation: String  // JST
       let identifier: String  // Asia/Tokyo
@@ -37,13 +37,13 @@ struct TimeZonePickerView: View {
 
     static let shared = Source()
 
-    var timeZones: [TZ] = []
+    var timeZones: [TimeZoneEntry] = []
 
     init() {
       TimeZone.abbreviationDictionary.forEach { d in
         let abbreviation = d.key
         let identifier = d.value
-        timeZones.append(TZ(abbreviation: abbreviation, identifier: identifier))
+        timeZones.append(TimeZoneEntry(abbreviation: abbreviation, identifier: identifier))
       }
 
       timeZones.sort {
