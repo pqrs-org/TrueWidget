@@ -3,6 +3,7 @@
 ## Beta
 
 -   ⚡️ Improvements
+    -   Updated the app icon.
     -   Sparkle Framework has been updated.
 
 ## TrueWidget 1.4.0
