@@ -13,7 +13,7 @@ extension WidgetSource {
 
     private var usageHistory: [Double] = []
 
-    @Published public var processes: [[String: String]] = TopCommandProcessesInitialValue
+    @Published public var processes: [[String: String]] = topCommandProcessesInitialValue
 
     // To get the CPU utilization of a process (especially kernel_task information),
     // as far as I've been able to find out, we need to use the results of the top command or need administrator privileges.

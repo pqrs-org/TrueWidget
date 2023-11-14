@@ -5,26 +5,26 @@ actor TopCommand {
   static let shared = TopCommand()
 
   // CPU usage: 10.84% user, 8.27% sys, 80.88% idle
-  private let topCPUUsageRegex: NSRegularExpression
+  private let topCPUUsageRegex: NSRegularExpression?
   // PID    %CPU COMMAND
-  private let topProcessesStartRegex: NSRegularExpression
+  private let topProcessesStartRegex: NSRegularExpression?
   // 75529  21.5 Google Chrome He
-  private let topProcessRegex: NSRegularExpression
+  private let topProcessRegex: NSRegularExpression?
   // Processes: 652 total, 5 running, 647 sleeping, 3732 threads
-  private let topProcessesEndRegex: NSRegularExpression
+  private let topProcessesEndRegex: NSRegularExpression?
 
   var cpuUsage = 0.0
-  var processes: [[String: String]] = TopCommandProcessesInitialValue
+  var processes: [[String: String]] = topCommandProcessesInitialValue
 
   init() {
-    topCPUUsageRegex = try! NSRegularExpression(
+    topCPUUsageRegex = try? NSRegularExpression(
       pattern: "^CPU usage: ([\\d\\.]+)% user, ([\\d\\.]+)% sys, ")
 
-    topProcessesStartRegex = try! NSRegularExpression(pattern: "^PID\\s+%CPU\\s+COMMAND")
+    topProcessesStartRegex = try? NSRegularExpression(pattern: "^PID\\s+%CPU\\s+COMMAND")
 
-    topProcessRegex = try! NSRegularExpression(pattern: "^(\\d+)\\s+([\\d\\.]+)\\s+(.+)")
+    topProcessRegex = try? NSRegularExpression(pattern: "^(\\d+)\\s+([\\d\\.]+)\\s+(.+)")
 
-    topProcessesEndRegex = try! NSRegularExpression(pattern: "^Processes:")
+    topProcessesEndRegex = try? NSRegularExpression(pattern: "^Processes:")
 
     Task {
       var context = CustomContext(main)
@@ -44,12 +44,19 @@ actor TopCommand {
       command.stdout.onOutput { [weak self] stdout in
         guard let self = self else { return }
 
+        guard
+          let topCPUUsageRegex = self.topCPUUsageRegex,
+          let topProcessesStartRegex = self.topProcessesStartRegex,
+          let topProcessRegex = self.topProcessRegex,
+          let topProcessesEndRegex = self.topProcessesEndRegex
+        else { return }
+
         for line in stdout.lines() {
           //
           // Parse CPU usage
           //
 
-          let cpuUsages = line.capturedGroups(withRegex: self.topCPUUsageRegex)
+          let cpuUsages = line.capturedGroups(withRegex: topCPUUsageRegex)
           if cpuUsages.count > 0 {
             Task {
               await self.update(cpuUsage: Double(cpuUsages[0])! + Double(cpuUsages[1])!)
@@ -61,7 +68,7 @@ actor TopCommand {
           //
 
           if inProcessesLine {
-            if self.topProcessesEndRegex.numberOfMatches(
+            if topProcessesEndRegex.numberOfMatches(
               in: line, range: NSRange(line.startIndex..., in: line)) > 0
             {
               inProcessesLine = false
@@ -72,7 +79,7 @@ actor TopCommand {
               }
             }
 
-            let process = line.capturedGroups(withRegex: self.topProcessRegex)
+            let process = line.capturedGroups(withRegex: topProcessRegex)
             if process.count > 0 {
               newProcesses.append(
                 [
@@ -84,7 +91,7 @@ actor TopCommand {
             }
           }
 
-          if self.topProcessesStartRegex.numberOfMatches(
+          if topProcessesStartRegex.numberOfMatches(
             in: line, range: NSRange(line.startIndex..., in: line)) > 0
           {
             inProcessesLine = true

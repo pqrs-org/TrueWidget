@@ -6,7 +6,7 @@ enum ProcessDictionaryKey: String {
   case cpu  // e.g., "41.0"
 }
 
-let TopCommandProcessesInitialValue: [[String: String]] = [
+let topCommandProcessesInitialValue: [[String: String]] = [
   [
     ProcessDictionaryKey.pid.rawValue: "-1",
     ProcessDictionaryKey.name.rawValue: "---",
