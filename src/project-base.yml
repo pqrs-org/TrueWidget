@@ -9,9 +9,6 @@ packages:
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     from: 2.5.1
-  SwiftShell:
-    url: https://github.com/kareman/SwiftShell
-    from: 5.1.0
 
 targets:
   TrueWidget:
@@ -31,7 +28,6 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: ''
         OTHER_SWIFT_FLAGS: '-warnings-as-errors'
     dependencies:
-      - package: SwiftShell
       - target: TrueWidget Helper
 
   TrueWidget Helper:
@@ -56,5 +52,3 @@ targets:
           - '@loader_path/../../../../Frameworks'
         OTHER_SWIFT_FLAGS: '-warnings-as-errors'
         SWIFT_OBJC_BRIDGING_HEADER: Helper/DeprecatedOpenAtLogin/objc/DeprecatedOpenAtLogin-Bridging-Header.h
-    dependencies:
-      - package: SwiftShell

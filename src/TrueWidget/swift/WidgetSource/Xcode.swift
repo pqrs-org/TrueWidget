@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import SwiftShell
 
 extension WidgetSource {
   public class Xcode: ObservableObject {
@@ -52,22 +51,40 @@ extension WidgetSource {
       let command = "/usr/bin/xcode-select"
 
       if FileManager.default.fileExists(atPath: command) {
-        let fullPath = run(command, "--print-path").stdout
-        if fullPath.count > 0 {
-          var bundlePath = ""
+        let xcodeSelectCommand = Process()
+        xcodeSelectCommand.launchPath = command
+        xcodeSelectCommand.arguments = [
+          "--print-path"
+        ]
 
-          if let range = fullPath.range(of: ".app/") {
-            let startIndex = fullPath.startIndex
-            let endIndex = fullPath.index(before: range.upperBound)
-            bundlePath = String(fullPath[startIndex..<endIndex])
-          } else {
-            bundlePath = fullPath
-          }
+        xcodeSelectCommand.environment = [
+          "LC_ALL": "C"
+        ]
 
-          if bundlePath == "/Applications/Xcode.app" {
-            return (bundlePath, .defaultPath)
-          } else {
-            return (bundlePath, .nonDefaultPath)
+        let pipe = Pipe()
+        xcodeSelectCommand.standardOutput = pipe
+
+        xcodeSelectCommand.launch()
+        xcodeSelectCommand.waitUntilExit()
+
+        if let data = try? pipe.fileHandleForReading.readToEnd() {
+          let fullPath = String(decoding: data, as: UTF8.self)
+          if fullPath.count > 0 {
+            var bundlePath = ""
+
+            if let range = fullPath.range(of: ".app/") {
+              let startIndex = fullPath.startIndex
+              let endIndex = fullPath.index(before: range.upperBound)
+              bundlePath = String(fullPath[startIndex..<endIndex])
+            } else {
+              bundlePath = fullPath
+            }
+
+            if bundlePath == "/Applications/Xcode.app" {
+              return (bundlePath, .defaultPath)
+            } else {
+              return (bundlePath, .nonDefaultPath)
+            }
           }
         }
       }
