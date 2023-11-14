@@ -16,26 +16,28 @@ struct MainTimeView: View {
         .padding(.bottom, 4.0)
       }
 
-      HStack(alignment: .center, spacing: 0) {
-        Spacer()
+      if userSettings.showLocalTime {
+        HStack(alignment: .center, spacing: 0) {
+          Spacer()
 
-        HStack(alignment: .firstTextBaseline, spacing: 0) {
-          Text(
-            String(
-              format: " %02d:%02d",
-              time.localHour,
-              time.localMinute
+          HStack(alignment: .firstTextBaseline, spacing: 0) {
+            Text(
+              String(
+                format: " %02d:%02d",
+                time.localHour,
+                time.localMinute
+              )
             )
-          )
-          .font(.custom("Menlo", size: userSettings.localTimeFontSize))
+            .font(.custom("Menlo", size: userSettings.localTimeFontSize))
 
-          Text(
-            String(
-              format: " %02d",
-              time.localSecond
+            Text(
+              String(
+                format: " %02d",
+                time.localSecond
+              )
             )
-          )
-          .font(.custom("Menlo", size: userSettings.localTimeFontSize / 2))
+            .font(.custom("Menlo", size: userSettings.localTimeFontSize / 2))
+          }
         }
       }
 

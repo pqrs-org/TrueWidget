@@ -41,36 +41,34 @@ struct SettingsTimeView: View {
         .padding()
       }
 
-      if userSettings.showLocalTime {
-        GroupBox(label: Text("Advanced")) {
-          VStack(alignment: .leading) {
-            HStack {
-              Toggle(isOn: $userSettings.showLocalDate) {
-                Text("Show local date")
-              }
-              .switchToggleStyle()
-
-              Spacer()
+      GroupBox(label: Text("Local date")) {
+        VStack(alignment: .leading) {
+          HStack {
+            Toggle(isOn: $userSettings.showLocalDate) {
+              Text("Show local date")
             }
+            .switchToggleStyle()
 
-            HStack {
-              Text("Local date font size: ")
-
-              DoubleTextField(
-                value: $userSettings.localDateFontSize,
-                range: 0...1000,
-                step: 2,
-                width: 40)
-
-              Text("pt")
-
-              Text("(Default: 12 pt)")
-
-              Spacer()
-            }
+            Spacer()
           }
-          .padding()
+
+          HStack {
+            Text("Local date font size: ")
+
+            DoubleTextField(
+              value: $userSettings.localDateFontSize,
+              range: 0...1000,
+              step: 2,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 12 pt)")
+
+            Spacer()
+          }
         }
+        .padding()
       }
 
       GroupBox(label: Text("Other time zones")) {
