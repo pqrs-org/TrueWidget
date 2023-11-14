@@ -1,109 +1,102 @@
 import Foundation
-import SwiftShell
 
 actor TopCommand {
   static let shared = TopCommand()
-
-  // CPU usage: 10.84% user, 8.27% sys, 80.88% idle
-  private let topCPUUsageRegex: NSRegularExpression?
-  // PID    %CPU COMMAND
-  private let topProcessesStartRegex: NSRegularExpression?
-  // 75529  21.5 Google Chrome He
-  private let topProcessRegex: NSRegularExpression?
-  // Processes: 652 total, 5 running, 647 sleeping, 3732 threads
-  private let topProcessesEndRegex: NSRegularExpression?
 
   var cpuUsage = 0.0
   var processes: [[String: String]] = topCommandProcessesInitialValue
 
   init() {
-    topCPUUsageRegex = try? NSRegularExpression(
-      pattern: "^CPU usage: ([\\d\\.]+)% user, ([\\d\\.]+)% sys, ")
-
-    topProcessesStartRegex = try? NSRegularExpression(pattern: "^PID\\s+%CPU\\s+COMMAND")
-
-    topProcessRegex = try? NSRegularExpression(pattern: "^(\\d+)\\s+([\\d\\.]+)\\s+(.+)")
-
-    topProcessesEndRegex = try? NSRegularExpression(pattern: "^Processes:")
-
     Task {
-      var context = CustomContext(main)
-      context.env["LC_ALL"] = "C"
+      guard
+        // CPU usage: 10.84% user, 8.27% sys, 80.88% idle
+        let topCPUUsageRegex = try? NSRegularExpression(
+          pattern: "^CPU usage: ([\\d\\.]+)% user, ([\\d\\.]+)% sys, "),
+        // PID    %CPU COMMAND
+        let topProcessesStartRegex = try? NSRegularExpression(pattern: "^PID\\s+%CPU\\s+COMMAND"),
+        // 75529  21.5 Google Chrome He
+        let topProcessRegex = try? NSRegularExpression(pattern: "^(\\d+)\\s+([\\d\\.]+)\\s+(.+)"),
+        // Processes: 652 total, 5 running, 647 sleeping, 3732 threads
+        let topProcessesEndRegex = try? NSRegularExpression(pattern: "^Processes:")
+      else { return }
 
-      let command = context.runAsync(
-        "/usr/bin/top",
-        "-stats", "pid,cpu,command",
-        "-l", "0",
-        "-n", "3",
-        "-s", "3"
-      )
+      while true {
+        let topCommand = Process()
+        topCommand.launchPath = "/usr/bin/top"
+        topCommand.arguments = [
+          "-stats", "pid,cpu,command",
+          // Make the top command produce two outputs.
+          // The first output is not accurate because the value is at the moment of activation.
+          // The second output is the correct value and should be used.
+          "-l", "2",
+          "-n", "3",
+          "-s", "3",
+        ]
 
-      var inProcessesLine = false
-      var newProcesses = [[String: String]]()
+        topCommand.environment = [
+          "LC_ALL": "C"
+        ]
 
-      command.stdout.onOutput { [weak self] stdout in
-        guard let self = self else { return }
+        let pipe = Pipe()
+        topCommand.standardOutput = pipe
 
-        guard
-          let topCPUUsageRegex = self.topCPUUsageRegex,
-          let topProcessesStartRegex = self.topProcessesStartRegex,
-          let topProcessRegex = self.topProcessRegex,
-          let topProcessesEndRegex = self.topProcessesEndRegex
-        else { return }
+        topCommand.launch()
+        topCommand.waitUntilExit()
 
-        for line in stdout.lines() {
-          //
-          // Parse CPU usage
-          //
+        if let data = try? pipe.fileHandleForReading.readToEnd() {
+          let output = String(decoding: data, as: UTF8.self)
+          let lines = output.split(whereSeparator: \.isNewline)
 
-          let cpuUsages = line.capturedGroups(withRegex: topCPUUsageRegex)
-          if cpuUsages.count > 0 {
-            Task {
-              await self.update(cpuUsage: Double(cpuUsages[0])! + Double(cpuUsages[1])!)
+          var inProcessesLine = false
+          var newCPUUsage = 0.0
+          var newProcesses: [[String: String]] = []
+
+          for lineSubSequence in lines {
+            let line = String(lineSubSequence)
+
+            //
+            // Parse CPU usage
+            //
+
+            let cpuUsages = line.capturedGroups(withRegex: topCPUUsageRegex)
+            if cpuUsages.count > 0 {
+              newCPUUsage = Double(cpuUsages[0])! + Double(cpuUsages[1])!
             }
-          }
 
-          //
-          // Parse processes
-          //
+            //
+            // Parse processes
+            //
 
-          if inProcessesLine {
-            if topProcessesEndRegex.numberOfMatches(
-              in: line, range: NSRange(line.startIndex..., in: line)) > 0
-            {
-              inProcessesLine = false
+            if inProcessesLine {
+              if topProcessesEndRegex.numberOfMatches(
+                in: line, range: NSRange(line.startIndex..., in: line)) > 0
+              {
+                inProcessesLine = false
+              }
 
-              let copy = newProcesses
-              Task {
-                await self.update(processes: copy)
+              let process = line.capturedGroups(withRegex: topProcessRegex)
+              if process.count > 0 {
+                newProcesses.append(
+                  [
+                    ProcessDictionaryKey.pid.rawValue: process[0],
+                    ProcessDictionaryKey.name.rawValue: process[2].trimmingCharacters(
+                      in: .whitespacesAndNewlines),
+                    ProcessDictionaryKey.cpu.rawValue: process[1],
+                  ])
               }
             }
 
-            let process = line.capturedGroups(withRegex: topProcessRegex)
-            if process.count > 0 {
-              newProcesses.append(
-                [
-                  ProcessDictionaryKey.pid.rawValue: process[0],
-                  ProcessDictionaryKey.name.rawValue: process[2].trimmingCharacters(
-                    in: .whitespacesAndNewlines),
-                  ProcessDictionaryKey.cpu.rawValue: process[1],
-                ])
+            if topProcessesStartRegex.numberOfMatches(
+              in: line, range: NSRange(line.startIndex..., in: line)) > 0
+            {
+              inProcessesLine = true
+              newProcesses.removeAll()
             }
           }
 
-          if topProcessesStartRegex.numberOfMatches(
-            in: line, range: NSRange(line.startIndex..., in: line)) > 0
-          {
-            inProcessesLine = true
-            newProcesses.removeAll()
-          }
+          await update(cpuUsage: newCPUUsage)
+          await update(processes: newProcesses)
         }
-      }
-
-      do {
-        try command.finish()
-      } catch {
-        print(error)
       }
     }
   }
