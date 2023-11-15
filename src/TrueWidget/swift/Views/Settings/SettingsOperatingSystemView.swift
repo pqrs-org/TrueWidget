@@ -23,6 +23,7 @@ struct SettingsOperatingSystemView: View {
               value: $userSettings.operatingSystemFontSize,
               range: 0...1000,
               step: 2,
+              maximumFractionDigits: 1,
               width: 40)
 
             Text("pt")

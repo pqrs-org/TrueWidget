@@ -65,6 +65,7 @@ struct SettingsMainView: View {
               value: $userSettings.widgetWidth,
               range: 0...10000,
               step: 10,
+              maximumFractionDigits: 1,
               width: 50)
 
             Text("pt")
@@ -117,6 +118,7 @@ struct SettingsMainView: View {
               value: $userSettings.widgetFadeOutDuration,
               range: 0...10000,
               step: 100,
+              maximumFractionDigits: 1,
               width: 50)
 
             Text("milliseconds")

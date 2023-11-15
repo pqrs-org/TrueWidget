@@ -29,6 +29,7 @@ struct SettingsTimeView: View {
               value: $userSettings.localTimeFontSize,
               range: 0...1000,
               step: 2,
+              maximumFractionDigits: 1,
               width: 40)
 
             Text("pt")
@@ -59,6 +60,7 @@ struct SettingsTimeView: View {
               value: $userSettings.localDateFontSize,
               range: 0...1000,
               step: 2,
+              maximumFractionDigits: 1,
               width: 40)
 
             Text("pt")
@@ -95,6 +97,7 @@ struct SettingsTimeView: View {
               value: $userSettings.timeZoneTimeFontSize,
               range: 0...1000,
               step: 2,
+              maximumFractionDigits: 1,
               width: 40)
 
             Text("pt")

@@ -23,6 +23,7 @@ struct SettingsXcodeView: View {
               value: $userSettings.xcodeFontSize,
               range: 0...1000,
               step: 2,
+              maximumFractionDigits: 1,
               width: 40)
 
             Text("pt")

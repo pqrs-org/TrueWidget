@@ -23,6 +23,7 @@ struct SettingsCPUUsageView: View {
               value: $userSettings.cpuUsageFontSize,
               range: 0...1000,
               step: 2,
+              maximumFractionDigits: 1,
               width: 40)
 
             Text("pt")
@@ -80,6 +81,7 @@ struct SettingsCPUUsageView: View {
                 value: $userSettings.processesFontSize,
                 range: 0...1000,
                 step: 2,
+                maximumFractionDigits: 1,
                 width: 40)
 
               Text("pt")
