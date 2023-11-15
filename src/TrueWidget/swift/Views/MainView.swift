@@ -19,7 +19,10 @@ struct MainView: View {
           MainCPUUsageView()
         }
 
-        if userSettings.showLocalTime || WidgetSource.Time.shared.timeZoneTimes.count > 0 {
+        if userSettings.showLocalTime
+          || userSettings.showLocalDate
+          || WidgetSource.Time.shared.timeZoneTimes.count > 0
+        {
           MainTimeView()
         }
       }
