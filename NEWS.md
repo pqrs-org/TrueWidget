@@ -1,8 +1,8 @@
 # Changelog
 
-## TrueWidget 1.5.0
+## TrueWidget 1.6.0
 
--   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.5.0/TrueWidget-1.5.0.dmg)
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v1.6.0/TrueWidget-1.6.0.dmg)
 -   📅 Release date
     -   Nov 15, 2023
 -   ⚡️ Improvements
