@@ -4,6 +4,7 @@
 
 -   ⚡️ Improvements
     -   Updated the app icon.
+    -   Reduced memory usage of TrueWidget Helper.
     -   Sparkle Framework has been updated.
 
 ## TrueWidget 1.4.0
