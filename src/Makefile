@@ -3,7 +3,7 @@ all:
 	bash run-xcodegen.sh
 	xcodebuild -configuration Release -alltargets SYMROOT="$(CURDIR)/build"
 # Copy embedded.provisionprofile
-	cp TrueWidget/embedded.provisionprofile build/Release/TrueWidget.app/Contents
+	cp TrueWidget/TrueWidget.provisionprofile build/Release/TrueWidget.app/Contents/embedded.provisionprofile
 	$(MAKE) codesign
 	$(MAKE) -C .. clean-launch-services-database
 
