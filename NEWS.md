@@ -2,6 +2,8 @@
 
 ## beta
 
+-   💥 Breaking changes
+    -   macOS 11 and macOS 12 are no longer supported.
 -   ⚡️ Improvements
     -   Sparkle Framework has been updated.
 

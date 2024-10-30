@@ -14,7 +14,7 @@ targets:
   TrueWidget:
     type: application
     platform: macOS
-    deploymentTarget: '11.0'
+    deploymentTarget: '13.0'
     sources:
       - path: TrueWidget
         excludes:
@@ -33,7 +33,7 @@ targets:
   TrueWidget Helper:
     type: xpc-service
     platform: macOS
-    deploymentTarget: '11.0'
+    deploymentTarget: '13.0'
     sources:
       - path: Helper
         excludes:
