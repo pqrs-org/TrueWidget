@@ -19,7 +19,7 @@ The advantages of this application are as follows:
 
 ## System requirements
 
-macOS 11 Big Sur or later
+macOS 13 Ventura or later
 
 ## How to build
 
