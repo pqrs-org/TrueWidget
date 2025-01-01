@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import SwiftUI
 
 enum WidgetPosition: String {
   case bottomLeft
@@ -45,18 +46,7 @@ final class UserSettings: ObservableObject {
   // Menu settings
   //
 
-  @UserDefault("showMenu", defaultValue: true)
-  var showMenu: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.showMenuSettingChanged,
-        object: nil
-      )
-    }
-  }
+  @AppStorage("showMenu") var showMenu: Bool = true
 
   //
   // Layout
