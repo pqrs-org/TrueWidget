@@ -28,7 +28,6 @@ enum CPUUsageType: String {
 
 final class UserSettings: ObservableObject {
   static let shared = UserSettings()
-  static let showMenuSettingChanged = Notification.Name("ShowMenuSettingChanged")
   static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
 
   //
@@ -41,12 +40,6 @@ final class UserSettings: ObservableObject {
       objectWillChange.send()
     }
   }
-
-  //
-  // Menu settings
-  //
-
-  @AppStorage("showMenu") var showMenu: Bool = true
 
   //
   // Layout
