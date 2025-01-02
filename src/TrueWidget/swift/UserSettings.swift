@@ -30,6 +30,10 @@ final class UserSettings: ObservableObject {
   static let shared = UserSettings()
   static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
 
+  init() {
+    initializeTimeZoneTimeSettings()
+  }
+
   //
   // Initial Open At Login
   //
