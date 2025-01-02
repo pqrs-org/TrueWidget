@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsCPUUsageView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
+  @EnvironmentObject private var userSettings: UserSettings
 
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
@@ -94,15 +94,7 @@ struct SettingsCPUUsageView: View {
           .padding()
         }
       }
-
-      Spacer()
     }
-  }
-}
-
-struct SettingsCPUUsageView_Previews: PreviewProvider {
-  static var previews: some View {
-    SettingsCPUUsageView()
-      .previewLayout(.sizeThatFits)
+    .padding()
   }
 }

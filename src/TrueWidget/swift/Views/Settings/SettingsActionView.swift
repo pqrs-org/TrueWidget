@@ -30,15 +30,6 @@ struct SettingsActionView: View {
           }
         }.padding()
       }
-
-      Spacer()
     }.padding()
-  }
-}
-
-struct SettingsActionView_Previews: PreviewProvider {
-  static var previews: some View {
-    SettingsUpdateView()
-      .previewLayout(.sizeThatFits)
   }
 }
