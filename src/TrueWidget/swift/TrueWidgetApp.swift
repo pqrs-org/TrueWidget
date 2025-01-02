@@ -68,7 +68,7 @@ struct TrueWidgetApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.openSettingsLegacy) var openSettingsLegacy
 
-    WindowGroup {
+    Window("TrueWidget", id: "true-widget") {
       ContentView()
         .background(WindowConfigurator())
         .onAppear {
@@ -126,29 +126,32 @@ struct TrueWidgetApp: App {
   }
 }
 
-struct WindowConfigurator: NSViewRepresentable {
-  func makeNSView(context: Context) -> NSView {
-    let view = NSView()
-
-    Task { @MainActor in
-      if let window = view.window {
-        window.styleMask = [.borderless]
-        // Note: Do not set alpha value for window.
-        // Window with alpha value causes glitch at switching a space (Mission Control).
-        window.backgroundColor = .clear
-        window.isOpaque = false
-        window.hasShadow = false
-        window.ignoresMouseEvents = true
-        window.level = .statusBar
-        window.collectionBehavior.insert(.canJoinAllSpaces)
-        window.collectionBehavior.insert(.ignoresCycle)
-        window.collectionBehavior.insert(.stationary)
+struct WindowConfigurator: View {
+  var body: some View {
+    Color.clear
+      .task {
+        await configureWindow()
       }
-    }
-    return view
   }
 
-  func updateNSView(_ nsView: NSView, context: Context) {}
+  private func configureWindow() async {
+    guard let window = NSApp.windows.first else {
+      return
+    }
+
+    // Note: Do not set alpha value for window.
+    // Window with alpha value causes glitch at switching a space (Mission Control).
+
+    window.styleMask = [.borderless]
+    window.backgroundColor = .clear
+    window.isOpaque = false
+    window.hasShadow = false
+    window.ignoresMouseEvents = true
+    window.level = .statusBar
+    window.collectionBehavior.insert(.canJoinAllSpaces)
+    window.collectionBehavior.insert(.ignoresCycle)
+    window.collectionBehavior.insert(.stationary)
+  }
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
