@@ -1,6 +1,8 @@
 import SwiftUI
 
-struct MainView: View {
+struct ContentView: View {
+  @Environment(\.openSettingsLegacy) private var openSettingsLegacy
+
   @ObservedObject private var userSettings = UserSettings.shared
   @State private var hidden = false
 
@@ -52,12 +54,5 @@ struct MainView: View {
         .stroke(.black, lineWidth: 4)
     )
     .clipShape(RoundedRectangle(cornerRadius: 12))
-  }
-}
-
-struct MainView_Previews: PreviewProvider {
-  static var previews: some View {
-    MainView()
-      .previewLayout(.sizeThatFits)
   }
 }
