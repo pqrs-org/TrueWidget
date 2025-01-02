@@ -59,5 +59,6 @@ struct SettingsView: View {
         }
         .tag(TabTag.action)
     }
+    .frame(width: 600)
   }
 }
