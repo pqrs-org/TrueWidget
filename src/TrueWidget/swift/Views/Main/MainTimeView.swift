@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainTimeView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
+  @EnvironmentObject private var userSettings: UserSettings
   @ObservedObject private var time = WidgetSource.Time.shared
 
   var body: some View {

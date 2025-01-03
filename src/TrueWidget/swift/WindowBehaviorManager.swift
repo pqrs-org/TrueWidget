@@ -1,22 +1,12 @@
 import AppKit
-import Combine
 import SwiftUI
 
 @MainActor
 class WindowBehaviorManager: ObservableObject {
   private var userSettings: UserSettings
-  private var cancellables = Set<AnyCancellable>()
 
   init(userSettings: UserSettings) {
     self.userSettings = userSettings
-
-    self.userSettings.objectWillChange.sink { [weak self] in
-      self?.updateWindowPosition()
-    }.store(in: &cancellables)
-
-    Task {
-      self.updateWindowPosition()
-    }
   }
 
   func updateWindowPosition() {
@@ -130,7 +120,7 @@ class WindowBehaviorManager: ObservableObject {
       //
 
       let screenFrame = screen.visibleFrame
-      if let widgetPosition = WidgetPosition(rawValue: UserSettings.shared.widgetPosition) {
+      if let widgetPosition = WidgetPosition(rawValue: userSettings.widgetPosition) {
         switch widgetPosition {
         case WidgetPosition.bottomLeft:
           origin.x = screenFrame.origin.x + 10

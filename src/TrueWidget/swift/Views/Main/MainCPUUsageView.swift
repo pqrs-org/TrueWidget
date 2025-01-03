@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainCPUUsageView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
+  @EnvironmentObject private var userSettings: UserSettings
   @ObservedObject private var cpuUsage = WidgetSource.CPUUsage.shared
 
   var body: some View {

@@ -1,4 +1,4 @@
 import Foundation
 
-let windowResizedNotification = NSNotification.Name("windowResized")
+let windowPositionUpdateNeededNotification = NSNotification.Name("windowPositionUpdateNeeded")
 let openSettingsNotification = NSNotification.Name("openSettings")

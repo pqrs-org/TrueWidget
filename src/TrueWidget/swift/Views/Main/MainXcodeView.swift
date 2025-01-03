@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainXcodeView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
+  @EnvironmentObject private var userSettings: UserSettings
   @ObservedObject private var xcode = WidgetSource.Xcode.shared
 
   var body: some View {

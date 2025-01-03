@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct ContentView: View {
+  @EnvironmentObject private var userSettings: UserSettings
   @Environment(\.openSettingsLegacy) private var openSettingsLegacy
 
-  @ObservedObject private var userSettings = UserSettings.shared
   @State private var hidden = false
 
   var body: some View {

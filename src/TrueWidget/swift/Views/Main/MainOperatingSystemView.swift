@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainOperatingSystemView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
+  @EnvironmentObject private var userSettings: UserSettings
   @ObservedObject private var operatingSystem = WidgetSource.OperatingSystem.shared
 
   var body: some View {

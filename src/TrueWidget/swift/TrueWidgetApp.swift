@@ -1,3 +1,4 @@
+import Combine
 import SettingsAccess
 import SwiftUI
 
@@ -8,6 +9,7 @@ struct TrueWidgetApp: App {
   // Since passing a property of an ObservableObject to MenuBarExtra.isInserted causes a notification loop, the flag must be an independent variable.
   @AppStorage("showMenu") var showMenuBarExtra: Bool = true
 
+  private var cancellables = Set<AnyCancellable>()
   private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
 
   init() {
@@ -26,9 +28,9 @@ struct TrueWidgetApp: App {
     //
 
     if !OpenAtLogin.shared.developmentBinary {
-      if !UserSettings.shared.initialOpenAtLoginRegistered {
+      if !userSettings.initialOpenAtLoginRegistered {
         OpenAtLogin.shared.update(register: true)
-        UserSettings.shared.initialOpenAtLoginRegistered = true
+        userSettings.initialOpenAtLoginRegistered = true
       }
     }
 
@@ -38,30 +40,25 @@ struct TrueWidgetApp: App {
 
     NSApplication.shared.disableRelaunchOnLogin()
 
-    //
-    // NotificationCenter.default.addObserver(
-    //   forName: NSApplication.didChangeScreenParametersNotification,
-    //   object: nil,
-    //   queue: .main
-    // ) { [weak self] _ in
-    //   guard let self = self else { return }
-    //
-    //   self.setupWindow()
-    // }
-    //
-    // NotificationCenter.default.addObserver(
-    //   forName: UserSettings.widgetPositionSettingChanged,
-    //   object: nil,
-    //   queue: .main
-    // ) { [weak self] _ in
-    //   guard let self = self else { return }
-    //
-    //   self.setupWindow()
-    // }
-    //
-    // setupWindow()
-    //
-    // Updater.shared.checkForUpdatesInBackground()
+    NotificationCenter.default.addObserver(
+      forName: NSApplication.didChangeScreenParametersNotification,
+      object: nil,
+      queue: .main
+    ) { _ in
+      NotificationCenter.default.post(
+        name: windowPositionUpdateNeededNotification,
+        object: nil,
+        userInfo: nil)
+    }
+
+    userSettings.objectWillChange.sink { _ in
+      NotificationCenter.default.post(
+        name: windowPositionUpdateNeededNotification,
+        object: nil,
+        userInfo: nil)
+    }.store(in: &cancellables)
+
+    Updater.shared.checkForUpdatesInBackground()
   }
 
   var body: some Scene {
@@ -70,16 +67,21 @@ struct TrueWidgetApp: App {
 
     Window("TrueWidget", id: "true-widget") {
       ContentView()
+        .environmentObject(userSettings)
         .background(WindowConfigurator())
         .onAppear {
           Task {
             windowBehaviorManager.updateWindowPosition()
           }
         }
-        .openSettingsAccess()
-        .onReceive(NotificationCenter.default.publisher(for: windowResizedNotification)) { _ in
-          windowBehaviorManager.updateWindowPosition()
+        .onReceive(
+          NotificationCenter.default.publisher(for: windowPositionUpdateNeededNotification)
+        ) { _ in
+          Task { @MainActor in
+            windowBehaviorManager.updateWindowPosition()
+          }
         }
+        .openSettingsAccess()
         .onReceive(NotificationCenter.default.publisher(for: openSettingsNotification)) { _ in
           Task { @MainActor in
             try? openSettingsLegacy()
@@ -166,7 +168,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
   func windowDidResize(_ notification: Notification) {
     NotificationCenter.default.post(
-      name: windowResizedNotification,
+      name: windowPositionUpdateNeededNotification,
       object: nil,
       userInfo: nil)
   }
