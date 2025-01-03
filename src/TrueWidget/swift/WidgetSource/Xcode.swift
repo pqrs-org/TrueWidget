@@ -3,8 +3,6 @@ import Foundation
 
 extension WidgetSource {
   public class Xcode: ObservableObject {
-    static let shared = Xcode()
-
     public enum PathState {
       case notInstalled
       case defaultPath
