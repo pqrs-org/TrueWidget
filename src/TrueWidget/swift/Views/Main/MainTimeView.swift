@@ -1,8 +1,13 @@
 import SwiftUI
 
 struct MainTimeView: View {
-  @EnvironmentObject private var userSettings: UserSettings
-  @ObservedObject private var time = WidgetSource.Time.shared
+  @ObservedObject private var userSettings: UserSettings
+  @StateObject private var time: WidgetSource.Time
+
+  init(userSettings: UserSettings) {
+    self.userSettings = userSettings
+    _time = StateObject(wrappedValue: WidgetSource.Time(userSettings: userSettings))
+  }
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
@@ -41,29 +46,27 @@ struct MainTimeView: View {
         }
       }
 
-      ForEach(time.timeZoneTimes) { timeZoneTime in
-        HStack(alignment: .center, spacing: 0) {
-          Spacer()
+      ForEach(userSettings.timeZoneTimeSettings) { setting in
+        if setting.show {
+          HStack(alignment: .center, spacing: 0) {
+            Spacer()
 
-          Text(
-            String(
-              format: "%@ %02d:%02d:%02d",
-              timeZoneTime.abbreviation,
-              timeZoneTime.hour,
-              timeZoneTime.minute,
-              timeZoneTime.second
+            let timeZoneTime = time.timeZoneTimes[setting.abbreviation]
+            Text(
+              timeZoneTime == nil
+                ? "---"
+                : String(
+                  format: "%@ %02d:%02d:%02d",
+                  setting.abbreviation,
+                  timeZoneTime?.hour ?? 0,
+                  timeZoneTime?.minute ?? 0,
+                  timeZoneTime?.second ?? 0
+                )
             )
-          )
-          .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
+            .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
+          }
         }
       }
     }
-  }
-}
-
-struct MainTimeView_Previews: PreviewProvider {
-  static var previews: some View {
-    MainTimeView()
-      .previewLayout(.sizeThatFits)
   }
 }

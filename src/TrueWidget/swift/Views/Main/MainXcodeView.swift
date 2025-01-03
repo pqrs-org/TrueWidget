@@ -1,8 +1,13 @@
 import SwiftUI
 
 struct MainXcodeView: View {
-  @EnvironmentObject private var userSettings: UserSettings
-  @ObservedObject private var xcode = WidgetSource.Xcode.shared
+  @ObservedObject private var userSettings: UserSettings
+  @StateObject private var xcode: WidgetSource.Xcode
+
+  init(userSettings: UserSettings) {
+    self.userSettings = userSettings
+    _xcode = StateObject(wrappedValue: WidgetSource.Xcode())
+  }
 
   var body: some View {
     HStack(alignment: .center, spacing: 0) {
@@ -23,12 +28,5 @@ struct MainXcodeView: View {
     case .nonDefaultPath:
       return .green
     }
-  }
-}
-
-struct MainXcodeView_Previews: PreviewProvider {
-  static var previews: some View {
-    MainXcodeView()
-      .previewLayout(.sizeThatFits)
   }
 }

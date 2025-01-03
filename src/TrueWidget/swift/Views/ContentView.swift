@@ -10,11 +10,11 @@ struct ContentView: View {
     VStack {
       VStack(alignment: .leading, spacing: 10.0) {
         if userSettings.showOperatingSystem {
-          MainOperatingSystemView()
+          MainOperatingSystemView(userSettings: userSettings)
         }
 
         if userSettings.showXcode {
-          MainXcodeView()
+          MainXcodeView(userSettings: userSettings)
         }
 
         if userSettings.showCPUUsage {
@@ -23,9 +23,9 @@ struct ContentView: View {
 
         if userSettings.showLocalTime
           || userSettings.showLocalDate
-          || WidgetSource.Time.shared.timeZoneTimes.count > 0
+          || userSettings.timeZoneTimeSettings.filter({ $0.show }).count > 0
         {
-          MainTimeView()
+          MainTimeView(userSettings: userSettings)
         }
       }
       .padding()

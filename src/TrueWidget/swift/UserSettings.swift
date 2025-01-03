@@ -27,9 +27,6 @@ enum CPUUsageType: String {
 }
 
 final class UserSettings: ObservableObject {
-  static let shared = UserSettings()
-  static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
-
   init() {
     initializeTimeZoneTimeSettings()
   }
@@ -54,12 +51,6 @@ final class UserSettings: ObservableObject {
     willSet {
       objectWillChange.send()
     }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.widgetPositionSettingChanged,
-        object: nil
-      )
-    }
   }
 
   @UserDefault("widgetWidth", defaultValue: 250.0)
@@ -80,12 +71,6 @@ final class UserSettings: ObservableObject {
   var widgetScreen: String {
     willSet {
       objectWillChange.send()
-    }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.widgetPositionSettingChanged,
-        object: nil
-      )
     }
   }
 
@@ -241,12 +226,7 @@ final class UserSettings: ObservableObject {
     var abbreviation: String = "UTC"
   }
 
-  @UserDefaultJson("timeZoneTimeSettings", defaultValue: [])
-  var timeZoneTimeSettings: [TimeZoneTimeSetting] {
-    willSet {
-      objectWillChange.send()
-    }
-  }
+  @CodableAppStorage("timeZoneTimeSettings") var timeZoneTimeSettings: [TimeZoneTimeSetting] = []
 
   func initializeTimeZoneTimeSettings() {
     let maxCount = 5

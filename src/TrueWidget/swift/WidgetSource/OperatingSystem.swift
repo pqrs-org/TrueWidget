@@ -3,7 +3,7 @@ import Foundation
 
 extension WidgetSource {
   public class OperatingSystem: ObservableObject {
-    static let shared = OperatingSystem()
+    private var userSettings: UserSettings
 
     @Published public var version = ""
     @Published public var hostName = ""
@@ -12,7 +12,9 @@ extension WidgetSource {
 
     private var timer: Timer?
 
-    private init() {
+    init(userSettings: UserSettings) {
+      self.userSettings = userSettings
+
       // We have to use `operatingSystemVersionString` instead of `operatingSystemVersion` because
       // `operatingSystemVersion` does not have a security update version, such as "(a)" in "13.3.1 (a)".
       //
@@ -49,7 +51,7 @@ extension WidgetSource {
     }
 
     private func update() {
-      if !UserSettings.shared.showHostName {
+      if !userSettings.showHostName {
         return
       }
 

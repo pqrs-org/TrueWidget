@@ -16,7 +16,7 @@ extension WidgetSource {
 
     private var timer: Timer?
 
-    private init() {
+    init() {
       timer = Timer.scheduledTimer(
         withTimeInterval: 3.0,
         repeats: true
@@ -30,10 +30,6 @@ extension WidgetSource {
     }
 
     private func update() {
-      if !UserSettings.shared.showXcode {
-        return
-      }
-
       Task { @MainActor in
         let (bundlePath, pathState) = self.xcodePath()
 

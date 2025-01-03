@@ -1,17 +1,15 @@
 import Combine
 import Foundation
+import SwiftUI
 
 extension WidgetSource {
   public struct TimeZoneTime: Equatable, Identifiable {
     public let id = UUID()
-    let abbreviation: String
     var hour: Int = 0
     var minute: Int = 0
     var second: Int = 0
 
     init(time: Date, abbreviation: String) {
-      self.abbreviation = abbreviation
-
       if let identifier = TimeZone.abbreviationDictionary[abbreviation] {
         if let timeZone = TimeZone(identifier: identifier) {
           let calendar = Calendar.current
@@ -38,18 +36,20 @@ extension WidgetSource {
   }
 
   public class Time: ObservableObject {
-    static let shared = Time()
+    private var userSettings: UserSettings
 
     @Published public var localHour: Int = 0
     @Published public var localMinute: Int = 0
     @Published public var localSecond: Int = 0
     @Published public var localDate: String = ""
 
-    @Published public var timeZoneTimes: [TimeZoneTime] = []
+    @Published public var timeZoneTimes: [String: TimeZoneTime] = [:]
 
     private var timer: Timer?
 
-    private init() {
+    init(userSettings: UserSettings) {
+      self.userSettings = userSettings
+
       timer = Timer.scheduledTimer(
         withTimeInterval: 0.5,
         repeats: true
@@ -63,7 +63,7 @@ extension WidgetSource {
     }
 
     private func updateLocalTime(_ now: Date) {
-      if !UserSettings.shared.showLocalTime {
+      if !userSettings.showLocalTime {
         return
       }
 
@@ -103,11 +103,11 @@ extension WidgetSource {
     }
 
     private func updateTimeZoneTimes(_ now: Date) {
-      var times: [TimeZoneTime] = []
+      var times: [String: TimeZoneTime] = [:]
 
-      UserSettings.shared.timeZoneTimeSettings.forEach { setting in
-        if setting.show {
-          times.append(TimeZoneTime(time: now, abbreviation: setting.abbreviation))
+      userSettings.timeZoneTimeSettings.forEach { setting in
+        if setting.show && times[setting.abbreviation] == nil {
+          times[setting.abbreviation] = TimeZoneTime(time: now, abbreviation: setting.abbreviation)
         }
       }
 

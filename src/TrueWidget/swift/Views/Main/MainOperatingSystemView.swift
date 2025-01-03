@@ -1,8 +1,14 @@
 import SwiftUI
 
 struct MainOperatingSystemView: View {
-  @EnvironmentObject private var userSettings: UserSettings
-  @ObservedObject private var operatingSystem = WidgetSource.OperatingSystem.shared
+  @ObservedObject private var userSettings: UserSettings
+  @StateObject private var operatingSystem: WidgetSource.OperatingSystem
+
+  init(userSettings: UserSettings) {
+    self.userSettings = userSettings
+    _operatingSystem = StateObject(
+      wrappedValue: WidgetSource.OperatingSystem(userSettings: userSettings))
+  }
 
   var body: some View {
     //
@@ -39,12 +45,5 @@ struct MainOperatingSystemView: View {
       }
     }
     .font(.system(size: userSettings.operatingSystemFontSize))
-  }
-}
-
-struct MainOperatingSystemView_Previews: PreviewProvider {
-  static var previews: some View {
-    MainOperatingSystemView()
-      .previewLayout(.sizeThatFits)
   }
 }
