@@ -87,6 +87,18 @@ struct TrueWidgetApp: App {
             try? openSettingsLegacy()
           }
         }
+        .overlay(
+          GeometryReader { geometry in
+            Color.clear
+              .onChange(of: geometry.size) { newSize in
+                NotificationCenter.default.post(
+                  name: windowPositionUpdateNeededNotification,
+                  object: nil,
+                  userInfo: nil)
+              }
+          }
+        )
+
     }
 
     MenuBarExtra(
@@ -164,12 +176,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       object: nil,
       userInfo: nil)
     return true
-  }
-
-  func windowDidResize(_ notification: Notification) {
-    NotificationCenter.default.post(
-      name: windowPositionUpdateNeededNotification,
-      object: nil,
-      userInfo: nil)
   }
 }
