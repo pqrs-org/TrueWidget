@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ContentView: View {
   @EnvironmentObject private var userSettings: UserSettings
-  @Environment(\.openSettingsLegacy) private var openSettingsLegacy
 
   @State private var hidden = false
 
