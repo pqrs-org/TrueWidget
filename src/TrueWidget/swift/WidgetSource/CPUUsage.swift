@@ -3,7 +3,7 @@ import Foundation
 
 extension WidgetSource {
   public class CPUUsage: ObservableObject {
-    static let shared = CPUUsage()
+    private var userSettings: UserSettings
 
     @Published public var usageInteger: Int = 0
     @Published public var usageDecimal: Int = 0
@@ -24,7 +24,9 @@ extension WidgetSource {
 
     private var timer: Timer?
 
-    private init() {
+    init(userSettings: UserSettings) {
+      self.userSettings = userSettings
+
       timer = Timer.scheduledTimer(
         withTimeInterval: 1.0,
         repeats: true
@@ -36,15 +38,6 @@ extension WidgetSource {
     }
 
     private func update() {
-      if !UserSettings.shared.showCPUUsage {
-        self.helperConnection?.invalidate()
-
-        self.helperProxy = nil
-        self.helperConnection = nil
-
-        return
-      }
-
       if helperConnection == nil {
         helperConnection = NSXPCConnection(serviceName: helperServiceName)
         helperConnection?.remoteObjectInterface = NSXPCInterface(
@@ -71,7 +64,7 @@ extension WidgetSource {
           // Calculate average
           //
 
-          let averageRange = max(UserSettings.shared.cpuUsageMovingAverageRange, 1)
+          let averageRange = max(self.userSettings.cpuUsageMovingAverageRange, 1)
           self.usageHistory.append(cpuUsage)
           while self.usageHistory.count > averageRange {
             self.usageHistory.remove(at: 0)

@@ -1,8 +1,13 @@
 import SwiftUI
 
 struct MainCPUUsageView: View {
-  @EnvironmentObject private var userSettings: UserSettings
-  @ObservedObject private var cpuUsage = WidgetSource.CPUUsage.shared
+  @ObservedObject private var userSettings: UserSettings
+  @StateObject private var cpuUsage: WidgetSource.CPUUsage
+
+  init(userSettings: UserSettings) {
+    self.userSettings = userSettings
+    _cpuUsage = StateObject(wrappedValue: WidgetSource.CPUUsage(userSettings: userSettings))
+  }
 
   var body: some View {
     //
@@ -59,12 +64,5 @@ struct MainCPUUsageView: View {
         }
       }
     }
-  }
-}
-
-struct MainCPUUsageView_Previews: PreviewProvider {
-  static var previews: some View {
-    MainCPUUsageView()
-      .previewLayout(.sizeThatFits)
   }
 }

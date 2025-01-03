@@ -18,7 +18,7 @@ struct ContentView: View {
         }
 
         if userSettings.showCPUUsage {
-          MainCPUUsageView()
+          MainCPUUsageView(userSettings: userSettings)
         }
 
         if userSettings.showLocalTime
