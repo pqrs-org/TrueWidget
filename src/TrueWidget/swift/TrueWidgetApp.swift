@@ -5,7 +5,7 @@ import SwiftUI
 @main
 struct TrueWidgetApp: App {
   @StateObject private var userSettings: UserSettings
-  @StateObject private var windowBehaviorManager: WindowBehaviorManager
+  @StateObject private var windowPositionManager: WindowPositionManager
   // Since passing a property of an ObservableObject to MenuBarExtra.isInserted causes a notification loop, the flag must be an independent variable.
   @AppStorage("showMenu") var showMenuBarExtra: Bool = true
 
@@ -20,8 +20,8 @@ struct TrueWidgetApp: App {
     let userSettings = UserSettings()
 
     _userSettings = StateObject(wrappedValue: userSettings)
-    _windowBehaviorManager = StateObject(
-      wrappedValue: WindowBehaviorManager(userSettings: userSettings))
+    _windowPositionManager = StateObject(
+      wrappedValue: WindowPositionManager(userSettings: userSettings))
 
     //
     // Register OpenAtLogin
@@ -71,14 +71,14 @@ struct TrueWidgetApp: App {
         .background(WindowConfigurator())
         .onAppear {
           Task {
-            windowBehaviorManager.updateWindowPosition()
+            windowPositionManager.updateWindowPosition()
           }
         }
         .onReceive(
           NotificationCenter.default.publisher(for: windowPositionUpdateNeededNotification)
         ) { _ in
           Task { @MainActor in
-            windowBehaviorManager.updateWindowPosition()
+            windowPositionManager.updateWindowPosition()
           }
         }
         .openSettingsAccess()

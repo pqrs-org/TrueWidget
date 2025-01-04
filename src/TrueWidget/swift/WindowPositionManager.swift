@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @MainActor
-class WindowBehaviorManager: ObservableObject {
+class WindowPositionManager: ObservableObject {
   private var userSettings: UserSettings
 
   init(userSettings: UserSettings) {
