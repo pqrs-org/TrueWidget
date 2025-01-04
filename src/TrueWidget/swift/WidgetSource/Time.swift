@@ -51,7 +51,7 @@ extension WidgetSource {
       self.userSettings = userSettings
 
       timer = Timer.scheduledTimer(
-        withTimeInterval: 0.5,
+        withTimeInterval: 1.0,
         repeats: true
       ) { [weak self] (_: Timer) in
         guard let self = self else { return }
@@ -111,9 +111,7 @@ extension WidgetSource {
         }
       }
 
-      if timeZoneTimes != times {
-        timeZoneTimes = times
-      }
+      timeZoneTimes = times
     }
   }
 }
