@@ -45,17 +45,11 @@ struct TrueWidgetApp: App {
       object: nil,
       queue: .main
     ) { _ in
-      NotificationCenter.default.post(
-        name: windowPositionUpdateNeededNotification,
-        object: nil,
-        userInfo: nil)
+      postWindowPositionUpdateNeededNotification()
     }
 
     userSettings.objectWillChange.sink { _ in
-      NotificationCenter.default.post(
-        name: windowPositionUpdateNeededNotification,
-        object: nil,
-        userInfo: nil)
+      postWindowPositionUpdateNeededNotification()
     }.store(in: &cancellables)
 
     Updater.shared.checkForUpdatesInBackground()
@@ -67,12 +61,25 @@ struct TrueWidgetApp: App {
 
     Window("TrueWidget", id: "true-widget") {
       ContentView()
+        .openSettingsAccess()
         .environmentObject(userSettings)
-        .background(WindowConfigurator())
         .onAppear {
-          Task {
-            windowPositionManager.updateWindowPosition()
+          if let window = NSApp.windows.first {
+            // Note: Do not set alpha value for window.
+            // Window with alpha value causes glitch at switching a space (Mission Control).
+
+            window.styleMask = [.borderless]
+            window.backgroundColor = .clear
+            window.isOpaque = false
+            window.hasShadow = false
+            window.ignoresMouseEvents = true
+            window.level = .statusBar
+            window.collectionBehavior.insert(.canJoinAllSpaces)
+            window.collectionBehavior.insert(.ignoresCycle)
+            window.collectionBehavior.insert(.stationary)
           }
+
+          windowPositionManager.updateWindowPosition()
         }
         .onReceive(
           NotificationCenter.default.publisher(for: windowPositionUpdateNeededNotification)
@@ -81,7 +88,6 @@ struct TrueWidgetApp: App {
             windowPositionManager.updateWindowPosition()
           }
         }
-        .openSettingsAccess()
         .onReceive(NotificationCenter.default.publisher(for: openSettingsNotification)) { _ in
           Task { @MainActor in
             try? openSettingsLegacy()
@@ -91,10 +97,7 @@ struct TrueWidgetApp: App {
           GeometryReader { geometry in
             Color.clear
               .onChange(of: geometry.size) { newSize in
-                NotificationCenter.default.post(
-                  name: windowPositionUpdateNeededNotification,
-                  object: nil,
-                  userInfo: nil)
+                postWindowPositionUpdateNeededNotification()
               }
           }
         )
@@ -136,34 +139,6 @@ struct TrueWidgetApp: App {
       SettingsView(showMenuBarExtra: $showMenuBarExtra)
         .environmentObject(userSettings)
     }
-  }
-}
-
-struct WindowConfigurator: View {
-  var body: some View {
-    Color.clear
-      .task {
-        await configureWindow()
-      }
-  }
-
-  private func configureWindow() async {
-    guard let window = NSApp.windows.first else {
-      return
-    }
-
-    // Note: Do not set alpha value for window.
-    // Window with alpha value causes glitch at switching a space (Mission Control).
-
-    window.styleMask = [.borderless]
-    window.backgroundColor = .clear
-    window.isOpaque = false
-    window.hasShadow = false
-    window.ignoresMouseEvents = true
-    window.level = .statusBar
-    window.collectionBehavior.insert(.canJoinAllSpaces)
-    window.collectionBehavior.insert(.ignoresCycle)
-    window.collectionBehavior.insert(.stationary)
   }
 }
 
