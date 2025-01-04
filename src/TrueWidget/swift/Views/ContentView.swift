@@ -1,29 +1,30 @@
 import SwiftUI
 
-struct MainView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
+struct ContentView: View {
+  @EnvironmentObject private var userSettings: UserSettings
+
   @State private var hidden = false
 
   var body: some View {
     VStack {
       VStack(alignment: .leading, spacing: 10.0) {
         if userSettings.showOperatingSystem {
-          MainOperatingSystemView()
+          MainOperatingSystemView(userSettings: userSettings)
         }
 
         if userSettings.showXcode {
-          MainXcodeView()
+          MainXcodeView(userSettings: userSettings)
         }
 
         if userSettings.showCPUUsage {
-          MainCPUUsageView()
+          MainCPUUsageView(userSettings: userSettings)
         }
 
         if userSettings.showLocalTime
           || userSettings.showLocalDate
-          || WidgetSource.Time.shared.timeZoneTimes.count > 0
+          || userSettings.timeZoneTimeSettings.filter({ $0.show }).count > 0
         {
-          MainTimeView()
+          MainTimeView(userSettings: userSettings)
         }
       }
       .padding()
@@ -52,12 +53,5 @@ struct MainView: View {
         .stroke(.black, lineWidth: 4)
     )
     .clipShape(RoundedRectangle(cornerRadius: 12))
-  }
-}
-
-struct MainView_Previews: PreviewProvider {
-  static var previews: some View {
-    MainView()
-      .previewLayout(.sizeThatFits)
   }
 }

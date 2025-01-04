@@ -1,7 +1,9 @@
 import SwiftUI
 
 struct SettingsMainView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
+  @Binding var showMenuBarExtra: Bool
+
+  @EnvironmentObject private var userSettings: UserSettings
   @ObservedObject private var openAtLogin = OpenAtLogin.shared
 
   var body: some View {
@@ -34,7 +36,7 @@ struct SettingsMainView: View {
           }
 
           HStack {
-            Toggle(isOn: $userSettings.showMenu) {
+            Toggle(isOn: $showMenuBarExtra) {
               Text("Show icon in menu bar")
             }
             .switchToggleStyle()
@@ -130,15 +132,7 @@ struct SettingsMainView: View {
         }
         .padding()
       }
-
-      Spacer()
     }
-  }
-}
-
-struct SettingsMainView_Previews: PreviewProvider {
-  static var previews: some View {
-    SettingsMainView()
-      .previewLayout(.sizeThatFits)
+    .padding()
   }
 }

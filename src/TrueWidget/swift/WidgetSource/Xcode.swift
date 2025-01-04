@@ -3,8 +3,6 @@ import Foundation
 
 extension WidgetSource {
   public class Xcode: ObservableObject {
-    static let shared = Xcode()
-
     public enum PathState {
       case notInstalled
       case defaultPath
@@ -16,7 +14,7 @@ extension WidgetSource {
 
     private var timer: Timer?
 
-    private init() {
+    init() {
       timer = Timer.scheduledTimer(
         withTimeInterval: 3.0,
         repeats: true
@@ -30,10 +28,6 @@ extension WidgetSource {
     }
 
     private func update() {
-      if !UserSettings.shared.showXcode {
-        return
-      }
-
       Task { @MainActor in
         let (bundlePath, pathState) = self.xcodePath()
 

@@ -36,8 +36,6 @@ struct SettingsUpdateView: View {
           Spacer()
         }.padding()
       }
-
-      Spacer()
     }.padding()
   }
 
@@ -71,12 +69,5 @@ struct SettingsUpdateView: View {
       )
       .disabled(!updater.canCheckForUpdates)
     }
-  }
-}
-
-struct SettingsUpdateView_Previews: PreviewProvider {
-  static var previews: some View {
-    SettingsUpdateView()
-      .previewLayout(.sizeThatFits)
   }
 }

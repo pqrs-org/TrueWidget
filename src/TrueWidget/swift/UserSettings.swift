@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import SwiftUI
 
 enum WidgetPosition: String {
   case bottomLeft
@@ -25,241 +26,71 @@ enum CPUUsageType: String {
   case latest
 }
 
+struct TimeZoneTimeSetting: Identifiable, Codable {
+  var id = UUID().uuidString
+  var show = false
+  var abbreviation: String = "UTC"
+}
+
 final class UserSettings: ObservableObject {
-  static let shared = UserSettings()
-  static let showMenuSettingChanged = Notification.Name("ShowMenuSettingChanged")
-  static let widgetPositionSettingChanged = Notification.Name("WidgetPositionSettingChanged")
-
-  //
-  // Initial Open At Login
-  //
-
-  @UserDefault("initialOpenAtLoginRegistered", defaultValue: false)
-  var initialOpenAtLoginRegistered: Bool {
-    willSet {
-      objectWillChange.send()
-    }
+  init() {
+    initializeTimeZoneTimeSettings()
   }
 
-  //
-  // Menu settings
-  //
-
-  @UserDefault("showMenu", defaultValue: true)
-  var showMenu: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.showMenuSettingChanged,
-        object: nil
-      )
-    }
-  }
+  @AppStorage("initialOpenAtLoginRegistered") var initialOpenAtLoginRegistered: Bool = false
 
   //
   // Layout
   //
 
-  @UserDefault("widgetPosition", defaultValue: WidgetPosition.bottomRight.rawValue)
-  var widgetPosition: String {
-    willSet {
-      objectWillChange.send()
-    }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.widgetPositionSettingChanged,
-        object: nil
-      )
-    }
-  }
-
-  @UserDefault("widgetWidth", defaultValue: 250.0)
-  var widgetWidth: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("widgetOpacity", defaultValue: 0.8)
-  var widgetOpacity: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("widgetScreen", defaultValue: WidgetScreen.primary.rawValue)
-  var widgetScreen: String {
-    willSet {
-      objectWillChange.send()
-    }
-    didSet {
-      NotificationCenter.default.post(
-        name: UserSettings.widgetPositionSettingChanged,
-        object: nil
-      )
-    }
-  }
-
-  @UserDefault("widgetFadeOutDuration", defaultValue: 500.0)
-  var widgetFadeOutDuration: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
+  @AppStorage("widgetPosition") var widgetPosition: String = WidgetPosition.bottomRight.rawValue
+  @AppStorage("widgetWidth") var widgetWidth: Double = 250.0
+  @AppStorage("widgetOpacity") var widgetOpacity: Double = 0.8
+  @AppStorage("widgetScreen") var widgetScreen: String = WidgetScreen.primary.rawValue
+  @AppStorage("widgetFadeOutDuration") var widgetFadeOutDuration: Double = 500.0
 
   //
   // Operating system
   //
 
-  @UserDefault("showOperatingSystem", defaultValue: true)
-  var showOperatingSystem: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("operatingSystemFontSize", defaultValue: 14.0)
-  var operatingSystemFontSize: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("showHostName", defaultValue: true)
-  var showHostName: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("showRootVolumeName", defaultValue: false)
-  var showRootVolumeName: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("showUserName", defaultValue: false)
-  var showUserName: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
+  @AppStorage("showOperatingSystem") var showOperatingSystem: Bool = true
+  @AppStorage("operatingSystemFontSize") var operatingSystemFontSize: Double = 14.0
+  @AppStorage("showHostName") var showHostName: Bool = true
+  @AppStorage("showRootVolumeName") var showRootVolumeName: Bool = false
+  @AppStorage("showUserName") var showUserName: Bool = false
 
   //
   // Xcode
   //
 
-  @UserDefault("showXcode", defaultValue: false)
-  var showXcode: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("xcodeFontSize", defaultValue: 12.0)
-  var xcodeFontSize: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
+  @AppStorage("showXcode") var showXcode: Bool = false
+  @AppStorage("xcodeFontSize") var xcodeFontSize: Double = 12.0
 
   //
   // CPU usage
   //
 
-  @UserDefault("showCPUUsage", defaultValue: true)
-  var showCPUUsage: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("cpuUsageFontSize", defaultValue: 36.0)
-  var cpuUsageFontSize: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("cpuUsageType", defaultValue: CPUUsageType.movingAverage.rawValue)
-  var cpuUsageType: String {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("cpuUsageMovingAverageRange", defaultValue: 30)
-  var cpuUsageMovingAverageRange: Int {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("showProcesses", defaultValue: true)
-  var showProcesses: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("processesFontSize", defaultValue: 12.0)
-  var processesFontSize: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
+  @AppStorage("showCPUUsage") var showCPUUsage: Bool = true
+  @AppStorage("cpuUsageFontSize") var cpuUsageFontSize: Double = 36.0
+  @AppStorage("cpuUsageType") var cpuUsageType: String = CPUUsageType.movingAverage.rawValue
+  @AppStorage("cpuUsageMovingAverageRange") var cpuUsageMovingAverageRange: Int = 30
+  @AppStorage("showProcesses") var showProcesses: Bool = true
+  @AppStorage("processesFontSize") var processesFontSize: Double = 12.0
 
   //
   // Local time
   //
 
-  @UserDefault("showLocalTime", defaultValue: true)
-  var showLocalTime: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("localTimeFontSize", defaultValue: 36.0)
-  var localTimeFontSize: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("showLocalDate", defaultValue: true)
-  var showLocalDate: Bool {
-    willSet {
-      objectWillChange.send()
-    }
-  }
-
-  @UserDefault("localDateFontSize", defaultValue: 12.0)
-  var localDateFontSize: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
+  @AppStorage("showLocalTime") var showLocalTime: Bool = true
+  @AppStorage("localTimeFontSize") var localTimeFontSize: Double = 36.0
+  @AppStorage("showLocalDate") var showLocalDate: Bool = true
+  @AppStorage("localDateFontSize") var localDateFontSize: Double = 12.0
 
   //
   // Another time zone time
   //
 
-  struct TimeZoneTimeSetting: Identifiable, Codable {
-    var id = UUID().uuidString
-    var show = false
-    var abbreviation: String = "UTC"
-  }
-
-  @UserDefaultJson("timeZoneTimeSettings", defaultValue: [])
-  var timeZoneTimeSettings: [TimeZoneTimeSetting] {
-    willSet {
-      objectWillChange.send()
-    }
-  }
+  @CodableAppStorage("timeZoneTimeSettings") var timeZoneTimeSettings: [TimeZoneTimeSetting] = []
 
   func initializeTimeZoneTimeSettings() {
     let maxCount = 5
@@ -268,10 +99,5 @@ final class UserSettings: ObservableObject {
     }
   }
 
-  @UserDefault("timeZoneTimeFontSize", defaultValue: 12.0)
-  var timeZoneTimeFontSize: Double {
-    willSet {
-      objectWillChange.send()
-    }
-  }
+  @AppStorage("timeZoneTimeFontSize") var timeZoneTimeFontSize: Double = 12.0
 }

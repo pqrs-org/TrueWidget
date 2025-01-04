@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsXcodeView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
+  @EnvironmentObject private var userSettings: UserSettings
 
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
@@ -34,15 +34,7 @@ struct SettingsXcodeView: View {
           }
         }.padding()
       }
-
-      Spacer()
     }
-  }
-}
-
-struct SettingsXcodeView_Previews: PreviewProvider {
-  static var previews: some View {
-    SettingsXcodeView()
-      .previewLayout(.sizeThatFits)
+    .padding()
   }
 }

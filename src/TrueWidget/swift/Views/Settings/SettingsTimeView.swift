@@ -1,13 +1,7 @@
 import SwiftUI
 
 struct SettingsTimeView: View {
-  @ObservedObject private var userSettings = UserSettings.shared
-
-  init() {
-    Task { @MainActor in
-      UserSettings.shared.initializeTimeZoneTimeSettings()
-    }
-  }
+  @EnvironmentObject private var userSettings: UserSettings
 
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
@@ -109,15 +103,7 @@ struct SettingsTimeView: View {
         }
         .padding()
       }
-
-      Spacer()
     }
-  }
-}
-
-struct SettingsTimeView_Previews: PreviewProvider {
-  static var previews: some View {
-    SettingsTimeView()
-      .previewLayout(.sizeThatFits)
+    .padding()
   }
 }
