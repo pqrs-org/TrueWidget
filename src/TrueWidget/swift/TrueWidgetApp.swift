@@ -96,7 +96,7 @@ struct TrueWidgetApp: App {
         .overlay(
           GeometryReader { geometry in
             Color.clear
-              .onChange(of: geometry.size) { newSize in
+              .onChange(of: geometry.size) { _ in
                 postWindowPositionUpdateNeededNotification()
               }
           }

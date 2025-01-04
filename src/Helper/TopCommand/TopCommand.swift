@@ -47,8 +47,9 @@ actor TopCommand {
     topCommand.launch()
     topCommand.waitUntilExit()
 
-    if let data = try? pipe.fileHandleForReading.readToEnd() {
-      let output = String(decoding: data, as: UTF8.self)
+    if let data = try? pipe.fileHandleForReading.readToEnd(),
+      let output = String(data: data, encoding: .utf8)
+    {
       let lines = output.split(whereSeparator: \.isNewline)
 
       var inProcessesLine = false

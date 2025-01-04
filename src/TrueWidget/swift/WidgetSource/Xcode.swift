@@ -61,8 +61,9 @@ extension WidgetSource {
         xcodeSelectCommand.launch()
         xcodeSelectCommand.waitUntilExit()
 
-        if let data = try? pipe.fileHandleForReading.readToEnd() {
-          let fullPath = String(decoding: data, as: UTF8.self)
+        if let data = try? pipe.fileHandleForReading.readToEnd(),
+          let fullPath = String(data: data, encoding: .utf8)
+        {
           if fullPath.count > 0 {
             var bundlePath = ""
 
