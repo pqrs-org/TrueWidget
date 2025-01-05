@@ -90,7 +90,11 @@ final class UserSettings: ObservableObject {
   // Another time zone time
   //
 
-  @CodableAppStorage("timeZoneTimeSettings") var timeZoneTimeSettings: [TimeZoneTimeSetting] = []
+  @CodableAppStorage("timeZoneTimeSettings") var timeZoneTimeSettings: [TimeZoneTimeSetting] = [] {
+    willSet {
+      objectWillChange.send()
+    }
+  }
 
   func initializeTimeZoneTimeSettings() {
     let maxCount = 5
