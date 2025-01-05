@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TimeZonePickerView: View {
-  class Source: ObservableObject {
+  class Source {
     struct TimeZoneEntry: Identifiable {
       let id = UUID()
       let abbreviation: String  // JST
@@ -55,7 +55,6 @@ struct TimeZonePickerView: View {
     }
   }
 
-  @ObservedObject private var source = Source.shared
   @Binding private(set) var abbreviation: String
   // If passing $abbreviation directly to the Picker's selection, changes may not be reflected in the Picker because $abbreviation might not be an ObservableObject.
   // Instead, pass $value to the Picker and manually update the changes.
@@ -68,7 +67,7 @@ struct TimeZonePickerView: View {
 
   var body: some View {
     Picker("", selection: $value) {
-      ForEach(source.timeZones) { timeZone in
+      ForEach(Source.shared.timeZones) { timeZone in
         Text(timeZone.label)
           .tag(timeZone.abbreviation)
       }
