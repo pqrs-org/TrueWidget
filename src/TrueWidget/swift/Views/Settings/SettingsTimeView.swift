@@ -85,7 +85,24 @@ struct SettingsTimeView: View {
           Divider()
 
           HStack {
-            Text("Font size: ")
+            Text("Date font size: ")
+
+            DoubleTextField(
+              value: $userSettings.timeZoneDateFontSize,
+              range: 0...1000,
+              step: 2,
+              maximumFractionDigits: 1,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 10 pt)")
+
+            Spacer()
+          }
+
+          HStack {
+            Text("Time font size: ")
 
             DoubleTextField(
               value: $userSettings.timeZoneTimeFontSize,

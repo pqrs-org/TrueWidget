@@ -48,20 +48,27 @@ struct MainTimeView: View {
 
       ForEach(userSettings.timeZoneTimeSettings) { setting in
         if setting.show {
-          HStack(alignment: .center, spacing: 0) {
+          HStack(alignment: .firstTextBaseline, spacing: 0) {
             Spacer()
 
-            let timeZoneTime = time.timeZoneTimes[setting.abbreviation]
+            let dateTime = time.timeZoneTimes[setting.abbreviation]
+
+            Text(String(format: "%@: ", setting.abbreviation))
+              .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
+
+            if userSettings.timeZoneDateFontSize > 0 {
+              Text(String(format: "%@ ", dateTime?.date ?? "---"))
+                .font(.custom("Menlo", size: userSettings.timeZoneDateFontSize))
+            }
+
             Text(
-              timeZoneTime == nil
+              dateTime == nil
                 ? "---"
                 : String(
-                  format: "%@ %02d:%02d:%02d",
-                  setting.abbreviation,
-                  timeZoneTime?.hour ?? 0,
-                  timeZoneTime?.minute ?? 0,
-                  timeZoneTime?.second ?? 0
-                )
+                  format: "%02d:%02d:%02d",
+                  dateTime?.hour ?? 0,
+                  dateTime?.minute ?? 0,
+                  dateTime?.second ?? 0)
             )
             .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
           }

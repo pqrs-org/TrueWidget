@@ -99,5 +99,6 @@ final class UserSettings: ObservableObject {
     }
   }
 
+  @AppStorage("timeZoneDateFontSize") var timeZoneDateFontSize: Double = 10.0
   @AppStorage("timeZoneTimeFontSize") var timeZoneTimeFontSize: Double = 12.0
 }

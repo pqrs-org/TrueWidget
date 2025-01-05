@@ -3,35 +3,27 @@ import Foundation
 import SwiftUI
 
 extension WidgetSource {
-  public struct TimeZoneTime: Equatable, Identifiable {
+  public struct DateTime: Identifiable {
     public let id = UUID()
-    var hour: Int = 0
-    var minute: Int = 0
-    var second: Int = 0
+    public let date: String
+    public let hour: Int
+    public let minute: Int
+    public let second: Int
 
-    init(time: Date, abbreviation: String) {
-      if let identifier = TimeZone.abbreviationDictionary[abbreviation] {
-        if let timeZone = TimeZone(identifier: identifier) {
-          let calendar = Calendar.current
-          let components = calendar.dateComponents(in: timeZone, from: time)
+    init(_ components: DateComponents) {
+      let weekdaySymbol = Calendar.current.shortWeekdaySymbols[(components.weekday ?? 1) - 1]
 
-          if let h = components.hour {
-            hour = h
-          }
+      date = String(
+        format: "%04d-%02d-%02d (%@)",
+        components.year ?? 0,
+        components.month ?? 0,
+        components.day ?? 0,
+        weekdaySymbol
+      )
 
-          if let m = components.minute {
-            minute = m
-          }
-
-          if let s = components.second {
-            second = s
-          }
-        }
-      }
-    }
-
-    public static func == (lhs: TimeZoneTime, rhs: TimeZoneTime) -> Bool {
-      return lhs.hour == rhs.hour && lhs.minute == rhs.minute && lhs.second == rhs.second
+      hour = components.hour ?? 0
+      minute = components.minute ?? 0
+      second = components.second ?? 0
     }
   }
 
@@ -43,7 +35,7 @@ extension WidgetSource {
     @Published public var localSecond: Int = 0
     @Published public var localDate: String = ""
 
-    @Published public var timeZoneTimes: [String: TimeZoneTime] = [:]
+    @Published public var timeZoneTimes: [String: DateTime] = [:]
 
     private var timer: Timer?
 
@@ -103,11 +95,18 @@ extension WidgetSource {
     }
 
     private func updateTimeZoneTimes(_ now: Date) {
-      var times: [String: TimeZoneTime] = [:]
+      let calendar = Calendar.current
+      var times: [String: DateTime] = [:]
 
       userSettings.timeZoneTimeSettings.forEach { setting in
         if setting.show && times[setting.abbreviation] == nil {
-          times[setting.abbreviation] = TimeZoneTime(time: now, abbreviation: setting.abbreviation)
+          if let identifier = TimeZone.abbreviationDictionary[setting.abbreviation] {
+            if let timeZone = TimeZone(identifier: identifier) {
+              let components = calendar.dateComponents(in: timeZone, from: now)
+
+              times[setting.abbreviation] = DateTime(components)
+            }
+          }
         }
       }
 
