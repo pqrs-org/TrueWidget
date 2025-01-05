@@ -2,18 +2,18 @@ import AppKit
 import SwiftUI
 
 @MainActor
-class WindowPositionManager: ObservableObject {
-  private var userSettings: UserSettings
+class WindowPositionManager {
+  private let window: NSWindow
+  private let userSettings: UserSettings
 
-  init(userSettings: UserSettings) {
+  init(window: NSWindow, userSettings: UserSettings) {
+    self.window = window
     self.userSettings = userSettings
   }
 
   func updateWindowPosition() {
-    if let window = NSApplication.shared.windows.first {
-      let frameOrigin = windowFrameOrigin(window)
-      window.setFrameOrigin(frameOrigin)
-    }
+    let frameOrigin = windowFrameOrigin(window)
+    window.setFrameOrigin(frameOrigin)
   }
 
   private func windowFrameOrigin(_ window: NSWindow) -> CGPoint {

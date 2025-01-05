@@ -4,8 +4,9 @@ import SwiftUI
 
 @main
 struct TrueWidgetApp: App {
+  @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
   @StateObject private var userSettings: UserSettings
-  @StateObject private var windowPositionManager: WindowPositionManager
   // Since passing a property of an ObservableObject to MenuBarExtra.isInserted causes a notification loop, the flag must be an independent variable.
   @AppStorage("showMenu") var showMenuBarExtra: Bool = true
 
@@ -20,8 +21,8 @@ struct TrueWidgetApp: App {
     let userSettings = UserSettings()
 
     _userSettings = StateObject(wrappedValue: userSettings)
-    _windowPositionManager = StateObject(
-      wrappedValue: WindowPositionManager(userSettings: userSettings))
+
+    appDelegate.userSettings = userSettings
 
     //
     // Register OpenAtLogin
@@ -56,52 +57,7 @@ struct TrueWidgetApp: App {
   }
 
   var body: some Scene {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @Environment(\.openSettingsLegacy) var openSettingsLegacy
-
-    Window("TrueWidget", id: "true-widget") {
-      ContentView()
-        .openSettingsAccess()
-        .environmentObject(userSettings)
-        .onAppear {
-          if let window = NSApp.windows.first {
-            // Note: Do not set alpha value for window.
-            // Window with alpha value causes glitch at switching a space (Mission Control).
-
-            window.styleMask = [.borderless]
-            window.backgroundColor = .clear
-            window.isOpaque = false
-            window.hasShadow = false
-            window.ignoresMouseEvents = true
-            window.level = .statusBar
-            window.collectionBehavior.insert(.canJoinAllSpaces)
-            window.collectionBehavior.insert(.ignoresCycle)
-            window.collectionBehavior.insert(.stationary)
-          }
-
-          windowPositionManager.updateWindowPosition()
-        }
-        .onReceive(
-          NotificationCenter.default.publisher(for: windowPositionUpdateNeededNotification)
-        ) { _ in
-          Task { @MainActor in
-            windowPositionManager.updateWindowPosition()
-          }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: openSettingsNotification)) { _ in
-          Task { @MainActor in
-            try? openSettingsLegacy()
-          }
-        }
-        .overlay(
-          GeometryReader { geometry in
-            Color.clear
-              .onChange(of: geometry.size) { _ in
-                postWindowPositionUpdateNeededNotification()
-              }
-          }
-        )
-    }
+    // The main window is manually managed by MainWindowController.
 
     MenuBarExtra(
       isInserted: $showMenuBarExtra,
@@ -143,6 +99,16 @@ struct TrueWidgetApp: App {
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
+  var mainWindowController: MainWindowController?
+  var userSettings: UserSettings?
+
+  func applicationDidFinishLaunching(_ notification: Notification) {
+    guard let userSettings = userSettings else { return }
+
+    mainWindowController = MainWindowController(userSettings: userSettings)
+    mainWindowController?.showWindow(nil)
+  }
+
   func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool
   {
     NotificationCenter.default.post(
@@ -150,5 +116,48 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       object: nil,
       userInfo: nil)
     return true
+  }
+}
+
+class MainWindowController: NSWindowController {
+  init(userSettings: UserSettings) {
+    // Note:
+    // On macOS 13, the only way to remove the title bar is to manually create an NSWindow like this.
+    //
+    // The following methods do not work properly:
+    // - .windowStyle(.hiddenTitleBar) does not remove the window frame.
+    // - NSApp.windows.first.styleMask = [.borderless] causes the app to crash.
+
+    let window = NSWindow(
+      contentRect: .zero,
+      styleMask: [
+        .borderless,
+        .fullSizeContentView,
+      ],
+      backing: .buffered,
+      defer: false
+    )
+
+    // Note: Do not set alpha value for window.
+    // Window with alpha value causes glitch at switching a space (Mission Control).
+
+    window.backgroundColor = .clear
+    window.isOpaque = false
+    window.hasShadow = false
+    window.ignoresMouseEvents = true
+    window.level = .statusBar
+    window.collectionBehavior.insert(.canJoinAllSpaces)
+    window.collectionBehavior.insert(.ignoresCycle)
+    window.collectionBehavior.insert(.stationary)
+    window.contentView = NSHostingView(
+      rootView: ContentView(window: window, userSettings: userSettings)
+        .openSettingsAccess()
+    )
+
+    super.init(window: window)
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 }

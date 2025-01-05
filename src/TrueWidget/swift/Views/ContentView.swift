@@ -1,9 +1,19 @@
+import SettingsAccess
 import SwiftUI
 
 struct ContentView: View {
-  @EnvironmentObject private var userSettings: UserSettings
+  @Environment(\.openSettingsLegacy) var openSettingsLegacy
+  private var window: NSWindow
+  @ObservedObject private var userSettings: UserSettings
 
   @State private var hidden = false
+  private let windowPositionManager: WindowPositionManager
+
+  init(window: NSWindow, userSettings: UserSettings) {
+    self.window = window
+    self.userSettings = userSettings
+    windowPositionManager = WindowPositionManager(window: window, userSettings: userSettings)
+  }
 
   var body: some View {
     VStack {
@@ -49,9 +59,29 @@ struct ContentView: View {
       }
     }
     .overlay(
-      RoundedRectangle(cornerRadius: 12)
-        .stroke(.black, lineWidth: 4)
+      GeometryReader { geometry in
+        RoundedRectangle(cornerRadius: 12)
+          .stroke(.black, lineWidth: 4)
+          .onChange(of: geometry.size) { _ in
+            postWindowPositionUpdateNeededNotification()
+          }
+      }
     )
     .clipShape(RoundedRectangle(cornerRadius: 12))
+    .onAppear {
+      windowPositionManager.updateWindowPosition()
+    }
+    .onReceive(
+      NotificationCenter.default.publisher(for: windowPositionUpdateNeededNotification)
+    ) { _ in
+      Task { @MainActor in
+        windowPositionManager.updateWindowPosition()
+      }
+    }
+    .onReceive(NotificationCenter.default.publisher(for: openSettingsNotification)) { _ in
+      Task { @MainActor in
+        try? openSettingsLegacy()
+      }
+    }
   }
 }
