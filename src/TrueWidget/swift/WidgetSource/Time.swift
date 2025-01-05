@@ -30,11 +30,7 @@ extension WidgetSource {
   public class Time: ObservableObject {
     private var userSettings: UserSettings
 
-    @Published public var localHour: Int = 0
-    @Published public var localMinute: Int = 0
-    @Published public var localSecond: Int = 0
-    @Published public var localDate: String = ""
-
+    @Published public var localTime: DateTime?
     @Published public var timeZoneTimes: [String: DateTime] = [:]
 
     private var timer: Timer?
@@ -60,38 +56,14 @@ extension WidgetSource {
       }
 
       let calendar = Calendar.current
-      let components = calendar.dateComponents([.hour, .minute, .second, .weekday], from: now)
+      let components = calendar.dateComponents(
+        [
+          .year, .month, .day,
+          .hour, .minute, .second,
+          .weekday,
+        ], from: now)
 
-      if let hour = components.hour {
-        if localHour != hour {
-          localHour = hour
-        }
-      }
-
-      if let minute = components.minute {
-        if localMinute != minute {
-          localMinute = minute
-        }
-      }
-
-      if let second = components.second {
-        if localSecond != second {
-          localSecond = second
-        }
-      }
-
-      if let weekday = components.weekday {
-        let date = ISO8601DateFormatter.string(
-          from: now,
-          timeZone: TimeZone.current,
-          formatOptions: .withFullDate
-        )
-        let weekdaySymbol = calendar.shortWeekdaySymbols[weekday - 1]
-        let text = "\(date) (\(weekdaySymbol))"
-        if localDate != text {
-          localDate = "\(date) (\(weekdaySymbol))"
-        }
-      }
+      localTime = DateTime(components)
     }
 
     private func updateTimeZoneTimes(_ now: Date) {

@@ -15,7 +15,7 @@ struct MainTimeView: View {
         HStack(alignment: .center, spacing: 0) {
           Spacer()
 
-          Text(time.localDate)
+          Text(time.localTime?.date ?? "---")
         }
         .font(.custom("Menlo", size: userSettings.localDateFontSize))
         .padding(.bottom, 4.0)
@@ -27,19 +27,23 @@ struct MainTimeView: View {
 
           HStack(alignment: .firstTextBaseline, spacing: 0) {
             Text(
-              String(
-                format: " %02d:%02d",
-                time.localHour,
-                time.localMinute
-              )
+              time.localTime == nil
+                ? "---"
+                : String(
+                  format: " %02d:%02d",
+                  time.localTime?.hour ?? 0,
+                  time.localTime?.minute ?? 0
+                )
             )
             .font(.custom("Menlo", size: userSettings.localTimeFontSize))
 
             Text(
-              String(
-                format: " %02d",
-                time.localSecond
-              )
+              time.localTime == nil
+                ? "---"
+                : String(
+                  format: " %02d",
+                  time.localTime?.second ?? 0
+                )
             )
             .font(.custom("Menlo", size: userSettings.localTimeFontSize / 2))
           }
