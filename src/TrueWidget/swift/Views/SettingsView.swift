@@ -59,6 +59,7 @@ struct SettingsView: View {
         }
         .tag(TabTag.action)
     }
+    .scenePadding()
     .frame(width: 600)
   }
 }

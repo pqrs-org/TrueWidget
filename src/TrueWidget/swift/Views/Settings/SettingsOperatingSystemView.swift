@@ -69,6 +69,5 @@ struct SettingsOperatingSystemView: View {
         }
       }
     }
-    .padding()
   }
 }

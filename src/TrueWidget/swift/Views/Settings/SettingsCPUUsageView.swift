@@ -95,6 +95,5 @@ struct SettingsCPUUsageView: View {
         }
       }
     }
-    .padding()
   }
 }

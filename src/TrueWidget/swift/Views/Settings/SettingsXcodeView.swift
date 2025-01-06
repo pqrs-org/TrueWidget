@@ -35,6 +35,5 @@ struct SettingsXcodeView: View {
         }.padding()
       }
     }
-    .padding()
   }
 }

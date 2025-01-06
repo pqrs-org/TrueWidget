@@ -133,6 +133,5 @@ struct SettingsMainView: View {
         .padding()
       }
     }
-    .padding()
   }
 }

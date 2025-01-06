@@ -30,6 +30,6 @@ struct SettingsActionView: View {
           }
         }.padding()
       }
-    }.padding()
+    }
   }
 }

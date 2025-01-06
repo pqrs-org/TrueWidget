@@ -36,7 +36,7 @@ struct SettingsUpdateView: View {
           Spacer()
         }.padding()
       }
-    }.padding()
+    }
   }
 
   // This additional view is needed for the disabled state on the menu item to work properly before Monterey.

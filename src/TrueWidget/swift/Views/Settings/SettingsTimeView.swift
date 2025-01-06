@@ -121,6 +121,5 @@ struct SettingsTimeView: View {
         .padding()
       }
     }
-    .padding()
   }
 }
