@@ -50,7 +50,7 @@ struct SettingsView: View {
 
       SettingsBundleView()
         .tabItem {
-          Label("Bundle", systemImage: "cube")
+          Label("App", systemImage: "cube")
         }
         .tag(TabTag.bundle)
 

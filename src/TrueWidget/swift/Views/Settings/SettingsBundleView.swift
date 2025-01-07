@@ -6,7 +6,7 @@ struct SettingsBundleView: View {
   @State var selectedFileURL: URL?
 
   var body: some View {
-    GroupBox(label: Text("Show bundle versions")) {
+    GroupBox(label: Text("Show app versions")) {
       VStack(alignment: .leading) {
         ForEach($userSettings.bundleSettings) { setting in
           HStack {
