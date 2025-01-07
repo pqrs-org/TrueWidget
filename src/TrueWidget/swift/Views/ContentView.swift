@@ -26,13 +26,17 @@ struct ContentView: View {
           MainXcodeView(userSettings: userSettings)
         }
 
+        if !userSettings.bundleSettings.filter({ $0.show }).isEmpty {
+          MainBundleView(userSettings: userSettings)
+        }
+
         if userSettings.showCPUUsage {
           MainCPUUsageView(userSettings: userSettings)
         }
 
         if userSettings.showLocalTime
           || userSettings.showLocalDate
-          || userSettings.timeZoneTimeSettings.filter({ $0.show }).count > 0
+          || !userSettings.timeZoneTimeSettings.filter({ $0.show }).isEmpty
         {
           MainTimeView(userSettings: userSettings)
         }

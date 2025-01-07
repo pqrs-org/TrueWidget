@@ -32,9 +32,16 @@ struct TimeZoneTimeSetting: Identifiable, Codable {
   var abbreviation: String = "UTC"
 }
 
+struct BundleSetting: Identifiable, Codable {
+  var id = UUID().uuidString
+  var show = false
+  var url: URL?
+}
+
 final class UserSettings: ObservableObject {
   init() {
     initializeTimeZoneTimeSettings()
+    initializeBundleSettings()
   }
 
   @AppStorage("initialOpenAtLoginRegistered") var initialOpenAtLoginRegistered: Bool = false
@@ -105,4 +112,28 @@ final class UserSettings: ObservableObject {
 
   @AppStorage("timeZoneDateFontSize") var timeZoneDateFontSize: Double = 10.0
   @AppStorage("timeZoneTimeFontSize") var timeZoneTimeFontSize: Double = 12.0
+
+  //
+  // Bundle
+  //
+
+  @CodableAppStorage("bundleSettings") var bundleSettings: [BundleSetting] = [] {
+    willSet {
+      objectWillChange.send()
+    }
+  }
+
+  func initializeBundleSettings() {
+    let maxCount = 10
+    while bundleSettings.count < maxCount {
+      if bundleSettings.isEmpty {
+        bundleSettings.append(
+          BundleSetting(
+            url: URL(filePath: "/Applications/TrueWidget.app")
+          ))
+      } else {
+        bundleSettings.append(BundleSetting())
+      }
+    }
+  }
 }

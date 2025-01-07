@@ -2,10 +2,11 @@ import SwiftUI
 
 enum TabTag: String {
   case main
-  case operatingSystem
-  case xcode
   case cpuUsage
   case time
+  case operatingSystem
+  case xcode
+  case bundle
   case update
   case action
 }
@@ -46,6 +47,12 @@ struct SettingsView: View {
           Label("Xcode", systemImage: "cube")
         }
         .tag(TabTag.xcode)
+
+      SettingsBundleView()
+        .tabItem {
+          Label("Bundle", systemImage: "cube")
+        }
+        .tag(TabTag.bundle)
 
       SettingsUpdateView()
         .tabItem {

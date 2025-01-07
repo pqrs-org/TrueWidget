@@ -5,6 +5,10 @@
     <key>com.apple.security.app-sandbox</key>
     <true/>
 
+    <!-- For fileImporter in BundlePickerView -->
+    <key>com.apple.security.files.user-selected.read-only</key>
+    <true/>
+
     <!-- For Sparkle: https://sparkle-project.org/documentation/sandboxing/ -->
     <key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
     <array>

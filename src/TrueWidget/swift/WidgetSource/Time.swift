@@ -51,7 +51,7 @@ extension WidgetSource {
     }
 
     private func updateLocalTime(_ now: Date) {
-      if !userSettings.showLocalTime {
+      if !userSettings.showLocalTime && !userSettings.showLocalDate {
         return
       }
 
