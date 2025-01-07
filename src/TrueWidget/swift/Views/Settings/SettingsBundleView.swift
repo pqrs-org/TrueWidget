@@ -14,7 +14,6 @@ struct SettingsBundleView: View {
               Text("Show")
             }
             .switchToggleStyle()
-            .disabled(setting.url.wrappedValue == nil)
 
             BundlePickerView(selectedFileURL: setting.url)
           }

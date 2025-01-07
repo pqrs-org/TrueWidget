@@ -35,6 +35,17 @@ struct BundlePickerView: View {
             errorMessage = "File selection failed: \(error.localizedDescription)"
           }
         }
+
+        Button(
+          role: .destructive,
+          action: {
+            selectedFileURL = nil
+          }
+        ) {
+          Label("Reset", systemImage: "trash")
+            .labelStyle(.iconOnly)
+            .foregroundColor(.red)
+        }
       }
 
       if let error = errorMessage {

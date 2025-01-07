@@ -19,7 +19,9 @@ struct MainBundleView: View {
 
               if setting.show {
                 if let version = bundle.bundleVersions[setting.url?.path ?? ""] {
-                  Text(String(format: "%@: %@", version.name, version.version))
+                  Text("\(version.name): \(version.version)")
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.trailing)
                 } else {
                   Text("---")
                 }
