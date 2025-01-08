@@ -10,11 +10,16 @@ extension WidgetSource {
       public let version: String
 
       init?(_ url: URL) {
-        guard
-          let bundle = Foundation.Bundle(url: url),
-          let name = bundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
-            ?? bundle.object(forInfoDictionaryKey: "CFBundleName") as? String,
-          let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        // Once a Bundle instance is created and associated with a url (or more precisely, a path), that instance continues to be reused.
+        // As a result, even if the version or other information is updated later, outdated information will still be returned.
+        // Therefore, instead of using Bundle, retrieve the information directly from Info.plist.
+        let plistPath = "\(url.path)/Contents/Info.plist"
+        guard let plistData = FileManager.default.contents(atPath: plistPath),
+          let plistDict = try? PropertyListSerialization.propertyList(
+            from: plistData, options: [], format: nil) as? [String: Any],
+          let name = plistDict["CFBundleDisplayName"] as? String
+            ?? plistDict["CFBundleName"] as? String,
+          let version = plistDict["CFBundleShortVersionString"] as? String
         else {
           return nil
         }
