@@ -7,7 +7,7 @@ struct SettingsBundleView: View {
 
   var body: some View {
     GroupBox(label: Text("Show app versions")) {
-      VStack(alignment: .leading) {
+      VStack(alignment: .leading, spacing: 12.0) {
         ForEach($userSettings.bundleSettings) { setting in
           HStack {
             Toggle(isOn: setting.show) {
