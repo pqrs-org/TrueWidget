@@ -52,12 +52,13 @@ struct BundlePickerView: View {
         action: {
           selectedFileURL = nil
           errorMessage = nil
+        },
+        label: {
+          Label("Reset", systemImage: "trash")
+            .labelStyle(.iconOnly)
+            .foregroundColor(.red)
         }
-      ) {
-        Label("Reset", systemImage: "trash")
-          .labelStyle(.iconOnly)
-          .foregroundColor(.red)
-      }
+      )
     }
   }
 }

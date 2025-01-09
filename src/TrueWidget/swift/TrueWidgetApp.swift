@@ -11,7 +11,8 @@ struct TrueWidgetApp: App {
   @AppStorage("showMenu") var showMenuBarExtra: Bool = true
 
   private var cancellables = Set<AnyCancellable>()
-  private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+  private let version =
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
 
   init() {
     //
