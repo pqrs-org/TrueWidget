@@ -46,8 +46,6 @@ extension WidgetSource {
 
       timerTask = Task { @MainActor in
         for await _ in timer {
-          print("timer")
-
           let now = Date()
           self.updateLocalTime(now)
           self.updateTimeZoneTimes(now)

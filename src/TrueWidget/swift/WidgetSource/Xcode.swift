@@ -1,3 +1,4 @@
+import AsyncAlgorithms
 import Combine
 import Foundation
 
@@ -12,33 +13,33 @@ extension WidgetSource {
     @Published public var path = ""
     @Published public var pathState = PathState.notInstalled
 
-    private var timer: Timer?
+    let timer: AsyncTimerSequence<ContinuousClock>
+    var timerTask: Task<Void, Never>?
 
     init() {
-      timer = Timer.scheduledTimer(
-        withTimeInterval: 3.0,
-        repeats: true
-      ) { [weak self] (_: Timer) in
-        guard let self = self else { return }
+      timer = AsyncTimerSequence(
+        interval: .seconds(3),
+        clock: .continuous
+      )
 
-        self.update()
+      timerTask = Task { @MainActor in
+        for await _ in timer {
+          let (bundlePath, pathState) = self.xcodePath()
+
+          if self.path != bundlePath {
+            self.path = bundlePath
+          }
+
+          if self.pathState != pathState {
+            self.pathState = pathState
+          }
+        }
       }
-
-      self.update()
     }
 
-    private func update() {
-      Task { @MainActor in
-        let (bundlePath, pathState) = self.xcodePath()
-
-        if self.path != bundlePath {
-          self.path = bundlePath
-        }
-
-        if self.pathState != pathState {
-          self.pathState = pathState
-        }
-      }
+    // Since timerTask strongly references self, make sure to call cancelTimer when Xcode is no longer used.
+    func cancelTimer() {
+      timerTask?.cancel()
     }
 
     private func xcodePath() -> (String, PathState) {

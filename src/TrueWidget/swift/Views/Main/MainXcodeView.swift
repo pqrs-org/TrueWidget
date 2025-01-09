@@ -17,6 +17,9 @@ struct MainXcodeView: View {
         .foregroundColor(pathColor(xcode.pathState))
     }
     .font(.system(size: userSettings.xcodeFontSize))
+    .onDisappear {
+      xcode.cancelTimer()
+    }
   }
 
   private func pathColor(_ pathState: WidgetSource.Xcode.PathState) -> Color {
