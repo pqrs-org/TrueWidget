@@ -24,15 +24,7 @@ extension WidgetSource {
 
       timerTask = Task { @MainActor in
         for await _ in timer {
-          let (bundlePath, pathState) = self.xcodePath()
-
-          if self.path != bundlePath {
-            self.path = bundlePath
-          }
-
-          if self.pathState != pathState {
-            self.pathState = pathState
-          }
+          update()
         }
       }
     }
@@ -40,6 +32,18 @@ extension WidgetSource {
     // Since timerTask strongly references self, make sure to call cancelTimer when Xcode is no longer used.
     func cancelTimer() {
       timerTask?.cancel()
+    }
+
+    private func update() {
+      let (bundlePath, pathState) = self.xcodePath()
+
+      if self.path != bundlePath {
+        self.path = bundlePath
+      }
+
+      if self.pathState != pathState {
+        self.pathState = pathState
+      }
     }
 
     private func xcodePath() -> (String, PathState) {

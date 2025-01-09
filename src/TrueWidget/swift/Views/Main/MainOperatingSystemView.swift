@@ -45,5 +45,8 @@ struct MainOperatingSystemView: View {
       }
     }
     .font(.system(size: userSettings.operatingSystemFontSize))
+    .onDisappear {
+      operatingSystem.cancelTimer()
+    }
   }
 }

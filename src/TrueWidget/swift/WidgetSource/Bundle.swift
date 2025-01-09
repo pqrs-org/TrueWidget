@@ -52,27 +52,32 @@ extension WidgetSource {
 
       timerTask = Task { @MainActor in
         for await _ in timer {
-          var versions: [String: BundleVersion] = [:]
-
-          userSettings.bundleSettings.forEach { setting in
-            if setting.show {
-              guard
-                let url = setting.url,
-                let bundleVersion = BundleVersion(url)
-              else { return }
-
-              versions[url.path] = bundleVersion
-            }
-          }
-
-          bundleVersions = versions
+          update()
         }
       }
+      update()
     }
 
     // Since timerTask strongly references self, make sure to call cancelTimer when Bundle is no longer used.
     func cancelTimer() {
       timerTask?.cancel()
+    }
+
+    private func update() {
+      var versions: [String: BundleVersion] = [:]
+
+      userSettings.bundleSettings.forEach { setting in
+        if setting.show {
+          guard
+            let url = setting.url,
+            let bundleVersion = BundleVersion(url)
+          else { return }
+
+          versions[url.path] = bundleVersion
+        }
+      }
+
+      bundleVersions = versions
     }
   }
 }

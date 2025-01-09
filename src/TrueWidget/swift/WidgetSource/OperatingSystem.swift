@@ -1,3 +1,4 @@
+import AsyncAlgorithms
 import Combine
 import Foundation
 
@@ -10,10 +11,23 @@ extension WidgetSource {
     @Published public var rootVolumeName = ""
     @Published public var userName = ""
 
-    private var timer: Timer?
+    let timer: AsyncTimerSequence<ContinuousClock>
+    var timerTask: Task<Void, Never>?
 
     init(userSettings: UserSettings) {
       self.userSettings = userSettings
+
+      timer = AsyncTimerSequence(
+        interval: .seconds(3),
+        clock: .continuous
+      )
+
+      timerTask = Task { @MainActor in
+        for await _ in timer {
+          update()
+        }
+      }
+      update()
 
       // We have to use `operatingSystemVersionString` instead of `operatingSystemVersion` because
       // `operatingSystemVersion` does not have a security update version, such as "(a)" in "13.3.1 (a)".
@@ -28,17 +42,11 @@ extension WidgetSource {
       rootVolumeName = volumeName("/")
 
       userName = NSUserName()
+    }
 
-      timer = Timer.scheduledTimer(
-        withTimeInterval: 3.0,
-        repeats: true
-      ) { [weak self] (_: Timer) in
-        guard let self = self else { return }
-
-        self.update()
-      }
-
-      self.update()
+    // Since timerTask strongly references self, make sure to call cancelTimer when OperatingSystem is no longer used.
+    func cancelTimer() {
+      timerTask?.cancel()
     }
 
     private func volumeName(_ path: String) -> String {
