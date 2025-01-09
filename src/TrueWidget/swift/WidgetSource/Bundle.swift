@@ -70,6 +70,7 @@ extension WidgetSource {
       }
     }
 
+    // Since timerTask strongly references self, make sure to call cancelTimer when Bundle is no longer used.
     func cancelTimer() {
       timerTask?.cancel()
     }
