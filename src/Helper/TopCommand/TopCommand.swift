@@ -17,10 +17,10 @@ actor TopCommand {
       // CPU usage: 10.84% user, 8.27% sys, 80.88% idle
       let topCPUUsageRegex = try? NSRegularExpression(
         pattern: "^CPU usage: ([\\d\\.]+)% user, ([\\d\\.]+)% sys, "),
-      // PID    %CPU COMMAND
-      let topProcessesStartRegex = try? NSRegularExpression(pattern: "^PID\\s+%CPU\\s+COMMAND"),
-      // 75529  21.5 Google Chrome He
-      let topProcessRegex = try? NSRegularExpression(pattern: "^(\\d+)\\s+([\\d\\.]+)\\s+(.+)"),
+      // %CPU COMMAND
+      let topProcessesStartRegex = try? NSRegularExpression(pattern: "^%CPU\\s+COMMAND"),
+      // 21.5 Google Chrome He
+      let topProcessRegex = try? NSRegularExpression(pattern: "^([\\d\\.]+)\\s+(.+)"),
       // Processes: 652 total, 5 running, 647 sleeping, 3732 threads
       let topProcessesEndRegex = try? NSRegularExpression(pattern: "^Processes:")
     else { return }
@@ -28,7 +28,7 @@ actor TopCommand {
     let topCommand = Process()
     topCommand.launchPath = "/usr/bin/top"
     topCommand.arguments = [
-      "-stats", "pid,cpu,command",
+      "-stats", "cpu,command",
       // Make the top command produce two outputs.
       // The first output is not accurate because the value is at the moment of activation.
       // The second output is the correct value and should be used.
@@ -83,10 +83,9 @@ actor TopCommand {
           if process.count > 0 {
             newProcesses.append(
               [
-                ProcessDictionaryKey.pid.rawValue: process[0],
-                ProcessDictionaryKey.name.rawValue: process[2].trimmingCharacters(
+                ProcessDictionaryKey.cpu.rawValue: process[0],
+                ProcessDictionaryKey.name.rawValue: process[1].trimmingCharacters(
                   in: .whitespacesAndNewlines),
-                ProcessDictionaryKey.cpu.rawValue: process[1],
               ])
           }
         }
@@ -97,6 +96,10 @@ actor TopCommand {
           inProcessesLine = true
           newProcesses.removeAll()
         }
+      }
+
+      while newProcesses.count < 3 {
+        newProcesses.append([:])
       }
 
       await update(cpuUsage: newCPUUsage)

@@ -46,16 +46,21 @@ extension WidgetSource {
 
       timerTask = Task { @MainActor in
         for await _ in timer {
-          let now = Date()
-          self.updateLocalTime(now)
-          self.updateTimeZoneTimes(now)
+          update()
         }
       }
+      update()
     }
 
     // Since timerTask strongly references self, make sure to call cancelTimer when Time is no longer used.
     func cancelTimer() {
       timerTask?.cancel()
+    }
+
+    private func update() {
+      let now = Date()
+      self.updateLocalTime(now)
+      self.updateTimeZoneTimes(now)
     }
 
     private func updateLocalTime(_ now: Date) {
