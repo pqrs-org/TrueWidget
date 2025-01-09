@@ -64,5 +64,8 @@ struct MainCPUUsageView: View {
         }
       }
     }
+    .onDisappear {
+      cpuUsage.cancelTimer()
+    }
   }
 }

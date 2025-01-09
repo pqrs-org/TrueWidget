@@ -1,3 +1,4 @@
+import AsyncAlgorithms
 import Combine
 import Foundation
 
@@ -22,71 +23,72 @@ extension WidgetSource {
     private var helperConnection: NSXPCConnection?
     private var helperProxy: TopCommandHelperProtocol?
 
-    private var timer: Timer?
+    let timer: AsyncTimerSequence<ContinuousClock>
+    var timerTask: Task<Void, Never>?
 
     init(userSettings: UserSettings) {
       self.userSettings = userSettings
 
-      timer = Timer.scheduledTimer(
-        withTimeInterval: 1.0,
-        repeats: true
-      ) { [weak self] (_: Timer) in
-        guard let self = self else { return }
+      timer = AsyncTimerSequence(
+        interval: .seconds(3),
+        clock: .continuous
+      )
 
-        self.update()
+      timerTask = Task { @MainActor in
+        for await _ in timer {
+          print("timer")
+          if helperConnection == nil {
+            helperConnection = NSXPCConnection(serviceName: helperServiceName)
+            helperConnection?.remoteObjectInterface = NSXPCInterface(
+              with: TopCommandHelperProtocol.self)
+            helperConnection?.resume()
+          }
+
+          if helperProxy == nil {
+            helperProxy = helperConnection?.remoteObjectProxy as? TopCommandHelperProtocol
+          }
+
+          //
+          // CPU Usage
+          //
+
+          helperProxy?.topCommandCPUUsage { cpuUsage in
+            Task { @MainActor in
+              self.usageInteger = Int(floor(cpuUsage))
+              self.usageDecimal = Int(floor((cpuUsage) * 100)) % 100
+
+              //
+              // Calculate average
+              //
+
+              let averageRange = max(self.userSettings.cpuUsageMovingAverageRange, 1)
+              self.usageHistory.append(cpuUsage)
+              while self.usageHistory.count > averageRange {
+                self.usageHistory.remove(at: 0)
+              }
+
+              let usageAverage = self.usageHistory.reduce(0.0, +) / Double(self.usageHistory.count)
+              self.usageAverageInteger = Int(floor(usageAverage))
+              self.usageAverageDecimal = Int(floor((usageAverage) * 100)) % 100
+            }
+          }
+
+          //
+          // Processes
+          //
+
+          helperProxy?.topCommandProcesses { processes in
+            Task { @MainActor in
+              self.processes = processes
+            }
+          }
+        }
       }
     }
 
-    private func update() {
-      if helperConnection == nil {
-        helperConnection = NSXPCConnection(serviceName: helperServiceName)
-        helperConnection?.remoteObjectInterface = NSXPCInterface(
-          with: TopCommandHelperProtocol.self)
-        helperConnection?.resume()
-      }
-
-      if helperProxy == nil {
-        helperProxy = helperConnection?.remoteObjectProxy as? TopCommandHelperProtocol
-      }
-
-      //
-      // CPU Usage
-      //
-
-      helperProxy?.topCommandCPUUsage { [weak self] cpuUsage in
-        guard let self = self else { return }
-
-        Task { @MainActor in
-          self.usageInteger = Int(floor(cpuUsage))
-          self.usageDecimal = Int(floor((cpuUsage) * 100)) % 100
-
-          //
-          // Calculate average
-          //
-
-          let averageRange = max(self.userSettings.cpuUsageMovingAverageRange, 1)
-          self.usageHistory.append(cpuUsage)
-          while self.usageHistory.count > averageRange {
-            self.usageHistory.remove(at: 0)
-          }
-
-          let usageAverage = self.usageHistory.reduce(0.0, +) / Double(self.usageHistory.count)
-          self.usageAverageInteger = Int(floor(usageAverage))
-          self.usageAverageDecimal = Int(floor((usageAverage) * 100)) % 100
-        }
-      }
-
-      //
-      // Processes
-      //
-
-      helperProxy?.topCommandProcesses { [weak self] processes in
-        guard let self = self else { return }
-
-        Task { @MainActor in
-          self.processes = processes
-        }
-      }
+    // Since timerTask strongly references self, make sure to call cancelTimer when CPUUsage is no longer used.
+    func cancelTimer() {
+      timerTask?.cancel()
     }
   }
 }
