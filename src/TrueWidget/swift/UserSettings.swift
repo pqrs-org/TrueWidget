@@ -136,4 +136,7 @@ final class UserSettings: ObservableObject {
       }
     }
   }
+
+  @AppStorage("bundleFontSize") var bundleFontSize: Double = 12.0
+
 }
