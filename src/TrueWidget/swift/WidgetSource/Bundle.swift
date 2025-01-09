@@ -22,14 +22,16 @@ extension WidgetSource {
         guard let plistData = FileManager.default.contents(atPath: plistPath),
           let plistDict = try? PropertyListSerialization.propertyList(
             from: plistData, options: [], format: nil) as? [String: Any],
-          let name = plistDict["CFBundleDisplayName"] as? String
-            ?? plistDict["CFBundleName"] as? String,
           let version = plistDict["CFBundleShortVersionString"] as? String
+            ?? plistDict["CFBundleVersion"] as? String
         else {
           return nil
         }
 
-        self.name = name
+        self.name =
+          plistDict["CFBundleDisplayName"] as? String
+          ?? plistDict["CFBundleName"] as? String
+          ?? url.lastPathComponent
         self.version = version
       }
     }
@@ -44,7 +46,7 @@ extension WidgetSource {
       self.userSettings = userSettings
 
       timer = AsyncTimerSequence(
-        interval: .seconds(1),
+        interval: .seconds(3),
         clock: .continuous
       )
 
@@ -64,10 +66,12 @@ extension WidgetSource {
           }
 
           bundleVersions = versions
-
-          try? await Task.sleep(for: .seconds(3.0))
         }
       }
+    }
+
+    func cancelTimer() {
+      timerTask?.cancel()
     }
   }
 }

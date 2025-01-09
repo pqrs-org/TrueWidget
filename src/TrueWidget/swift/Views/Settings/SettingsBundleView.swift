@@ -18,6 +18,23 @@ struct SettingsBundleView: View {
             BundlePickerView(selectedFileURL: setting.url)
           }
         }
+
+        HStack {
+          Text("Font size: ")
+
+          DoubleTextField(
+            value: $userSettings.bundleFontSize,
+            range: 0...1000,
+            step: 2,
+            maximumFractionDigits: 1,
+            width: 40)
+
+          Text("pt")
+
+          Text("(Default: 12 pt)")
+
+          Spacer()
+        }
       }
       .padding()
     }

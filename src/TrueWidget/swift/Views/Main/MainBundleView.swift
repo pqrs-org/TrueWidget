@@ -31,6 +31,9 @@ struct MainBundleView: View {
         }
       }
     }
-    .font(.system(size: 12))
+    .font(.system(size: userSettings.bundleFontSize))
+    .onDisappear {
+      bundle.cancelTimer()
+    }
   }
 }
