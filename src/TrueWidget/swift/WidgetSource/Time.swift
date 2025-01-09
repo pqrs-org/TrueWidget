@@ -1,5 +1,5 @@
+import AsyncAlgorithms
 import Combine
-import Foundation
 import SwiftUI
 
 extension WidgetSource {
@@ -33,21 +33,31 @@ extension WidgetSource {
     @Published public var localTime: DateTime?
     @Published public var timeZoneTimes: [String: DateTime] = [:]
 
-    private var timer: Timer?
+    let timer: AsyncTimerSequence<ContinuousClock>
+    var timerTask: Task<Void, Never>?
 
     init(userSettings: UserSettings) {
       self.userSettings = userSettings
 
-      timer = Timer.scheduledTimer(
-        withTimeInterval: 1.0,
-        repeats: true
-      ) { [weak self] (_: Timer) in
-        guard let self = self else { return }
+      timer = AsyncTimerSequence(
+        interval: .seconds(1),
+        clock: .continuous
+      )
 
-        let now = Date()
-        self.updateLocalTime(now)
-        self.updateTimeZoneTimes(now)
+      timerTask = Task { @MainActor in
+        for await _ in timer {
+          print("timer")
+
+          let now = Date()
+          self.updateLocalTime(now)
+          self.updateTimeZoneTimes(now)
+        }
       }
+    }
+
+    // Since timerTask strongly references self, make sure to call cancelTimer when Time is no longer used.
+    func cancelTimer() {
+      timerTask?.cancel()
     }
 
     private func updateLocalTime(_ now: Date) {

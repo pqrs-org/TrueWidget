@@ -36,7 +36,6 @@ extension WidgetSource {
 
       timerTask = Task { @MainActor in
         for await _ in timer {
-          print("timer")
           if helperConnection == nil {
             helperConnection = NSXPCConnection(serviceName: helperServiceName)
             helperConnection?.remoteObjectInterface = NSXPCInterface(

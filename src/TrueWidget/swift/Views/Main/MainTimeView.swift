@@ -79,5 +79,8 @@ struct MainTimeView: View {
         }
       }
     }
+    .onDisappear {
+      time.cancelTimer()
+    }
   }
 }
