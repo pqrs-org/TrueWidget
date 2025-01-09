@@ -39,8 +39,10 @@ struct BundlePickerView: View {
             }
           }
 
+          selectedFileURL = nil
           errorMessage = "Could not get the version of the selected file"
         } catch {
+          selectedFileURL = nil
           errorMessage = "File selection failed: \(error.localizedDescription)"
         }
       }
