@@ -19,6 +19,8 @@ struct SettingsBundleView: View {
           }
         }
 
+        Divider()
+
         HStack {
           Text("Font size: ")
 
