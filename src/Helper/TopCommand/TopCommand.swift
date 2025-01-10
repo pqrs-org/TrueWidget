@@ -4,7 +4,7 @@ actor TopCommand {
   static let shared = TopCommand()
 
   var cpuUsage = 0.0
-  var processes: [[String: String]] = topCommandProcessesInitialValue
+  var processes: [[String: String]] = [[:], [:], [:]]
 
   init() {
     Task {
@@ -83,10 +83,10 @@ actor TopCommand {
           if process.count > 0 {
             newProcesses.append(
               [
-                ProcessDictionaryKey.cpu.rawValue: process[0],
-                ProcessDictionaryKey.name.rawValue: process[1].trimmingCharacters(
-                  in: .whitespacesAndNewlines),
-              ])
+                "cpu": process[0],
+                "name": process[1].trimmingCharacters(in: .whitespacesAndNewlines),
+              ]
+            )
           }
         }
 

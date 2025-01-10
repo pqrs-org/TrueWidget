@@ -14,14 +14,14 @@ extension WidgetSource {
 
     private var usageHistory: [Double] = []
 
-    @Published public var processes: [[String: String]] = topCommandProcessesInitialValue
+    @Published public var processes: [[String: String]] = [[:], [:], [:]]
 
     // To get the CPU utilization of a process (especially kernel_task information),
     // as far as I've been able to find out, we need to use the results of the top command or need administrator privileges.
     // Since the top command has a setuid bit and can be used without privilege, we run top command in a helper process and use the result.
 
     private var helperConnection: NSXPCConnection?
-    private var helperProxy: TopCommandHelperProtocol?
+    private var helperProxy: HelperProtocol?
 
     let timer: AsyncTimerSequence<ContinuousClock>
     var timerTask: Task<Void, Never>?
@@ -50,13 +50,12 @@ extension WidgetSource {
     private func update() {
       if helperConnection == nil {
         helperConnection = NSXPCConnection(serviceName: helperServiceName)
-        helperConnection?.remoteObjectInterface = NSXPCInterface(
-          with: TopCommandHelperProtocol.self)
+        helperConnection?.remoteObjectInterface = NSXPCInterface(with: HelperProtocol.self)
         helperConnection?.resume()
       }
 
       if helperProxy == nil {
-        helperProxy = helperConnection?.remoteObjectProxy as? TopCommandHelperProtocol
+        helperProxy = helperConnection?.remoteObjectProxy as? HelperProtocol
       }
 
       //
