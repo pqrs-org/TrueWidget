@@ -23,6 +23,8 @@ extension WidgetSource {
       )
 
       timerTask = Task { @MainActor in
+        update()
+
         for await _ in timer {
           update()
         }

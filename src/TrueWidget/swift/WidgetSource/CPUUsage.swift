@@ -16,13 +16,6 @@ extension WidgetSource {
 
     @Published public var processes: [[String: String]] = [[:], [:], [:]]
 
-    // To get the CPU utilization of a process (especially kernel_task information),
-    // as far as I've been able to find out, we need to use the results of the top command or need administrator privileges.
-    // Since the top command has a setuid bit and can be used without privilege, we run top command in a helper process and use the result.
-
-    private var helperConnection: NSXPCConnection?
-    private var helperProxy: HelperProtocol?
-
     let timer: AsyncTimerSequence<ContinuousClock>
     var timerTask: Task<Void, Never>?
 
@@ -35,11 +28,12 @@ extension WidgetSource {
       )
 
       timerTask = Task { @MainActor in
+        update()
+
         for await _ in timer {
           update()
         }
       }
-      update()
     }
 
     // Since timerTask strongly references self, make sure to call cancelTimer when CPUUsage is no longer used.
@@ -47,22 +41,17 @@ extension WidgetSource {
       timerTask?.cancel()
     }
 
+    @MainActor
     private func update() {
-      if helperConnection == nil {
-        helperConnection = NSXPCConnection(serviceName: helperServiceName)
-        helperConnection?.remoteObjectInterface = NSXPCInterface(with: HelperProtocol.self)
-        helperConnection?.resume()
-      }
-
-      if helperProxy == nil {
-        helperProxy = helperConnection?.remoteObjectProxy as? HelperProtocol
-      }
+      // To get the CPU utilization of a process (especially kernel_task information),
+      // as far as I've been able to find out, we need to use the results of the top command or need administrator privileges.
+      // Since the top command has a setuid bit and can be used without privilege, we run top command in a helper process and use the result.
 
       //
       // CPU Usage
       //
 
-      helperProxy?.topCommandCPUUsage { cpuUsage in
+      HelperClient.shared.proxy?.topCommandCPUUsage { cpuUsage in
         Task { @MainActor in
           self.usageInteger = Int(floor(cpuUsage))
           self.usageDecimal = Int(floor((cpuUsage) * 100)) % 100
@@ -87,7 +76,7 @@ extension WidgetSource {
       // Processes
       //
 
-      helperProxy?.topCommandProcesses { processes in
+      HelperClient.shared.proxy?.topCommandProcesses { processes in
         Task { @MainActor in
           self.processes = processes
         }

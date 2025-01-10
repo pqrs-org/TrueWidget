@@ -30,21 +30,21 @@ struct BundlePickerView: View {
         allowedContentTypes: [.item],
         allowsMultipleSelection: false
       ) { result in
-        do {
-          if let url = try result.get().first {
-            if WidgetSource.Bundle.BundleVersion(url) != nil {
+        if let url = try? result.get().first {
+          HelperClient.shared.proxy?.bundleVersions(paths: [url.path]) { versions in
+            if versions[url.path] != nil {
               selectedFileURL = url
               errorMessage = nil
-              return
+            } else {
+              selectedFileURL = nil
+              errorMessage = "Could not get the version of the selected file"
             }
           }
-
-          selectedFileURL = nil
-          errorMessage = "Could not get the version of the selected file"
-        } catch {
-          selectedFileURL = nil
-          errorMessage = "File selection failed: \(error.localizedDescription)"
+          return
         }
+
+        selectedFileURL = nil
+        errorMessage = "File selection failed"
       }
 
       Button(

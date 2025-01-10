@@ -1,8 +1,10 @@
 import Foundation
 
 extension Helper {
-  @objc func bundleVersions(paths: [String], with reply: @escaping ([[String: String]]) -> Void) {
-    var versions: [[String: String]] = []
+  @objc func bundleVersions(
+    paths: [String], with reply: @escaping ([String: [String: String]]) -> Void
+  ) {
+    var versions: [String: [String: String]] = [:]
 
     for path in paths {
       // Once a Bundle instance is created and associated with a url (or more precisely, a path), that instance continues to be reused.
@@ -24,12 +26,12 @@ extension Helper {
         continue
       }
 
-      versions.append([
+      versions[path] = [
         "name": plistDict["CFBundleDisplayName"] as? String
           ?? plistDict["CFBundleName"] as? String
           ?? url.lastPathComponent,
         "version": version,
-      ])
+      ]
     }
 
     reply(versions)

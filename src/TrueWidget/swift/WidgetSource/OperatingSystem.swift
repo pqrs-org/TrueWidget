@@ -23,11 +23,12 @@ extension WidgetSource {
       )
 
       timerTask = Task { @MainActor in
+        update()
+
         for await _ in timer {
           update()
         }
       }
-      update()
 
       // We have to use `operatingSystemVersionString` instead of `operatingSystemVersion` because
       // `operatingSystemVersion` does not have a security update version, such as "(a)" in "13.3.1 (a)".

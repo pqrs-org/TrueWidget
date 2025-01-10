@@ -8,7 +8,7 @@ protocol HelperProtocol {
   // BundleVersions
   //
 
-  func bundleVersions(paths: [String], with reply: @escaping ([[String: String]]) -> Void)
+  func bundleVersions(paths: [String], with reply: @escaping ([String: [String: String]]) -> Void)
 
   //
   // TopCommand

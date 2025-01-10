@@ -45,11 +45,12 @@ extension WidgetSource {
       )
 
       timerTask = Task { @MainActor in
+        update()
+
         for await _ in timer {
           update()
         }
       }
-      update()
     }
 
     // Since timerTask strongly references self, make sure to call cancelTimer when Time is no longer used.
