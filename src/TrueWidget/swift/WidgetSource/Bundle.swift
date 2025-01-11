@@ -42,7 +42,9 @@ extension WidgetSource {
           $0.url?.path ?? ""
         })
       ) { versions in
-        self.bundleVersions = versions
+        Task { @MainActor in
+          self.bundleVersions = versions
+        }
       }
     }
   }
