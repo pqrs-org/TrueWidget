@@ -50,7 +50,7 @@ struct MainCPUUsageView: View {
           Spacer()
 
           VStack(alignment: .trailing, spacing: 0) {
-            ForEach(Array(cpuUsage.processes.enumerated()), id: \.0) { index, process in
+            ForEach(Array(cpuUsage.processes.enumerated()), id: \.0) { _, process in
               HStack(alignment: .center, spacing: 0) {
                 Text("\(process["name"] ?? "---")")
                 Text("\((process["cpu"] ?? "---").leftPadding(toLength: 6, withPad: " "))%")
