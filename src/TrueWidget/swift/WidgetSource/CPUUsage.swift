@@ -39,6 +39,10 @@ extension WidgetSource {
     // Since timerTask strongly references self, make sure to call cancelTimer when CPUUsage is no longer used.
     func cancelTimer() {
       timerTask?.cancel()
+
+      Task { @MainActor in
+        HelperClient.shared.proxy?.stopTopCommand()
+      }
     }
 
     @MainActor
@@ -51,7 +55,7 @@ extension WidgetSource {
       // CPU Usage
       //
 
-      HelperClient.shared.proxy?.topCommandCPUUsage { cpuUsage in
+      HelperClient.shared.proxy?.topCommand { cpuUsage, processes in
         Task { @MainActor in
           self.usageInteger = Int(floor(cpuUsage))
           self.usageDecimal = Int(floor((cpuUsage) * 100)) % 100
@@ -69,16 +73,16 @@ extension WidgetSource {
           let usageAverage = self.usageHistory.reduce(0.0, +) / Double(self.usageHistory.count)
           self.usageAverageInteger = Int(floor(usageAverage))
           self.usageAverageDecimal = Int(floor((usageAverage) * 100)) % 100
-        }
-      }
 
-      //
-      // Processes
-      //
+          //
+          // Processes
+          //
 
-      HelperClient.shared.proxy?.topCommandProcesses { processes in
-        Task { @MainActor in
-          self.processes = processes
+          var newProcesses = processes
+          while newProcesses.count < 3 {
+            newProcesses.append([:])
+          }
+          self.processes = newProcesses
         }
       }
     }
