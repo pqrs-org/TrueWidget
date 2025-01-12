@@ -13,7 +13,7 @@ struct SettingsCPUUsageView: View {
           .switchToggleStyle()
 
           HStack {
-            Text("Font size: ")
+            Text("Font size:")
 
             DoubleTextField(
               value: $userSettings.cpuUsageFontSize,
@@ -34,13 +34,13 @@ struct SettingsCPUUsageView: View {
       if userSettings.showCPUUsage {
         GroupBox(label: Text("Advanced")) {
           VStack(alignment: .leading) {
-            Picker(selection: $userSettings.cpuUsageType, label: Text("Value: ")) {
+            Picker(selection: $userSettings.cpuUsageType, label: Text("Value:")) {
               Text("Moving Average (Default)").tag(CPUUsageType.movingAverage.rawValue)
               Text("Latest").tag(CPUUsageType.latest.rawValue)
             }
 
             HStack {
-              Text("Moving Average periods: ")
+              Text("Moving Average periods:")
 
               IntTextField(
                 value: $userSettings.cpuUsageMovingAverageRange,
@@ -60,7 +60,7 @@ struct SettingsCPUUsageView: View {
             .padding(.top, 20.0)
 
             HStack {
-              Text("Processes font size: ")
+              Text("Processes font size:")
 
               DoubleTextField(
                 value: $userSettings.processesFontSize,

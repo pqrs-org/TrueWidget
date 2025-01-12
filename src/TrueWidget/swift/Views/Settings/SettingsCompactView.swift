@@ -13,7 +13,7 @@ struct SettingsCompactView: View {
           .switchToggleStyle()
 
           HStack {
-            Text("Local time font size: ")
+            Text("Local time font size:")
 
             DoubleTextField(
               value: $userSettings.compactLocalTimeFontSize,
@@ -34,7 +34,7 @@ struct SettingsCompactView: View {
           .padding(.top, 20.0)
 
           HStack {
-            Text("CPU usage font size: ")
+            Text("CPU usage font size:")
 
             DoubleTextField(
               value: $userSettings.compactCPUUsageFontSize,

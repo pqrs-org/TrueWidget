@@ -22,7 +22,7 @@ struct SettingsBundleView: View {
         Divider()
 
         HStack {
-          Text("Font size: ")
+          Text("Font size:")
 
           DoubleTextField(
             value: $userSettings.bundleFontSize,

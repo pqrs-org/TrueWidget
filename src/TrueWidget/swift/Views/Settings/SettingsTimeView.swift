@@ -13,7 +13,7 @@ struct SettingsTimeView: View {
           .switchToggleStyle()
 
           HStack {
-            Text("Font size: ")
+            Text("Font size:")
 
             DoubleTextField(
               value: $userSettings.localTimeFontSize,
@@ -39,7 +39,7 @@ struct SettingsTimeView: View {
           .switchToggleStyle()
 
           HStack {
-            Text("Local date font size: ")
+            Text("Local date font size:")
 
             DoubleTextField(
               value: $userSettings.localDateFontSize,
@@ -74,7 +74,7 @@ struct SettingsTimeView: View {
 
           Grid(alignment: .leadingFirstTextBaseline) {
             GridRow {
-              Text("Date font size: ")
+              Text("Date font size:")
                 .gridColumnAlignment(.trailing)
 
               DoubleTextField(
@@ -90,7 +90,7 @@ struct SettingsTimeView: View {
             }
 
             GridRow {
-              Text("Time font size: ")
+              Text("Time font size:")
 
               DoubleTextField(
                 value: $userSettings.timeZoneTimeFontSize,

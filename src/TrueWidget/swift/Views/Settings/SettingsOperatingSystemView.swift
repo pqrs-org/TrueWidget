@@ -13,7 +13,7 @@ struct SettingsOperatingSystemView: View {
           .switchToggleStyle()
 
           HStack {
-            Text("Font size: ")
+            Text("Font size:")
 
             DoubleTextField(
               value: $userSettings.operatingSystemFontSize,

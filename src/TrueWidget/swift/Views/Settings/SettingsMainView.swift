@@ -42,17 +42,15 @@ struct SettingsMainView: View {
 
       GroupBox(label: Text("Widget")) {
         VStack(alignment: .leading) {
-          HStack {
-            Picker(selection: $userSettings.widgetPosition, label: Text("Widget position: ")) {
-              Text("Bottom Left").tag(WidgetPosition.bottomLeft.rawValue)
-              Text("Bottom Right (Default)").tag(WidgetPosition.bottomRight.rawValue)
-              Text("Top Left").tag(WidgetPosition.topLeft.rawValue)
-              Text("Top Right").tag(WidgetPosition.topRight.rawValue)
-            }
+          Picker(selection: $userSettings.widgetPosition, label: Text("Widget position:")) {
+            Text("Bottom Left").tag(WidgetPosition.bottomLeft.rawValue)
+            Text("Bottom Right (Default)").tag(WidgetPosition.bottomRight.rawValue)
+            Text("Top Left").tag(WidgetPosition.topLeft.rawValue)
+            Text("Top Right").tag(WidgetPosition.topRight.rawValue)
           }
 
           HStack {
-            Text("Widget width: ")
+            Text("Widget width:")
 
             DoubleTextField(
               value: $userSettings.widgetWidth,
@@ -67,7 +65,7 @@ struct SettingsMainView: View {
           }
 
           HStack {
-            Text("Widget opacity: ")
+            Text("Widget opacity:")
 
             Slider(
               value: $userSettings.widgetOpacity,
@@ -81,25 +79,23 @@ struct SettingsMainView: View {
             )
           }
 
-          HStack {
-            Picker(
-              selection: $userSettings.widgetScreen,
-              label: Text("Widget screen when using multiple displays: ")
-            ) {
-              Text("Primary screen (Default)").tag(WidgetScreen.primary.rawValue)
-              Text("Bottom Left screen").tag(WidgetScreen.bottomLeft.rawValue)
-              Text("Bottom Right screen").tag(WidgetScreen.bottomRight.rawValue)
-              Text("Top Left screen").tag(WidgetScreen.topLeft.rawValue)
-              Text("Top Right screen").tag(WidgetScreen.topRight.rawValue)
-              Text("Leftmost (top)").tag(WidgetScreen.leftTop.rawValue)
-              Text("Leftmost (bottom)").tag(WidgetScreen.leftBottom.rawValue)
-              Text("Rightmost (top)").tag(WidgetScreen.rightTop.rawValue)
-              Text("Rightmost (bottom)").tag(WidgetScreen.rightBottom.rawValue)
-            }
+          Picker(
+            selection: $userSettings.widgetScreen,
+            label: Text("Widget screen when using multiple displays:")
+          ) {
+            Text("Primary screen (Default)").tag(WidgetScreen.primary.rawValue)
+            Text("Bottom Left screen").tag(WidgetScreen.bottomLeft.rawValue)
+            Text("Bottom Right screen").tag(WidgetScreen.bottomRight.rawValue)
+            Text("Top Left screen").tag(WidgetScreen.topLeft.rawValue)
+            Text("Top Right screen").tag(WidgetScreen.topRight.rawValue)
+            Text("Leftmost (top)").tag(WidgetScreen.leftTop.rawValue)
+            Text("Leftmost (bottom)").tag(WidgetScreen.leftBottom.rawValue)
+            Text("Rightmost (top)").tag(WidgetScreen.rightTop.rawValue)
+            Text("Rightmost (bottom)").tag(WidgetScreen.rightBottom.rawValue)
           }
 
           HStack {
-            Text("Widget fade-out duration: ")
+            Text("Widget fade-out duration:")
 
             DoubleTextField(
               value: $userSettings.widgetFadeOutDuration,
