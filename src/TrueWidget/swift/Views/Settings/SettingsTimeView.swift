@@ -7,14 +7,11 @@ struct SettingsTimeView: View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Local time")) {
         VStack(alignment: .leading) {
-          HStack {
-            Toggle(isOn: $userSettings.showLocalTime) {
-              Text("Show local time")
-            }
-            .switchToggleStyle()
-
-            Spacer()
+          Toggle(isOn: $userSettings.showLocalTime) {
+            Text("Show local time")
           }
+          .switchToggleStyle()
+          .frame(maxWidth: .infinity, alignment: .leading)
 
           HStack {
             Text("Font size: ")
@@ -29,23 +26,19 @@ struct SettingsTimeView: View {
             Text("pt")
 
             Text("(Default: 36 pt)")
-
-            Spacer()
           }
+          .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
       }
 
       GroupBox(label: Text("Local date")) {
         VStack(alignment: .leading) {
-          HStack {
-            Toggle(isOn: $userSettings.showLocalDate) {
-              Text("Show local date")
-            }
-            .switchToggleStyle()
-
-            Spacer()
+          Toggle(isOn: $userSettings.showLocalDate) {
+            Text("Show local date")
           }
+          .switchToggleStyle()
+          .frame(maxWidth: .infinity, alignment: .leading)
 
           HStack {
             Text("Local date font size: ")
@@ -60,9 +53,8 @@ struct SettingsTimeView: View {
             Text("pt")
 
             Text("(Default: 12 pt)")
-
-            Spacer()
           }
+          .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
       }
@@ -77,46 +69,45 @@ struct SettingsTimeView: View {
               .switchToggleStyle()
 
               TimeZonePickerView(abbreviation: timeZoneTimeSetting.abbreviation)
-
-              Spacer()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
           }
 
           Divider()
 
-          HStack {
-            Text("Date font size: ")
+          Grid(alignment: .leadingFirstTextBaseline) {
+            GridRow {
+              Text("Date font size: ")
+                .gridColumnAlignment(.trailing)
 
-            DoubleTextField(
-              value: $userSettings.timeZoneDateFontSize,
-              range: 0...1000,
-              step: 2,
-              maximumFractionDigits: 1,
-              width: 40)
+              DoubleTextField(
+                value: $userSettings.timeZoneDateFontSize,
+                range: 0...1000,
+                step: 2,
+                maximumFractionDigits: 1,
+                width: 40)
 
-            Text("pt")
+              Text("pt")
 
-            Text("(Default: 10 pt)")
+              Text("(Default: 10 pt)")
+            }
 
-            Spacer()
+            GridRow {
+              Text("Time font size: ")
+
+              DoubleTextField(
+                value: $userSettings.timeZoneTimeFontSize,
+                range: 0...1000,
+                step: 2,
+                maximumFractionDigits: 1,
+                width: 40)
+
+              Text("pt")
+
+              Text("(Default: 12 pt)")
+            }
           }
-
-          HStack {
-            Text("Time font size: ")
-
-            DoubleTextField(
-              value: $userSettings.timeZoneTimeFontSize,
-              range: 0...1000,
-              step: 2,
-              maximumFractionDigits: 1,
-              width: 40)
-
-            Text("pt")
-
-            Text("(Default: 12 pt)")
-
-            Spacer()
-          }
+          .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
       }
