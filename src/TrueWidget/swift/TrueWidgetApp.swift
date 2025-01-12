@@ -57,6 +57,8 @@ struct TrueWidgetApp: App {
     Updater.shared.checkForUpdatesInBackground()
   }
 
+  @State var selectedOption = "Normal"
+
   var body: some Scene {
     // The main window is manually managed by MainWindowController.
 
@@ -67,8 +69,48 @@ struct TrueWidgetApp: App {
 
         Divider()
 
+        Label("Appearance", systemImage: "rectangle.3.group")
+          .labelStyle(.titleAndIcon)
+
+        Button(
+          action: {
+            userSettings.widgetAppearance = WidgetAppearance.normal.rawValue
+          },
+          label: {
+            checkmarkLabel(
+              title: "Normal",
+              checked: userSettings.widgetAppearance == WidgetAppearance.normal.rawValue)
+          }
+        )
+
+        Button(
+          action: {
+            userSettings.widgetAppearance = WidgetAppearance.compact.rawValue
+          },
+          label: {
+            checkmarkLabel(
+              title: "Compact",
+              checked: userSettings.widgetAppearance == WidgetAppearance.compact.rawValue)
+          }
+
+        )
+
+        Button(
+          action: {
+            userSettings.widgetAppearance = WidgetAppearance.hidden.rawValue
+          },
+          label: {
+            checkmarkLabel(
+              title: "Hidden",
+              checked: userSettings.widgetAppearance == WidgetAppearance.hidden.rawValue)
+          }
+        )
+
+        Divider()
+
         SettingsLink {
-          Text("Settings...")
+          Label("Settings...", systemImage: "gearshape")
+            .labelStyle(.titleAndIcon)
         } preAction: {
           NSApp.activate(ignoringOtherApps: true)
         } postAction: {
@@ -76,9 +118,15 @@ struct TrueWidgetApp: App {
 
         Divider()
 
-        Button("Quit TrueWidget") {
-          NSApp.terminate(nil)
-        }
+        Button(
+          action: {
+            NSApp.terminate(nil)
+          },
+          label: {
+            Label("Quit TrueWidget", systemImage: "xmark.circle.fill")
+              .labelStyle(.titleAndIcon)
+          }
+        )
       },
       label: {
         Label(
@@ -95,6 +143,16 @@ struct TrueWidgetApp: App {
     Settings {
       SettingsView(showMenuBarExtra: $showMenuBarExtra)
         .environmentObject(userSettings)
+    }
+  }
+
+  private func checkmarkLabel(title: String, checked: Bool) -> some View {
+    if checked {
+      return Label(title, systemImage: "checkmark")
+        .labelStyle(.titleAndIcon)
+    } else {
+      return Label(title, image: "clear")
+        .labelStyle(.titleAndIcon)
     }
   }
 }

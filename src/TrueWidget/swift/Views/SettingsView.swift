@@ -20,7 +20,7 @@ struct SettingsView: View {
     TabView(selection: $selection) {
       SettingsMainView(showMenuBarExtra: $showMenuBarExtra)
         .tabItem {
-          Label("Main", systemImage: "gear")
+          Label("Main", systemImage: "gearshape")
         }
         .tag(TabTag.main)
 

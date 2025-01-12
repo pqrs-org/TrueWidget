@@ -17,36 +17,43 @@ struct ContentView: View {
 
   var body: some View {
     VStack {
-      VStack(alignment: .leading, spacing: 10.0) {
-        if userSettings.showOperatingSystem {
-          MainOperatingSystemView(userSettings: userSettings)
-        }
+      if userSettings.widgetAppearance == WidgetAppearance.compact.rawValue {
+        CompactView(userSettings: userSettings)
+      } else {
+        VStack(alignment: .leading, spacing: 10.0) {
+          if userSettings.showOperatingSystem {
+            MainOperatingSystemView(userSettings: userSettings)
+          }
 
-        if userSettings.showXcode {
-          MainXcodeView(userSettings: userSettings)
-        }
+          if userSettings.showXcode {
+            MainXcodeView(userSettings: userSettings)
+          }
 
-        if !userSettings.bundleSettings.filter({ $0.show }).isEmpty {
-          MainBundleView(userSettings: userSettings)
-        }
+          if !userSettings.bundleSettings.filter({ $0.show }).isEmpty {
+            MainBundleView(userSettings: userSettings)
+          }
 
-        if userSettings.showCPUUsage {
-          MainCPUUsageView(userSettings: userSettings)
-        }
+          if userSettings.showCPUUsage {
+            MainCPUUsageView(userSettings: userSettings)
+          }
 
-        if userSettings.showLocalTime
-          || userSettings.showLocalDate
-          || !userSettings.timeZoneTimeSettings.filter({ $0.show }).isEmpty
-        {
-          MainTimeView(userSettings: userSettings)
+          if userSettings.showLocalTime
+            || userSettings.showLocalDate
+            || !userSettings.timeZoneTimeSettings.filter({ $0.show }).isEmpty
+          {
+            MainTimeView(userSettings: userSettings)
+          }
         }
       }
-      .padding()
     }
+    .padding()
     .frame(
       alignment: .center
     )
-    .frame(width: userSettings.widgetWidth)
+    .if(userSettings.widgetAppearance != WidgetAppearance.compact.rawValue) {
+      $0.frame(width: userSettings.widgetWidth)
+    }
+    .fixedSize()
     .background(
       RoundedRectangle(cornerRadius: 12)
         .fill(.black)

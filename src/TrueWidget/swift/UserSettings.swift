@@ -21,6 +21,12 @@ enum WidgetScreen: String {
   case rightBottom
 }
 
+enum WidgetAppearance: String {
+  case normal
+  case compact
+  case hidden
+}
+
 enum CPUUsageType: String {
   case movingAverage
   case latest
@@ -55,6 +61,7 @@ final class UserSettings: ObservableObject {
   @AppStorage("widgetOpacity") var widgetOpacity: Double = 0.8
   @AppStorage("widgetScreen") var widgetScreen: String = WidgetScreen.primary.rawValue
   @AppStorage("widgetFadeOutDuration") var widgetFadeOutDuration: Double = 500.0
+  @AppStorage("widgetAppearance") var widgetAppearance: String = WidgetAppearance.normal.rawValue
 
   //
   // Operating system
