@@ -5,6 +5,7 @@
 -   💥 Breaking changes
     -   macOS 11 and macOS 12 are no longer supported.
 -   ✨ New Features
+    -   Added a compact display mode.
     -   Added a feature to display the other application's version.
 -   ⚡️ Improvements
     -   Migrated to the SwiftUI life cycle.
