@@ -18,22 +18,13 @@ struct CompactTimeView: View {
           time.localTime == nil
             ? "---"
             : String(
-              format: "%02d:%02d",
+              format: "%02d:%02d:%02d",
               time.localTime?.hour ?? 0,
-              time.localTime?.minute ?? 0
-            )
-        )
-        .font(.custom("Menlo", size: userSettings.localTimeFontSize))
-
-        Text(
-          time.localTime == nil
-            ? "---"
-            : String(
-              format: " %02d",
+              time.localTime?.minute ?? 0,
               time.localTime?.second ?? 0
             )
         )
-        .font(.custom("Menlo", size: userSettings.localTimeFontSize / 2))
+        .font(.custom("Menlo", size: userSettings.compactLocalTimeFontSize))
       }
     }
     .onDisappear {

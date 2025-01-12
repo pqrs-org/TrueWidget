@@ -20,23 +20,24 @@ struct CompactCPUUsageView: View {
 
         HStack(alignment: .firstTextBaseline, spacing: 0) {
           Text("CPU")
-            .font(.system(size: userSettings.cpuUsageFontSize / 2))
 
           if userSettings.cpuUsageType == CPUUsageType.latest.rawValue {
-            Text(String(format: "% 3d", cpuUsage.usageInteger))
-
-            Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
-              .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
+            Text(
+              String(
+                format: "% 3d.%02d%%",
+                cpuUsage.usageInteger,
+                cpuUsage.usageDecimal))
           } else {
             // Moving average
-            Text(String(format: "% 3d", cpuUsage.usageAverageInteger))
-
-            Text(String(format: ".%02d%%", cpuUsage.usageAverageDecimal))
-              .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
+            Text(
+              String(
+                format: "% 3d.%02d%%",
+                cpuUsage.usageAverageInteger,
+                cpuUsage.usageAverageDecimal))
           }
         }
       }
-      .font(.custom("Menlo", size: userSettings.cpuUsageFontSize))
+      .font(.custom("Menlo", size: userSettings.compactCPUUsageFontSize))
     }
     .onDisappear {
       cpuUsage.cancelTimer()

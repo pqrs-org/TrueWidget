@@ -8,9 +8,13 @@ struct CompactView: View {
   }
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      CompactTimeView(userSettings: userSettings)
-      CompactCPUUsageView(userSettings: userSettings)
+    VStack(alignment: .leading, spacing: 4) {
+      if userSettings.compactShowLocalTime {
+        CompactTimeView(userSettings: userSettings)
+      }
+      if userSettings.compactShowCPUUsage {
+        CompactCPUUsageView(userSettings: userSettings)
+      }
     }
   }
 }

@@ -7,6 +7,7 @@ enum TabTag: String {
   case operatingSystem
   case xcode
   case bundle
+  case compact
   case update
   case action
 }
@@ -53,6 +54,12 @@ struct SettingsView: View {
           Label("App", systemImage: "cube")
         }
         .tag(TabTag.bundle)
+
+      SettingsCompactView()
+        .tabItem {
+          Label("Compact", systemImage: "cube")
+        }
+        .tag(TabTag.compact)
 
       SettingsUpdateView()
         .tabItem {
