@@ -47,9 +47,6 @@ struct ContentView: View {
       }
     }
     .padding()
-    .frame(
-      alignment: .center
-    )
     .if(userSettings.widgetAppearance != WidgetAppearance.compact.rawValue) {
       $0.frame(width: userSettings.widgetWidth)
     }
