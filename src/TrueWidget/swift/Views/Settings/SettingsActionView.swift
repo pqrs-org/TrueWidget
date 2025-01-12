@@ -5,30 +5,24 @@ struct SettingsActionView: View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Action")) {
         VStack(alignment: .leading, spacing: 16) {
-          HStack {
-            Button(
-              action: {
-                Relauncher.relaunch()
-              },
-              label: {
-                Label("Restart TrueWidget", systemImage: "arrow.clockwise")
-              })
+          Button(
+            action: {
+              Relauncher.relaunch()
+            },
+            label: {
+              Label("Restart TrueWidget", systemImage: "arrow.clockwise")
+            })
 
-            Spacer()
-          }
-
-          HStack {
-            Button(
-              action: {
-                NSApplication.shared.terminate(self)
-              },
-              label: {
-                Label("Quit TrueWidget", systemImage: "xmark.circle.fill")
-              })
-
-            Spacer()
-          }
-        }.padding()
+          Button(
+            action: {
+              NSApplication.shared.terminate(self)
+            },
+            label: {
+              Label("Quit TrueWidget", systemImage: "xmark.circle.fill")
+            })
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }

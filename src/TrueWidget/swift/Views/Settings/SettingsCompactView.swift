@@ -7,14 +7,10 @@ struct SettingsCompactView: View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Compact")) {
         VStack(alignment: .leading) {
-          HStack {
-            Toggle(isOn: $userSettings.compactShowLocalTime) {
-              Text("Show local time")
-            }
-            .switchToggleStyle()
-
-            Spacer()
+          Toggle(isOn: $userSettings.compactShowLocalTime) {
+            Text("Show local time")
           }
+          .switchToggleStyle()
 
           HStack {
             Text("Local time font size: ")
@@ -29,18 +25,13 @@ struct SettingsCompactView: View {
             Text("pt")
 
             Text("(Default: 24 pt)")
-
-            Spacer()
           }
 
-          HStack {
-            Toggle(isOn: $userSettings.compactShowCPUUsage) {
-              Text("Show CPU usage")
-            }
-            .switchToggleStyle()
-
-            Spacer()
+          Toggle(isOn: $userSettings.compactShowCPUUsage) {
+            Text("Show CPU usage")
           }
+          .switchToggleStyle()
+          .padding(.top, 20.0)
 
           HStack {
             Text("CPU usage font size: ")
@@ -55,11 +46,10 @@ struct SettingsCompactView: View {
             Text("pt")
 
             Text("(Default: 12 pt)")
-
-            Spacer()
           }
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }

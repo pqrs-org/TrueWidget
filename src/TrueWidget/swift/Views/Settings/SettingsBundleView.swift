@@ -34,11 +34,10 @@ struct SettingsBundleView: View {
           Text("pt")
 
           Text("(Default: 12 pt)")
-
-          Spacer()
         }
       }
       .padding()
+      .frame(maxWidth: .infinity, alignment: .leading)
     }
   }
 }

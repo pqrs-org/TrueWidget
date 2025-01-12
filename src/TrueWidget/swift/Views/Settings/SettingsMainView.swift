@@ -14,7 +14,6 @@ struct SettingsMainView: View {
             Text("Open at login")
           }
           .switchToggleStyle()
-          .frame(maxWidth: .infinity, alignment: .leading)
           .disabled(openAtLogin.developmentBinary)
           .onChange(of: openAtLogin.registered) { value in
             OpenAtLogin.shared.update(register: value)
@@ -36,9 +35,9 @@ struct SettingsMainView: View {
             Text("Show icon in menu bar")
           }
           .switchToggleStyle()
-          .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
 
       GroupBox(label: Text("Widget")) {
@@ -50,8 +49,6 @@ struct SettingsMainView: View {
               Text("Top Left").tag(WidgetPosition.topLeft.rawValue)
               Text("Top Right").tag(WidgetPosition.topRight.rawValue)
             }
-
-            Spacer()
           }
 
           HStack {
@@ -67,8 +64,6 @@ struct SettingsMainView: View {
             Text("pt")
 
             Text("(Default: 250 pt)")
-
-            Spacer()
           }
 
           HStack {
@@ -84,8 +79,6 @@ struct SettingsMainView: View {
                 Text("")
               }
             )
-
-            Spacer()
           }
 
           HStack {
@@ -103,8 +96,6 @@ struct SettingsMainView: View {
               Text("Rightmost (top)").tag(WidgetScreen.rightTop.rawValue)
               Text("Rightmost (bottom)").tag(WidgetScreen.rightBottom.rawValue)
             }
-
-            Spacer()
           }
 
           HStack {
@@ -120,11 +111,10 @@ struct SettingsMainView: View {
             Text("milliseconds")
 
             Text("(Default: 500 ms)")
-
-            Spacer()
           }
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
 
       GroupBox(label: Text("Appearance")) {
@@ -135,9 +125,9 @@ struct SettingsMainView: View {
             Text("Hidden").tag(WidgetAppearance.hidden.rawValue)
           }
           .pickerStyle(.radioGroup)
-          .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }

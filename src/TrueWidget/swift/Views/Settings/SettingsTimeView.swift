@@ -11,7 +11,6 @@ struct SettingsTimeView: View {
             Text("Show local time")
           }
           .switchToggleStyle()
-          .frame(maxWidth: .infinity, alignment: .leading)
 
           HStack {
             Text("Font size: ")
@@ -27,9 +26,9 @@ struct SettingsTimeView: View {
 
             Text("(Default: 36 pt)")
           }
-          .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
 
       GroupBox(label: Text("Local date")) {
@@ -38,7 +37,6 @@ struct SettingsTimeView: View {
             Text("Show local date")
           }
           .switchToggleStyle()
-          .frame(maxWidth: .infinity, alignment: .leading)
 
           HStack {
             Text("Local date font size: ")
@@ -54,9 +52,9 @@ struct SettingsTimeView: View {
 
             Text("(Default: 12 pt)")
           }
-          .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
 
       GroupBox(label: Text("Other time zones")) {
@@ -70,7 +68,6 @@ struct SettingsTimeView: View {
 
               TimeZonePickerView(abbreviation: timeZoneTimeSetting.abbreviation)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
           }
 
           Divider()
@@ -107,9 +104,9 @@ struct SettingsTimeView: View {
               Text("(Default: 12 pt)")
             }
           }
-          .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }

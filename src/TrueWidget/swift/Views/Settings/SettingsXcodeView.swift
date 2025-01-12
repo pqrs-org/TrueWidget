@@ -11,7 +11,6 @@ struct SettingsXcodeView: View {
             Text("Show Xcode bundle path")
           }
           .switchToggleStyle()
-          .frame(maxWidth: .infinity, alignment: .leading)
 
           HStack {
             Text("Font size: ")
@@ -27,8 +26,9 @@ struct SettingsXcodeView: View {
 
             Text("(Default: 12 pt)")
           }
-          .frame(maxWidth: .infinity, alignment: .leading)
-        }.padding()
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }

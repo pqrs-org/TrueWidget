@@ -17,7 +17,9 @@ struct SettingsUpdateView: View {
 
             CheckForBetaUpdatesView()
           }
-        }.padding()
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
 
       GroupBox(label: Text("Websites")) {
@@ -27,6 +29,7 @@ struct SettingsUpdateView: View {
             label: {
               Label("Open official website", systemImage: "house")
             })
+
           Button(
             action: {
               NSWorkspace.shared.open(URL(string: "https://github.com/pqrs-org/TrueWidget")!)
@@ -34,8 +37,9 @@ struct SettingsUpdateView: View {
             label: {
               Label("Open GitHub (source code)", systemImage: "network")
             })
-          Spacer()
-        }.padding()
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }

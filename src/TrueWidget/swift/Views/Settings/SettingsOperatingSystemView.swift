@@ -7,14 +7,10 @@ struct SettingsOperatingSystemView: View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Operating system")) {
         VStack(alignment: .leading) {
-          HStack {
-            Toggle(isOn: $userSettings.showOperatingSystem) {
-              Text("Show macOS version")
-            }
-            .switchToggleStyle()
-
-            Spacer()
+          Toggle(isOn: $userSettings.showOperatingSystem) {
+            Text("Show macOS version")
           }
+          .switchToggleStyle()
 
           HStack {
             Text("Font size: ")
@@ -29,43 +25,32 @@ struct SettingsOperatingSystemView: View {
             Text("pt")
 
             Text("(Default: 14 pt)")
-
-            Spacer()
           }
-        }.padding()
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
 
       if userSettings.showOperatingSystem {
         GroupBox(label: Text("Advanced")) {
           VStack(alignment: .leading) {
-            HStack {
-              Toggle(isOn: $userSettings.showHostName) {
-                Text("Show host name")
-              }
-              .switchToggleStyle()
-
-              Spacer()
+            Toggle(isOn: $userSettings.showHostName) {
+              Text("Show host name")
             }
+            .switchToggleStyle()
 
-            HStack {
-              Toggle(isOn: $userSettings.showRootVolumeName) {
-                Text("Show root volume name")
-              }
-              .switchToggleStyle()
-
-              Spacer()
+            Toggle(isOn: $userSettings.showRootVolumeName) {
+              Text("Show root volume name")
             }
+            .switchToggleStyle()
 
-            HStack {
-              Toggle(isOn: $userSettings.showUserName) {
-                Text("Show user name")
-              }
-              .switchToggleStyle()
-
-              Spacer()
+            Toggle(isOn: $userSettings.showUserName) {
+              Text("Show user name")
             }
+            .switchToggleStyle()
           }
           .padding()
+          .frame(maxWidth: .infinity, alignment: .leading)
         }
       }
     }

@@ -7,14 +7,10 @@ struct SettingsCPUUsageView: View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("CPU usage")) {
         VStack(alignment: .leading) {
-          HStack {
-            Toggle(isOn: $userSettings.showCPUUsage) {
-              Text("Show CPU usage")
-            }
-            .switchToggleStyle()
-
-            Spacer()
+          Toggle(isOn: $userSettings.showCPUUsage) {
+            Text("Show CPU usage")
           }
+          .switchToggleStyle()
 
           HStack {
             Text("Font size: ")
@@ -29,23 +25,18 @@ struct SettingsCPUUsageView: View {
             Text("pt")
 
             Text("(Default: 36 pt)")
-
-            Spacer()
           }
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
 
       if userSettings.showCPUUsage {
         GroupBox(label: Text("Advanced")) {
           VStack(alignment: .leading) {
-            HStack {
-              Picker(selection: $userSettings.cpuUsageType, label: Text("Value: ")) {
-                Text("Moving Average (Default)").tag(CPUUsageType.movingAverage.rawValue)
-                Text("Latest").tag(CPUUsageType.latest.rawValue)
-              }
-
-              Spacer()
+            Picker(selection: $userSettings.cpuUsageType, label: Text("Value: ")) {
+              Text("Moving Average (Default)").tag(CPUUsageType.movingAverage.rawValue)
+              Text("Latest").tag(CPUUsageType.latest.rawValue)
             }
 
             HStack {
@@ -60,18 +51,12 @@ struct SettingsCPUUsageView: View {
               Text("seconds")
 
               Text("(Default: 30 seconds)")
-
-              Spacer()
             }
 
-            HStack {
-              Toggle(isOn: $userSettings.showProcesses) {
-                Text("Show processes")
-              }
-              .switchToggleStyle()
-
-              Spacer()
+            Toggle(isOn: $userSettings.showProcesses) {
+              Text("Show processes")
             }
+            .switchToggleStyle()
             .padding(.top, 20.0)
 
             HStack {
@@ -87,11 +72,10 @@ struct SettingsCPUUsageView: View {
               Text("pt")
 
               Text("(Default: 12 pt)")
-
-              Spacer()
             }
           }
           .padding()
+          .frame(maxWidth: .infinity, alignment: .leading)
         }
       }
     }
