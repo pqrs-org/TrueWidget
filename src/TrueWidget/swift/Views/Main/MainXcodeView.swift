@@ -10,13 +10,12 @@ struct MainXcodeView: View {
   }
 
   var body: some View {
-    HStack(alignment: .center, spacing: 0) {
-      Spacer()
-
+    VStack(alignment: .trailing, spacing: 0) {
       Text(xcode.path)
         .foregroundColor(pathColor(xcode.pathState))
     }
     .font(.system(size: userSettings.xcodeFontSize))
+    .frame(maxWidth: .infinity, alignment: .trailing)
     .onDisappear {
       xcode.cancelTimer()
     }

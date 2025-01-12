@@ -14,31 +14,26 @@ struct CompactCPUUsageView: View {
     // CPU usage
     //
 
-    VStack(alignment: .leading, spacing: 0.0) {
-      HStack(alignment: .center, spacing: 0) {
-        Spacer()
+    HStack(alignment: .firstTextBaseline, spacing: 0) {
+      Text("CPU")
 
-        HStack(alignment: .firstTextBaseline, spacing: 0) {
-          Text("CPU")
-
-          if userSettings.cpuUsageType == CPUUsageType.latest.rawValue {
-            Text(
-              String(
-                format: "% 3d.%02d%%",
-                cpuUsage.usageInteger,
-                cpuUsage.usageDecimal))
-          } else {
-            // Moving average
-            Text(
-              String(
-                format: "% 3d.%02d%%",
-                cpuUsage.usageAverageInteger,
-                cpuUsage.usageAverageDecimal))
-          }
-        }
+      if userSettings.cpuUsageType == CPUUsageType.latest.rawValue {
+        Text(
+          String(
+            format: "% 3d.%02d%%",
+            cpuUsage.usageInteger,
+            cpuUsage.usageDecimal))
+      } else {
+        // Moving average
+        Text(
+          String(
+            format: "% 3d.%02d%%",
+            cpuUsage.usageAverageInteger,
+            cpuUsage.usageAverageDecimal))
       }
-      .font(.custom("Menlo", size: userSettings.compactCPUUsageFontSize))
     }
+    .font(.custom("Menlo", size: userSettings.compactCPUUsageFontSize))
+    .frame(maxWidth: .infinity, alignment: .trailing)
     .onDisappear {
       cpuUsage.cancelTimer()
     }

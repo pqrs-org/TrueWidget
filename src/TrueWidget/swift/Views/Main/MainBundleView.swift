@@ -10,28 +10,21 @@ struct MainBundleView: View {
   }
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      Grid(alignment: .trailing) {
-        ForEach(userSettings.bundleSettings) { setting in
-          if setting.show {
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-              Spacer()
-
-              if setting.show {
-                if let version = bundle.bundleVersions[setting.url?.path ?? ""] {
-                  Text("\(version["name"] ?? "---"): \(version["version"] ?? "---")")
-                    .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.trailing)
-                } else {
-                  Text("---")
-                }
-              }
-            }
+    VStack(alignment: .trailing, spacing: 0) {
+      ForEach(userSettings.bundleSettings) { setting in
+        if setting.show {
+          if let version = bundle.bundleVersions[setting.url?.path ?? ""] {
+            Text("\(version["name"] ?? "---"): \(version["version"] ?? "---")")
+              .fixedSize(horizontal: false, vertical: true)
+              .multilineTextAlignment(.trailing)
+          } else {
+            Text("---")
           }
         }
       }
     }
     .font(.system(size: userSettings.bundleFontSize))
+    .frame(maxWidth: .infinity, alignment: .trailing)
     .onDisappear {
       bundle.cancelTimer()
     }

@@ -28,21 +28,16 @@ struct MainOperatingSystemView: View {
         }
       }
 
-      if userSettings.showRootVolumeName {
-        HStack {
-          Spacer()
-
+      VStack(alignment: .trailing, spacing: 0) {
+        if userSettings.showRootVolumeName {
           Text("/Volumes/\(operatingSystem.rootVolumeName)")
         }
-      }
 
-      if userSettings.showUserName {
-        HStack {
-          Spacer()
-
+        if userSettings.showUserName {
           Text(operatingSystem.userName)
         }
       }
+      .frame(maxWidth: .infinity, alignment: .trailing)
     }
     .font(.system(size: userSettings.operatingSystemFontSize))
     .onDisappear {
