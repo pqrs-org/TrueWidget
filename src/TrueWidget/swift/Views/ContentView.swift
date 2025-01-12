@@ -59,7 +59,11 @@ struct ContentView: View {
         .fill(.black)
     )
     .foregroundColor(.white)
-    .opacity(hidden ? 0.0 : userSettings.widgetOpacity)
+    .opacity(
+      userSettings.widgetAppearance == WidgetAppearance.hidden.rawValue
+        ? 0.0
+        : (hidden ? 0.0 : userSettings.widgetOpacity)
+    )
     .whenHovered { hover in
       if hover {
         withAnimation(.easeInOut(duration: userSettings.widgetFadeOutDuration / 1000.0)) {
