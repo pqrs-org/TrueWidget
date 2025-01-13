@@ -178,7 +178,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   }
 }
 
-class MainWindowController: NSWindowController {
+class MainWindowController: NSWindowController, NSWindowDelegate {
   init(userSettings: UserSettings) {
     // Note:
     // On macOS 13, the only way to remove the title bar is to manually create an NSWindow like this.
@@ -214,9 +214,19 @@ class MainWindowController: NSWindowController {
     )
 
     super.init(window: window)
+
+    window.delegate = self
   }
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  func windowDidResize(_ notification: Notification) {
+    // Since GeometryReader.onChange in View is called before the window resizing is completed,
+    // it may move the window based on the old size, leading to an incorrect position.
+    // To ensure that the window position is updated only after resizing is fully completed,
+    // windowDidResize should be used. Therefore, implementing NSWindowDelegate is necessary.
+    postWindowPositionUpdateNeededNotification()
   }
 }

@@ -71,13 +71,8 @@ struct ContentView: View {
       }
     }
     .overlay(
-      GeometryReader { geometry in
-        RoundedRectangle(cornerRadius: 12)
-          .stroke(.black, lineWidth: 4)
-          .onChange(of: geometry.size) { _ in
-            postWindowPositionUpdateNeededNotification()
-          }
-      }
+      RoundedRectangle(cornerRadius: 12)
+        .stroke(.black, lineWidth: 4)
     )
     .clipShape(RoundedRectangle(cornerRadius: 12))
     .onAppear {
