@@ -35,7 +35,7 @@ struct SettingsUpdateView: View {
               NSWorkspace.shared.open(URL(string: "https://github.com/pqrs-org/TrueWidget")!)
             },
             label: {
-              Label("Open GitHub (source code)", systemImage: "network")
+              Label("Open GitHub (source code)", systemImage: "hammer")
             })
         }
         .padding()
@@ -53,7 +53,7 @@ struct SettingsUpdateView: View {
       Button(
         action: { updater.checkForUpdatesStableOnly() },
         label: {
-          Label("Check for updates...", systemImage: "star")
+          Label("Check for updates...", systemImage: "network")
         }
       )
       .disabled(!updater.canCheckForUpdates)
@@ -69,7 +69,7 @@ struct SettingsUpdateView: View {
       Button(
         action: { updater.checkForUpdatesWithBetaVersion() },
         label: {
-          Label("Check for beta updates...", systemImage: "star.circle")
+          Label("Check for beta updates...", systemImage: "sparkles")
         }
       )
       .disabled(!updater.canCheckForUpdates)

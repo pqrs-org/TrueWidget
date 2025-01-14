@@ -116,6 +116,16 @@ struct TrueWidgetApp: App {
         } postAction: {
         }
 
+        Button(
+          action: {
+            Updater.shared.checkForUpdatesStableOnly()
+          },
+          label: {
+            Label("Check for updates...", systemImage: "network")
+              .labelStyle(.titleAndIcon)
+          }
+        )
+
         Divider()
 
         Button(
