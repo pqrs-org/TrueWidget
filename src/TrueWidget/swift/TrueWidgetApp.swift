@@ -133,7 +133,7 @@ struct TrueWidgetApp: App {
             NSApp.terminate(nil)
           },
           label: {
-            Label("Quit TrueWidget", systemImage: "xmark.circle.fill")
+            Label("Quit TrueWidget", systemImage: "xmark")
               .labelStyle(.titleAndIcon)
           }
         )

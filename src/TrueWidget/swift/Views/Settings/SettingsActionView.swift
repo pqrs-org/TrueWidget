@@ -18,7 +18,7 @@ struct SettingsActionView: View {
               NSApplication.shared.terminate(self)
             },
             label: {
-              Label("Quit TrueWidget", systemImage: "xmark.circle.fill")
+              Label("Quit TrueWidget", systemImage: "xmark")
             })
         }
         .padding()

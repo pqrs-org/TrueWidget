@@ -69,7 +69,7 @@ struct SettingsView: View {
 
       SettingsActionView()
         .tabItem {
-          Label("Quit, Restart", systemImage: "bolt.circle")
+          Label("Quit, Restart", systemImage: "xmark")
         }
         .tag(TabTag.action)
     }
