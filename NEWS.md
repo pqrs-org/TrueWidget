@@ -1,7 +1,10 @@
 # Changelog
 
-## beta
+## TrueWidget 2.0.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.0.0/TrueWidget-2.0.0.dmg)
+-   📅 Release date
+    -   Jan 15, 2025
 -   💥 Breaking changes
     -   macOS 11 and macOS 12 are no longer supported.
 -   ✨ New Features
