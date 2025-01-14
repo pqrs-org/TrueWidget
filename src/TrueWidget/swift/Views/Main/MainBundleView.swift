@@ -13,7 +13,7 @@ struct MainBundleView: View {
     VStack(alignment: .trailing, spacing: 0) {
       ForEach(userSettings.bundleSettings) { setting in
         if setting.show {
-          if let version = bundle.bundleVersions[setting.url?.path ?? ""] {
+          if let version = bundle.bundleVersions[setting.path] {
             Text("\(version["name"] ?? "---"): \(version["version"] ?? "---")")
               .fixedSize(horizontal: false, vertical: true)
               .multilineTextAlignment(.trailing)

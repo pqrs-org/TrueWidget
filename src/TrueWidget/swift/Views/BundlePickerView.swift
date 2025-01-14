@@ -2,15 +2,19 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct BundlePickerView: View {
-  @Binding private(set) var selectedFileURL: URL?
+  @Binding private(set) var path: String
 
   @State private var isPickingFile = false
   @State private var errorMessage: String?
 
+  init(path: Binding<String>) {
+    self._path = path
+  }
+
   var body: some View {
     HStack {
       VStack(alignment: .leading) {
-        Text("\(selectedFileURL?.path  ?? "---")")
+        Text("\(path.isEmpty ? "---"  : path)")
           .fixedSize(horizontal: false, vertical: true)
 
         if let error = errorMessage {
@@ -33,24 +37,24 @@ struct BundlePickerView: View {
         if let url = try? result.get().first {
           HelperClient.shared.proxy?.bundleVersions(paths: [url.path]) { versions in
             if versions[url.path] != nil {
-              selectedFileURL = url
+              path = url.path
               errorMessage = nil
             } else {
-              selectedFileURL = nil
+              path = ""
               errorMessage = "Could not get the version of the selected file"
             }
           }
           return
         }
 
-        selectedFileURL = nil
+        path = ""
         errorMessage = "File selection failed"
       }
 
       Button(
         role: .destructive,
         action: {
-          selectedFileURL = nil
+          path = ""
           errorMessage = nil
         },
         label: {

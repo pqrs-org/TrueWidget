@@ -38,9 +38,7 @@ extension WidgetSource {
     @MainActor
     private func update() {
       HelperClient.shared.proxy?.bundleVersions(
-        paths: userSettings.bundleSettings.filter({ $0.show && $0.url != nil }).map({
-          $0.url?.path ?? ""
-        })
+        paths: userSettings.bundleSettings.filter({ $0.show && !$0.path.isEmpty }).map({ $0.path })
       ) { versions in
         Task { @MainActor in
           self.bundleVersions = versions

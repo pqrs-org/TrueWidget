@@ -41,7 +41,7 @@ struct TimeZoneTimeSetting: Identifiable, Codable {
 struct BundleSetting: Identifiable, Codable {
   var id = UUID().uuidString
   var show = false
-  var url: URL?
+  var path = ""
 }
 
 final class UserSettings: ObservableObject {
@@ -136,7 +136,7 @@ final class UserSettings: ObservableObject {
       if bundleSettings.isEmpty {
         bundleSettings.append(
           BundleSetting(
-            url: URL(filePath: "/Applications/TrueWidget.app")
+            path: "/Applications/TrueWidget.app"
           ))
       } else {
         bundleSettings.append(BundleSetting())

@@ -15,7 +15,7 @@ struct SettingsBundleView: View {
             }
             .switchToggleStyle()
 
-            BundlePickerView(selectedFileURL: setting.url)
+            BundlePickerView(path: setting.path)
           }
         }
 
