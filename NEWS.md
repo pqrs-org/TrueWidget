@@ -14,6 +14,10 @@
         </td></tr></tbody></table>
         <br/><br/>
         <table><tbody><tr><td><!-- border hack -->
+        <img src="https://truewidget.pqrs.org/docs/releasenotes/images/v2.0.0/menu@2x.png" alt="menu" />
+        </td></tr></tbody></table>
+        <br/><br/>
+        <table><tbody><tr><td><!-- border hack -->
         <img src="https://truewidget.pqrs.org/docs/releasenotes/images/v2.0.0/settings-compact@2x.png" alt="settings compact" />
         </td></tr></tbody></table>
     -   Added a feature to display the other application's version.
