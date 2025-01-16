@@ -36,12 +36,14 @@ struct BundlePickerView: View {
       ) { result in
         if let url = try? result.get().first {
           HelperClient.shared.proxy?.bundleVersions(paths: [url.path]) { versions in
-            if versions[url.path] != nil {
-              path = url.path
-              errorMessage = nil
-            } else {
-              path = ""
-              errorMessage = "Could not get the version of the selected file"
+            Task { @MainActor in
+              if versions[url.path] != nil {
+                path = url.path
+                errorMessage = nil
+              } else {
+                path = ""
+                errorMessage = "Could not get the version of the selected file"
+              }
             }
           }
           return
