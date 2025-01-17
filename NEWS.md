@@ -1,7 +1,10 @@
 # Changelog
 
-## Beta
+## TrueWidget 2.1.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.1.0/TrueWidget-2.1.0.dmg)
+-   📅 Release date
+    -   Jan 17, 2025
 -   ✨ New Features
     -   Added a feature to display the Apple Account.
 
