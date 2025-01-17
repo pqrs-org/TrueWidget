@@ -36,6 +36,7 @@ struct BundlePickerView: View {
       ) { result in
         if let url = try? result.get().first {
           HelperClient.shared.proxy?.bundleVersions(paths: [url.path]) { versions in
+            // Update path on the main thread, as it could be an object observed by the view.
             Task { @MainActor in
               if versions[url.path] != nil {
                 path = url.path
