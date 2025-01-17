@@ -1,5 +1,10 @@
 # Changelog
 
+## Beta
+
+-   ✨ New Features
+    -   Added a feature to display the Apple Account.
+
 ## TrueWidget 2.0.0
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.0.0/TrueWidget-2.0.0.dmg)
