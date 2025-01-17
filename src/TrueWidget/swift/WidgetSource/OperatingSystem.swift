@@ -10,6 +10,7 @@ extension WidgetSource {
     @Published public var hostName = ""
     @Published public var rootVolumeName = ""
     @Published public var userName = ""
+    @Published public var appleAccount = ""
 
     let timer: AsyncTimerSequence<ContinuousClock>
     var timerTask: Task<Void, Never>?
@@ -59,25 +60,34 @@ extension WidgetSource {
       return ""
     }
 
+    @MainActor
     private func update() {
-      if !userSettings.showHostName {
-        return
+      if userSettings.showHostName {
+        // `ProcessInfo.processInfo.hostName` is not reflected the host name changes after the application is launched.
+        // So, we have to use `gethostname`.`
+        let length = 128
+        var buffer = [CChar](repeating: 0, count: length)
+        let error = gethostname(&buffer, length)
+        if error == 0 {
+          if let name = String(utf8String: buffer) {
+            var h = name
+            if let index = name.firstIndex(of: ".") {
+              h = String(name[...index].dropLast())
+            }
+
+            if hostName != h {
+              hostName = h
+            }
+          }
+        }
       }
 
-      // `ProcessInfo.processInfo.hostName` is not reflected the host name changes after the application is launched.
-      // So, we have to use `gethostname`.`
-      let length = 128
-      var buffer = [CChar](repeating: 0, count: length)
-      let error = gethostname(&buffer, length)
-      if error == 0 {
-        if let name = String(utf8String: buffer) {
-          var h = name
-          if let index = name.firstIndex(of: ".") {
-            h = String(name[...index].dropLast())
-          }
-
-          if hostName != h {
-            hostName = h
+      if userSettings.showAppleAccount {
+        HelperClient.shared.proxy?.appleAccount { account in
+          Task { @MainActor in
+            if self.appleAccount != account {
+              self.appleAccount = account
+            }
           }
         }
       }

@@ -22,6 +22,17 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
   }
 
   //
+  // AppleAccount
+  //
+
+  func appleAccount(reply: @escaping (String) -> Void) {
+    let account =
+      (UserDefaults.standard.persistentDomain(forName: "MobileMeAccounts")?["Accounts"]
+      as? [[String: Any]])?.first?["AccountID"] as? String ?? ""
+    reply(account)
+  }
+
+  //
   // BundleVersions
   //
 

@@ -36,6 +36,16 @@ struct MainOperatingSystemView: View {
         if userSettings.showUserName {
           Text(operatingSystem.userName)
         }
+
+        if userSettings.showAppleAccount {
+          // The spacing between the icon and text is too wide when using a Label, so managing it manually with an HStack.
+          HStack(alignment: .center, spacing: 4) {
+            Image(systemName: "apple.logo")
+            Text(
+              operatingSystem.appleAccount.isEmpty ? "---" : operatingSystem.appleAccount
+            )
+          }
+        }
       }
       .frame(maxWidth: .infinity, alignment: .trailing)
     }

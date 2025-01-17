@@ -48,6 +48,11 @@ struct SettingsOperatingSystemView: View {
               Text("Show user name")
             }
             .switchToggleStyle()
+
+            Toggle(isOn: $userSettings.showAppleAccount) {
+              Text("Show Apple Account")
+            }
+            .switchToggleStyle()
           }
           .padding()
           .frame(maxWidth: .infinity, alignment: .leading)

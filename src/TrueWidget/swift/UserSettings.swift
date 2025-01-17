@@ -72,6 +72,7 @@ final class UserSettings: ObservableObject {
   @AppStorage("showHostName") var showHostName: Bool = true
   @AppStorage("showRootVolumeName") var showRootVolumeName: Bool = false
   @AppStorage("showUserName") var showUserName: Bool = false
+  @AppStorage("showAppleAccount") var showAppleAccount: Bool = false
 
   //
   // Xcode
