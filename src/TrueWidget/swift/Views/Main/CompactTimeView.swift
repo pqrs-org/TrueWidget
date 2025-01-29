@@ -22,15 +22,17 @@ struct CompactTimeView: View {
       )
       .font(.custom("Menlo", size: userSettings.compactLocalTimeFontSize))
 
-      Text(
-        time.localTime == nil
-          ? "---"
-          : String(
-            format: " %02d",
-            time.localTime?.second ?? 0
-          )
-      )
-      .font(.custom("Menlo", size: userSettings.compactLocalTimeFontSize / 2))
+      if userSettings.compactLocalTimeSecondsFontSize > 0 {
+        Text(
+          time.localTime == nil
+            ? "---"
+            : String(
+              format: " %02d",
+              time.localTime?.second ?? 0
+            )
+        )
+        .font(.custom("Menlo", size: userSettings.compactLocalTimeSecondsFontSize))
+      }
     }
     .frame(maxWidth: .infinity, alignment: .trailing)
     .onDisappear {

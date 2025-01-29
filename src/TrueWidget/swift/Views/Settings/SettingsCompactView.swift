@@ -27,6 +27,21 @@ struct SettingsCompactView: View {
             Text("(Default: 24 pt)")
           }
 
+          HStack {
+            Text("Local time font size for seconds:")
+
+            DoubleTextField(
+              value: $userSettings.compactLocalTimeSecondsFontSize,
+              range: 0...1000,
+              step: 2,
+              maximumFractionDigits: 1,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 12 pt)")
+          }
+
           Toggle(isOn: $userSettings.compactShowCPUUsage) {
             Text("Show CPU usage")
           }
