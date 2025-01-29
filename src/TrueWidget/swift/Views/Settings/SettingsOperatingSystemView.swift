@@ -34,6 +34,11 @@ struct SettingsOperatingSystemView: View {
       if userSettings.showOperatingSystem {
         GroupBox(label: Text("Advanced")) {
           VStack(alignment: .leading) {
+            Toggle(isOn: $userSettings.showUptime) {
+              Text("Show uptime")
+            }
+            .switchToggleStyle()
+
             Toggle(isOn: $userSettings.showHostName) {
               Text("Show host name")
             }

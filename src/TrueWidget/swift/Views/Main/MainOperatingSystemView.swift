@@ -23,12 +23,16 @@ struct MainOperatingSystemView: View {
 
         Spacer()
 
-        if userSettings.showHostName {
-          Text(operatingSystem.hostName)
+        if userSettings.showUptime {
+          Text("up \(operatingSystem.uptime)")
         }
       }
 
       VStack(alignment: .trailing, spacing: 0) {
+        if userSettings.showHostName {
+          Text(operatingSystem.hostName)
+        }
+
         if userSettings.showRootVolumeName {
           Text("/Volumes/\(operatingSystem.rootVolumeName)")
         }

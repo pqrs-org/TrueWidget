@@ -7,6 +7,7 @@ extension WidgetSource {
     private var userSettings: UserSettings
 
     @Published public var version = ""
+    @Published public var uptime = ""
     @Published public var hostName = ""
     @Published public var rootVolumeName = ""
     @Published public var userName = ""
@@ -62,6 +63,28 @@ extension WidgetSource {
 
     @MainActor
     private func update() {
+      if userSettings.showUptime {
+        if let uptimeSeconds = getSecondsFromBoot() {
+          let days = uptimeSeconds / (24 * 3600)
+          let hours = (uptimeSeconds % (24 * 3600)) / 3600
+          let minutes = (uptimeSeconds % 3600) / 60
+
+          var daysString = ""
+          if days > 1 {
+            daysString = "\(days) days, "
+          } else if days == 1 {
+            daysString = "1 day, "
+          }
+
+          uptime = String(
+            format: "%@%02d:%02d",
+            daysString,
+            hours,
+            minutes
+          )
+        }
+      }
+
       if userSettings.showHostName {
         // `ProcessInfo.processInfo.hostName` is not reflected the host name changes after the application is launched.
         // So, we have to use `gethostname`.`
@@ -91,6 +114,25 @@ extension WidgetSource {
           }
         }
       }
+    }
+
+    // ProcessInfo.processInfo.systemUptime does not return seconds from boot.
+    // It returns how long has the CPU been running.
+    // Therefore, we need to use sysctl to get the boot time and calculate it.
+    // https://forums.developer.apple.com/forums/thread/98682
+    private func getSecondsFromBoot() -> Int? {
+      var bootTime = timeval()
+      var size = MemoryLayout<timeval>.size
+
+      let result = sysctlbyname("kern.boottime", &bootTime, &size, nil, 0)
+
+      if result != 0 {
+        return nil
+      }
+
+      let bootDate = Date(timeIntervalSince1970: TimeInterval(bootTime.tv_sec))
+      let uptime = Date().timeIntervalSince(bootDate)
+      return Int(uptime)
     }
   }
 }
