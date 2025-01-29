@@ -11,16 +11,18 @@ struct CompactTimeView: View {
 
   var body: some View {
     HStack(alignment: .firstTextBaseline, spacing: 0) {
-      Text(
-        time.localTime == nil
-          ? "---"
-          : String(
-            format: " %02d:%02d",
-            time.localTime?.hour ?? 0,
-            time.localTime?.minute ?? 0
-          )
-      )
-      .font(.custom("Menlo", size: userSettings.compactLocalTimeFontSize))
+      if userSettings.compactLocalTimeFontSize > 0 {
+        Text(
+          time.localTime == nil
+            ? "---"
+            : String(
+              format: " %02d:%02d",
+              time.localTime?.hour ?? 0,
+              time.localTime?.minute ?? 0
+            )
+        )
+        .font(.custom("Menlo", size: userSettings.compactLocalTimeFontSize))
+      }
 
       if userSettings.compactLocalTimeSecondsFontSize > 0 {
         Text(

@@ -19,16 +19,18 @@ struct MainTimeView: View {
 
       if userSettings.showLocalTime {
         HStack(alignment: .firstTextBaseline, spacing: 0) {
-          Text(
-            time.localTime == nil
-              ? "---"
-              : String(
-                format: " %02d:%02d",
-                time.localTime?.hour ?? 0,
-                time.localTime?.minute ?? 0
-              )
-          )
-          .font(.custom("Menlo", size: userSettings.localTimeFontSize))
+          if userSettings.localTimeFontSize > 0 {
+            Text(
+              time.localTime == nil
+                ? "---"
+                : String(
+                  format: " %02d:%02d",
+                  time.localTime?.hour ?? 0,
+                  time.localTime?.minute ?? 0
+                )
+            )
+            .font(.custom("Menlo", size: userSettings.localTimeFontSize))
+          }
 
           if userSettings.localTimeSecondsFontSize > 0 {
             Text(
@@ -57,16 +59,18 @@ struct MainTimeView: View {
                 .font(.custom("Menlo", size: userSettings.timeZoneDateFontSize))
             }
 
-            Text(
-              dateTime == nil
-                ? "---"
-                : String(
-                  format: "%02d:%02d:%02d",
-                  dateTime?.hour ?? 0,
-                  dateTime?.minute ?? 0,
-                  dateTime?.second ?? 0)
-            )
-            .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
+            if userSettings.timeZoneTimeFontSize > 0 {
+              Text(
+                dateTime == nil
+                  ? "---"
+                  : String(
+                    format: "%02d:%02d:%02d",
+                    dateTime?.hour ?? 0,
+                    dateTime?.minute ?? 0,
+                    dateTime?.second ?? 0)
+              )
+              .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
+            }
           }
         }
       }
