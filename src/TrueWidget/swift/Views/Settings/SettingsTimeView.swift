@@ -26,6 +26,21 @@ struct SettingsTimeView: View {
 
             Text("(Default: 36 pt)")
           }
+
+          HStack {
+            Text("Font size for seconds:")
+
+            DoubleTextField(
+              value: $userSettings.localTimeSecondsFontSize,
+              range: 0...1000,
+              step: 2,
+              maximumFractionDigits: 1,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 18 pt)")
+          }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -98,6 +98,7 @@ final class UserSettings: ObservableObject {
 
   @AppStorage("showLocalTime") var showLocalTime: Bool = true
   @AppStorage("localTimeFontSize") var localTimeFontSize: Double = 36.0
+  @AppStorage("localTimeSecondsFontSize") var localTimeSecondsFontSize: Double = 18.0
   @AppStorage("showLocalDate") var showLocalDate: Bool = true
   @AppStorage("localDateFontSize") var localDateFontSize: Double = 12.0
 

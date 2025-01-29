@@ -30,15 +30,17 @@ struct MainTimeView: View {
           )
           .font(.custom("Menlo", size: userSettings.localTimeFontSize))
 
-          Text(
-            time.localTime == nil
-              ? "---"
-              : String(
-                format: " %02d",
-                time.localTime?.second ?? 0
-              )
-          )
-          .font(.custom("Menlo", size: userSettings.localTimeFontSize / 2))
+          if userSettings.localTimeSecondsFontSize > 0 {
+            Text(
+              time.localTime == nil
+                ? "---"
+                : String(
+                  format: " %02d",
+                  time.localTime?.second ?? 0
+                )
+            )
+            .font(.custom("Menlo", size: userSettings.localTimeSecondsFontSize))
+          }
         }
       }
 
