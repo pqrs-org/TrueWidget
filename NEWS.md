@@ -1,5 +1,12 @@
 # Changelog
 
+## Beta
+
+-   ✨ New Features
+    -   Added a feature to show system uptime.
+-   ⚡️ Improvements
+    -   Added the ability to specify the font size for seconds in the time display.
+
 ## TrueWidget 2.1.0
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.1.0/TrueWidget-2.1.0.dmg)
