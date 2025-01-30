@@ -39,6 +39,11 @@ struct SettingsOperatingSystemView: View {
             }
             .switchToggleStyle()
 
+            Toggle(isOn: $userSettings.showAwakeTime) {
+              Text("Show awake time")
+            }
+            .switchToggleStyle()
+
             Toggle(isOn: $userSettings.showHostName) {
               Text("Show host name")
             }

@@ -8,6 +8,7 @@ extension WidgetSource {
 
     @Published public var version = ""
     @Published public var uptime = ""
+    @Published public var awakeTime = ""
     @Published public var hostName = ""
     @Published public var rootVolumeName = ""
     @Published public var userName = ""
@@ -63,25 +64,18 @@ extension WidgetSource {
 
     @MainActor
     private func update() {
-      if userSettings.showUptime {
-        if let uptimeSeconds = getSecondsFromBoot() {
-          let days = uptimeSeconds / (24 * 3600)
-          let hours = (uptimeSeconds % (24 * 3600)) / 3600
-          let minutes = (uptimeSeconds % 3600) / 60
+      if userSettings.showUptime || userSettings.showAwakeTime {
+        let uptimeSeconds = getSecondsFromBoot()
+        let awakeTimeSeconds = Int(ProcessInfo.processInfo.systemUptime)
 
-          var daysString = ""
-          if days > 1 {
-            daysString = "\(days) days, "
-          } else if days == 1 {
-            daysString = "1 day, "
+        uptime = formatUptime(seconds: uptimeSeconds)
+        awakeTime = formatUptime(seconds: awakeTimeSeconds)
+
+        if let uptimeSeconds = uptimeSeconds {
+          if uptimeSeconds > 0 {
+            let ratio = Double(awakeTimeSeconds) / Double(uptimeSeconds) * 100.0
+            awakeTime += " (\(String(format: "%.02f", ratio))%)"
           }
-
-          uptime = String(
-            format: "%@%02d:%02d",
-            daysString,
-            hours,
-            minutes
-          )
         }
       }
 
@@ -133,6 +127,30 @@ extension WidgetSource {
       let bootDate = Date(timeIntervalSince1970: TimeInterval(bootTime.tv_sec))
       let uptime = Date().timeIntervalSince(bootDate)
       return Int(uptime)
+    }
+
+    private func formatUptime(seconds: Int?) -> String {
+      if let seconds = seconds {
+        let days = seconds / (24 * 3600)
+        let hours = (seconds % (24 * 3600)) / 3600
+        let minutes = (seconds % 3600) / 60
+
+        var daysString = ""
+        if days > 1 {
+          daysString = "\(days) days, "
+        } else if days == 1 {
+          daysString = "1 day, "
+        }
+
+        return String(
+          format: "%@%02d:%02d",
+          daysString,
+          hours,
+          minutes
+        )
+      } else {
+        return "---"
+      }
     }
   }
 }

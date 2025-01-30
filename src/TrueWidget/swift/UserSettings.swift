@@ -70,6 +70,7 @@ final class UserSettings: ObservableObject {
   @AppStorage("showOperatingSystem") var showOperatingSystem: Bool = true
   @AppStorage("operatingSystemFontSize") var operatingSystemFontSize: Double = 14.0
   @AppStorage("showUptime") var showUptime: Bool = false
+  @AppStorage("showAwakeTime") var showAwakeTime: Bool = false
   @AppStorage("showHostName") var showHostName: Bool = false
   @AppStorage("showRootVolumeName") var showRootVolumeName: Bool = false
   @AppStorage("showUserName") var showUserName: Bool = false

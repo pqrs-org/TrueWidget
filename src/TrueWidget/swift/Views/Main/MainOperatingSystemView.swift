@@ -29,6 +29,10 @@ struct MainOperatingSystemView: View {
       }
 
       VStack(alignment: .trailing, spacing: 0) {
+        if userSettings.showAwakeTime {
+          Text("awake \(operatingSystem.awakeTime)")
+        }
+
         if userSettings.showHostName {
           Text(operatingSystem.hostName)
         }
