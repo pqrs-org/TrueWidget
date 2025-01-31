@@ -73,7 +73,7 @@ extension WidgetSource {
 
         if let uptimeSeconds = uptimeSeconds {
           if uptimeSeconds > 0 {
-            let ratio = Double(awakeTimeSeconds) / Double(uptimeSeconds) * 100.0
+            let ratio = min(100.0, Double(awakeTimeSeconds) / Double(uptimeSeconds) * 100.0)
             awakeTime += " (\(String(format: "%.02f", ratio))%)"
           }
         }
