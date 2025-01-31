@@ -4,6 +4,7 @@
 
 -   ✨ New Features
     -   Added a feature to show system uptime.
+    -   Added a feature to show awake time.
 -   ⚡️ Improvements
     -   Added the ability to specify the font size for seconds in the time display.
 
