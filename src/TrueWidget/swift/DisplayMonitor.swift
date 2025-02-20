@@ -23,13 +23,15 @@ public class DisplayMonitor: ObservableObject {
     }
   }
 
-  private let callback: CGDisplayReconfigurationCallBack = { _, _, userInfo in
-    guard let opaque = userInfo else {
-      return
-    }
+  private let callback: CGDisplayReconfigurationCallBack = { _, flags, userInfo in
+    if !flags.intersection([.addFlag, .removeFlag]).isEmpty {
+      guard let opaque = userInfo else {
+        return
+      }
 
-    let monitor =
-      Unmanaged<DisplayMonitor>.fromOpaque(opaque).takeUnretainedValue() as DisplayMonitor
-    monitor.updateDisplayCount()
+      let monitor =
+        Unmanaged<DisplayMonitor>.fromOpaque(opaque).takeUnretainedValue() as DisplayMonitor
+      monitor.updateDisplayCount()
+    }
   }
 }
