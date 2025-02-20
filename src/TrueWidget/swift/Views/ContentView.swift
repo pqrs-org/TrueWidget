@@ -98,7 +98,7 @@ struct ContentView: View {
     case WidgetAppearance.compact.rawValue:
       return true
     case WidgetAppearance.autoCompact.rawValue:
-      if displayMonitor.displayCount == 1 {
+      if displayMonitor.displayCount <= userSettings.autoCompactDisplayCount {
         return true
       }
       return false

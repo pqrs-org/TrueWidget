@@ -66,6 +66,25 @@ struct SettingsCompactView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
       }
+
+      GroupBox(label: Text("Auto compact")) {
+        VStack(alignment: .leading) {
+          HStack {
+            Text("Automatically switch to compact mode if the display count is ")
+
+            Picker("", selection: $userSettings.autoCompactDisplayCount) {
+              ForEach(1...16, id: \.self) { number in
+                Text("\(number)").tag(number)
+              }
+            }
+            .frame(width: 60)
+
+            Text("or less")
+          }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+      }
     }
   }
 }

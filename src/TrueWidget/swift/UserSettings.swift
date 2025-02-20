@@ -160,4 +160,10 @@ final class UserSettings: ObservableObject {
   @AppStorage("compactLocalTimeSecondsFontSize") var compactLocalTimeSecondsFontSize: Double = 12.0
   @AppStorage("compactShowCPUUsage") var compactShowCPUUsage: Bool = true
   @AppStorage("compactCPUUsageFontSize") var compactCPUUsageFontSize: Double = 12.0
+
+  //
+  // Auto compact
+  //
+
+  @AppStorage("autoCompactDisplayCount") var autoCompactDisplayCount: Int = 1
 }

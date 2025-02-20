@@ -100,7 +100,7 @@ struct TrueWidgetApp: App {
           },
           label: {
             checkmarkLabel(
-              title: "Auto Compact",
+              title: "Auto compact",
               checked: userSettings.widgetAppearance == WidgetAppearance.autoCompact.rawValue)
           }
         )

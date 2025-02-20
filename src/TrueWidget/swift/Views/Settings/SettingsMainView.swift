@@ -118,7 +118,7 @@ struct SettingsMainView: View {
           Picker("", selection: $userSettings.widgetAppearance) {
             Text("Normal").tag(WidgetAppearance.normal.rawValue)
             Text("Compact").tag(WidgetAppearance.compact.rawValue)
-            Text("Auto Compact").tag(WidgetAppearance.autoCompact.rawValue)
+            Text("Auto compact").tag(WidgetAppearance.autoCompact.rawValue)
             Text("Hidden").tag(WidgetAppearance.hidden.rawValue)
           }
           .pickerStyle(.radioGroup)

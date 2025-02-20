@@ -24,7 +24,7 @@ public class DisplayMonitor: ObservableObject {
   }
 
   private let callback: CGDisplayReconfigurationCallBack = { _, flags, userInfo in
-    if !flags.intersection([.addFlag, .removeFlag]).isEmpty {
+    if flags.isDisjoint(with: [.addFlag, .removeFlag]) {
       guard let opaque = userInfo else {
         return
       }
