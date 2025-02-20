@@ -5,6 +5,7 @@ struct ContentView: View {
   @Environment(\.openSettingsLegacy) var openSettingsLegacy
   private var window: NSWindow
   @ObservedObject private var userSettings: UserSettings
+  @StateObject private var displayMonitor = DisplayMonitor()
 
   @State private var hidden = false
   private let windowPositionManager: WindowPositionManager
@@ -17,7 +18,7 @@ struct ContentView: View {
 
   var body: some View {
     VStack {
-      if userSettings.widgetAppearance == WidgetAppearance.compact.rawValue {
+      if isCompactView() {
         CompactView(userSettings: userSettings)
       } else {
         VStack(alignment: .leading, spacing: 10.0) {
@@ -47,7 +48,7 @@ struct ContentView: View {
       }
     }
     .padding()
-    .if(userSettings.widgetAppearance != WidgetAppearance.compact.rawValue) {
+    .if(!isCompactView()) {
       $0.frame(width: userSettings.widgetWidth)
     }
     .fixedSize()
@@ -89,6 +90,20 @@ struct ContentView: View {
       Task { @MainActor in
         try? openSettingsLegacy()
       }
+    }
+  }
+
+  private func isCompactView() -> Bool {
+    switch userSettings.widgetAppearance {
+    case WidgetAppearance.compact.rawValue:
+      return true
+    case WidgetAppearance.autoCompact.rawValue:
+      if displayMonitor.displayCount == 1 {
+        return true
+      }
+      return false
+    default:
+      return false
     }
   }
 }

@@ -24,6 +24,7 @@ enum WidgetScreen: String {
 enum WidgetAppearance: String {
   case normal
   case compact
+  case autoCompact
   case hidden
 }
 

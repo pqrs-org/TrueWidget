@@ -92,7 +92,17 @@ struct TrueWidgetApp: App {
               title: "Compact",
               checked: userSettings.widgetAppearance == WidgetAppearance.compact.rawValue)
           }
+        )
 
+        Button(
+          action: {
+            userSettings.widgetAppearance = WidgetAppearance.autoCompact.rawValue
+          },
+          label: {
+            checkmarkLabel(
+              title: "Auto Compact",
+              checked: userSettings.widgetAppearance == WidgetAppearance.autoCompact.rawValue)
+          }
         )
 
         Button(
