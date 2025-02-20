@@ -5,6 +5,7 @@
 -   ✨ New Features
     -   Added a feature to show system uptime.
     -   Added a feature to show awake time.
+    -   Added `Auto compact mode`, which automatically switches to compact mode when there is only one display.
 -   ⚡️ Improvements
     -   Added the ability to specify the font size for seconds in the time display.
 
