@@ -49,35 +49,35 @@ extension WidgetSource {
         // When resuming from sleep or in similar situations,
         // responses from the proxy may be called consecutively within a short period.
         // To avoid frequent UI updates in such cases, throttle is used to control the update frequency.
-        for await (cpuUsage, processes) in proxyResponseStream._throttle(
+        for await (responseCPUUsage, responseProcesses) in proxyResponseStream._throttle(
           for: .seconds(1), latest: true)
         {
-          self.usageInteger = Int(floor(cpuUsage))
-          self.usageDecimal = Int(floor((cpuUsage) * 100)) % 100
+          usageInteger = Int(floor(responseCPUUsage))
+          usageDecimal = Int(floor((responseCPUUsage) * 100)) % 100
 
           //
           // Calculate average
           //
 
-          let averageRange = max(self.userSettings.cpuUsageMovingAverageRange, 1)
-          self.usageHistory.append(cpuUsage)
-          while self.usageHistory.count > averageRange {
-            self.usageHistory.remove(at: 0)
+          let averageRange = max(userSettings.cpuUsageMovingAverageRange, 1)
+          usageHistory.append(responseCPUUsage)
+          while usageHistory.count > averageRange {
+            usageHistory.remove(at: 0)
           }
 
-          let usageAverage = self.usageHistory.reduce(0.0, +) / Double(self.usageHistory.count)
-          self.usageAverageInteger = Int(floor(usageAverage))
-          self.usageAverageDecimal = Int(floor((usageAverage) * 100)) % 100
+          let usageAverage = usageHistory.reduce(0.0, +) / Double(usageHistory.count)
+          usageAverageInteger = Int(floor(usageAverage))
+          usageAverageDecimal = Int(floor((usageAverage) * 100)) % 100
 
           //
           // Processes
           //
 
-          var newProcesses = processes
+          var newProcesses = responseProcesses
           while newProcesses.count < 3 {
             newProcesses.append([:])
           }
-          self.processes = newProcesses
+          processes = newProcesses
         }
       }
     }

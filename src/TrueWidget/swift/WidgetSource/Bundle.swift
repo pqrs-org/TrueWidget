@@ -46,7 +46,7 @@ extension WidgetSource {
         for await versions in proxyResponseStream._throttle(
           for: .seconds(1), latest: true)
         {
-          self.bundleVersions = versions
+          bundleVersions = versions
         }
       }
     }
