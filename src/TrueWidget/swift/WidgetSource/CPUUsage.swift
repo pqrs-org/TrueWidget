@@ -19,10 +19,7 @@ extension WidgetSource {
     private let timer: AsyncTimerSequence<ContinuousClock>
     private var timerTask: Task<Void, Never>?
 
-    struct ProxyResponse: Sendable {
-      let cpuUsage: Double
-      let processes: [[String: String]]
-    }
+    typealias ProxyResponse = (Double, [[String: String]])
 
     private let proxyResponseStream: AsyncStream<ProxyResponse>
     private let proxyResponseContinuation: AsyncStream<ProxyResponse>.Continuation
@@ -52,10 +49,9 @@ extension WidgetSource {
         // When resuming from sleep or in similar situations,
         // responses from the proxy may be called consecutively within a short period.
         // To avoid frequent UI updates in such cases, throttle is used to control the update frequency.
-        for await proxyResponse in proxyResponseStream._throttle(for: .seconds(1), latest: true) {
-          let cpuUsage = proxyResponse.cpuUsage
-          let processes = proxyResponse.processes
-
+        for await (cpuUsage, processes) in proxyResponseStream._throttle(
+          for: .seconds(1), latest: true)
+        {
           self.usageInteger = Int(floor(cpuUsage))
           self.usageDecimal = Int(floor((cpuUsage) * 100)) % 100
 
@@ -103,8 +99,7 @@ extension WidgetSource {
       // Since the top command has a setuid bit and can be used without privilege, we run top command in a helper process and use the result.
 
       HelperClient.shared.proxy?.topCommand { cpuUsage, processes in
-        self.proxyResponseContinuation.yield(
-          ProxyResponse(cpuUsage: cpuUsage, processes: processes))
+        self.proxyResponseContinuation.yield((cpuUsage, processes))
       }
     }
   }
