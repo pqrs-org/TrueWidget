@@ -17,6 +17,12 @@ extension WidgetSource {
     let timer: AsyncTimerSequence<ContinuousClock>
     var timerTask: Task<Void, Never>?
 
+    typealias ProxyResponse = String
+
+    private let proxyResponseStream: AsyncStream<ProxyResponse>
+    private let proxyResponseContinuation: AsyncStream<ProxyResponse>.Continuation
+    private var proxyResponseTask: Task<Void, Never>?
+
     init(userSettings: UserSettings) {
       self.userSettings = userSettings
 
@@ -25,11 +31,28 @@ extension WidgetSource {
         clock: .continuous
       )
 
+      var continuation: AsyncStream<ProxyResponse>.Continuation!
+      proxyResponseStream = AsyncStream { continuation = $0 }
+      proxyResponseContinuation = continuation
+
       timerTask = Task { @MainActor in
         update()
 
         for await _ in timer {
           update()
+        }
+      }
+
+      proxyResponseTask = Task { @MainActor in
+        // When resuming from sleep or in similar situations,
+        // responses from the proxy may be called consecutively within a short period.
+        // To avoid frequent UI updates in such cases, throttle is used to control the update frequency.
+        for await account in proxyResponseStream._throttle(
+          for: .seconds(1), latest: true)
+        {
+          if appleAccount != account {
+            appleAccount = account
+          }
         }
       }
 
@@ -51,6 +74,7 @@ extension WidgetSource {
     // Since timerTask strongly references self, make sure to call cancelTimer when OperatingSystem is no longer used.
     func cancelTimer() {
       timerTask?.cancel()
+      proxyResponseTask?.cancel()
     }
 
     private func volumeName(_ path: String) -> String {
@@ -101,11 +125,7 @@ extension WidgetSource {
 
       if userSettings.showAppleAccount {
         HelperClient.shared.proxy?.appleAccount { account in
-          Task { @MainActor in
-            if self.appleAccount != account {
-              self.appleAccount = account
-            }
-          }
+          self.proxyResponseContinuation.yield(account)
         }
       }
     }
