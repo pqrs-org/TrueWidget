@@ -48,11 +48,9 @@ extension WidgetSource {
         // responses from the proxy may be called consecutively within a short period.
         // To avoid frequent UI updates in such cases, throttle is used to control the update frequency.
         for await account in proxyResponseStream._throttle(
-          for: .seconds(1), latest: true)
+          for: .seconds(1), latest: true) where appleAccount != account
         {
-          if appleAccount != account {
-            appleAccount = account
-          }
+          appleAccount = account
         }
       }
 
