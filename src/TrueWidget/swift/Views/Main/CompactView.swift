@@ -9,7 +9,7 @@ struct CompactView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 4) {
-      if userSettings.compactShowLocalTime {
+      if userSettings.compactShowLocalTime || userSettings.compactShowLocalDate {
         CompactTimeView(userSettings: userSettings)
       }
       if userSettings.compactShowCPUUsage {

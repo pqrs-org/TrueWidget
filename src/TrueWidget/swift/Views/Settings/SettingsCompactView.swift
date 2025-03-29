@@ -5,7 +5,7 @@ struct SettingsCompactView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
-      GroupBox(label: Text("Compact")) {
+      GroupBox(label: Text("Local time")) {
         VStack(alignment: .leading) {
           Toggle(isOn: $userSettings.compactShowLocalTime) {
             Text("Show local time")
@@ -41,7 +41,39 @@ struct SettingsCompactView: View {
 
             Text("(Default: 12 pt)")
           }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+      }
 
+      GroupBox(label: Text("Local date")) {
+        VStack(alignment: .leading) {
+          Toggle(isOn: $userSettings.compactShowLocalDate) {
+            Text("Show local date")
+          }
+          .switchToggleStyle()
+
+          HStack {
+            Text("Local date font size:")
+
+            DoubleTextField(
+              value: $userSettings.compactLocalDateFontSize,
+              range: 0...1000,
+              step: 2,
+              maximumFractionDigits: 1,
+              width: 40)
+
+            Text("pt")
+
+            Text("(Default: 10 pt)")
+          }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+      }
+
+      GroupBox(label: Text("CPU Usage")) {
+        VStack(alignment: .leading) {
           Toggle(isOn: $userSettings.compactShowCPUUsage) {
             Text("Show CPU usage")
           }
