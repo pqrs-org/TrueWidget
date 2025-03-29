@@ -42,11 +42,23 @@ struct SettingsMainView: View {
 
       GroupBox(label: Text("Widget")) {
         VStack(alignment: .leading) {
-          Picker(selection: $userSettings.widgetPosition, label: Text("Widget position:")) {
-            Text("Bottom Left").tag(WidgetPosition.bottomLeft.rawValue)
-            Text("Bottom Right (Default)").tag(WidgetPosition.bottomRight.rawValue)
-            Text("Top Left").tag(WidgetPosition.topLeft.rawValue)
-            Text("Top Right").tag(WidgetPosition.topRight.rawValue)
+          HStack(alignment: .top) {
+            Text("Widget position:")
+
+            VStack(alignment: .leading) {
+              Picker(selection: $userSettings.widgetPosition, label: Text("Widget position:")) {
+                Text("Bottom Left").tag(WidgetPosition.bottomLeft.rawValue)
+                Text("Bottom Right (Default)").tag(WidgetPosition.bottomRight.rawValue)
+                Text("Top Left").tag(WidgetPosition.topLeft.rawValue)
+                Text("Top Right").tag(WidgetPosition.topRight.rawValue)
+              }
+              .labelsHidden()
+
+              Toggle(isOn: $userSettings.widgetAllowOverlappingWithDock) {
+                Text("Allow overlapping with Dock")
+              }
+              .switchToggleStyle()
+            }
           }
 
           HStack {

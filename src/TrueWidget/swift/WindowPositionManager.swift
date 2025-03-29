@@ -119,7 +119,7 @@ class WindowPositionManager {
       // Determine origin
       //
 
-      let screenFrame = screen.visibleFrame
+      let screenFrame = userSettings.widgetAllowOverlappingWithDock ? screen.frame : screen.visibleFrame
       if let widgetPosition = WidgetPosition(rawValue: userSettings.widgetPosition) {
         switch widgetPosition {
         case WidgetPosition.bottomLeft:
