@@ -47,6 +47,13 @@ struct SettingsMainView: View {
             Text("Show icon in menu bar")
           }
           .switchToggleStyle()
+
+          Picker(selection: $userSettings.widgetAppearance, label: Text("Appearance:")) {
+            Text("Normal").tag(WidgetAppearance.normal.rawValue)
+            Text("Compact").tag(WidgetAppearance.compact.rawValue)
+            Text("Auto compact").tag(WidgetAppearance.autoCompact.rawValue)
+            Text("Hidden").tag(WidgetAppearance.hidden.rawValue)
+          }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -142,20 +149,6 @@ struct SettingsMainView: View {
 
             Text("(Default: 500 ms)")
           }
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-      }
-
-      GroupBox(label: Text("Appearance")) {
-        VStack(alignment: .leading) {
-          Picker("", selection: $userSettings.widgetAppearance) {
-            Text("Normal").tag(WidgetAppearance.normal.rawValue)
-            Text("Compact").tag(WidgetAppearance.compact.rawValue)
-            Text("Auto compact").tag(WidgetAppearance.autoCompact.rawValue)
-            Text("Hidden").tag(WidgetAppearance.hidden.rawValue)
-          }
-          .pickerStyle(.radioGroup)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
