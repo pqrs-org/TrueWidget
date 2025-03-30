@@ -11,6 +11,7 @@
         -   Window level (z-order)
 -   ⚡️ Improvements
     -   Added the ability to specify the font size for seconds in the time display.
+    -   Added local date to compact mode.
 
 ## TrueWidget 2.1.0
 
