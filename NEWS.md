@@ -9,6 +9,8 @@
     -   Added the following settings to the widget position configuration:
         -   Allow overlapping with Dock
         -   Window level (z-order)
+        -   Offset X
+        -   Offset Y
 -   ⚡️ Improvements
     -   Added the ability to specify the font size for seconds in the time display.
     -   Added local date to compact mode.
