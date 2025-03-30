@@ -87,6 +87,38 @@ struct SettingsMainView: View {
                 "The higher the window level number, the more frontmost the window will appear"
               )
               .font(.caption)
+
+              Grid(alignment: .leadingFirstTextBaseline) {
+                GridRow {
+                  Text("Offset X:")
+
+                  DoubleTextField(
+                    value: $userSettings.widgetOffsetX,
+                    range: -10000...10000,
+                    step: 10,
+                    maximumFractionDigits: 1,
+                    width: 50)
+
+                  Text("pt")
+
+                  Text("(Default: 10 pt)")
+                }
+
+                GridRow {
+                  Text("Offset Y:")
+
+                  DoubleTextField(
+                    value: $userSettings.widgetOffsetY,
+                    range: -10000...10000,
+                    step: 10,
+                    maximumFractionDigits: 1,
+                    width: 50)
+
+                  Text("pt")
+
+                  Text("(Default: 10 pt)")
+                }
+              }
             }
           }
 

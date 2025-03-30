@@ -60,6 +60,8 @@ final class UserSettings: ObservableObject {
   @AppStorage("widgetPosition") var widgetPosition: String = WidgetPosition.bottomRight.rawValue
   @AppStorage("widgetAllowOverlappingWithDock") var widgetAllowOverlappingWithDock: Bool = false
   @AppStorage("widgetWindowLevel") var widgetWindowLevel: Int = NSWindow.Level.statusBar.rawValue
+  @AppStorage("widgetOffsetX") var widgetOffsetX: Double = 10.0
+  @AppStorage("widgetOffsetY") var widgetOffsetY: Double = 10.0
   @AppStorage("widgetWidth") var widgetWidth: Double = 250.0
   @AppStorage("widgetOpacity") var widgetOpacity: Double = 0.8
   @AppStorage("widgetScreen") var widgetScreen: String = WidgetScreen.primary.rawValue

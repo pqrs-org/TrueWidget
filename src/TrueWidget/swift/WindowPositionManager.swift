@@ -119,25 +119,34 @@ class WindowPositionManager {
       // Determine origin
       //
 
-      let screenFrame = userSettings.widgetAllowOverlappingWithDock ? screen.frame : screen.visibleFrame
+      let screenFrame =
+        userSettings.widgetAllowOverlappingWithDock ? screen.frame : screen.visibleFrame
       if let widgetPosition = WidgetPosition(rawValue: userSettings.widgetPosition) {
         switch widgetPosition {
         case WidgetPosition.bottomLeft:
-          origin.x = screenFrame.origin.x + 10
-          origin.y = screenFrame.origin.y + 10
+          origin.x = screenFrame.origin.x + userSettings.widgetOffsetX
+          origin.y = screenFrame.origin.y + userSettings.widgetOffsetY
 
         case WidgetPosition.topLeft:
-          origin.x = screenFrame.origin.x + 10
-          origin.y = screenFrame.origin.y + screenFrame.size.height - window.frame.height - 10
+          origin.x = screenFrame.origin.x + userSettings.widgetOffsetX
+          origin.y =
+            screenFrame.origin.y + screenFrame.size.height - window.frame.height
+            - userSettings.widgetOffsetY
 
         case WidgetPosition.topRight:
-          origin.x = screenFrame.origin.x + screenFrame.size.width - window.frame.width - 10
-          origin.y = screenFrame.origin.y + screenFrame.size.height - window.frame.height - 10
+          origin.x =
+            screenFrame.origin.x + screenFrame.size.width - window.frame.width
+            - userSettings.widgetOffsetX
+          origin.y =
+            screenFrame.origin.y + screenFrame.size.height - window.frame.height
+            - userSettings.widgetOffsetY
 
         default:
           // WidgetPosition.bottomRight
-          origin.x = screenFrame.origin.x + screenFrame.size.width - window.frame.width - 10
-          origin.y = screenFrame.origin.y + 10
+          origin.x =
+            screenFrame.origin.x + screenFrame.size.width - window.frame.width
+            - userSettings.widgetOffsetX
+          origin.y = screenFrame.origin.y + userSettings.widgetOffsetY
         }
       }
     }
