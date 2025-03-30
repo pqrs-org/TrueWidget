@@ -199,6 +199,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 class MainWindowController: NSWindowController, NSWindowDelegate {
+  private var cancellables = Set<AnyCancellable>()
+
   init(userSettings: UserSettings) {
     // Note:
     // On macOS 13, the only way to remove the title bar is to manually create an NSWindow like this.
@@ -224,7 +226,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate {
     window.isOpaque = false
     window.hasShadow = false
     window.ignoresMouseEvents = true
-    window.level = .statusBar
+    window.level = NSWindow.Level(userSettings.widgetWindowLevel)
     window.collectionBehavior.insert(.canJoinAllSpaces)
     window.collectionBehavior.insert(.ignoresCycle)
     window.collectionBehavior.insert(.stationary)
@@ -236,6 +238,10 @@ class MainWindowController: NSWindowController, NSWindowDelegate {
     super.init(window: window)
 
     window.delegate = self
+
+    userSettings.objectWillChange.sink { _ in
+      window.level = NSWindow.Level(userSettings.widgetWindowLevel)
+    }.store(in: &cancellables)
   }
 
   required init?(coder: NSCoder) {

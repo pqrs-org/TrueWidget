@@ -6,6 +6,18 @@ struct SettingsMainView: View {
   @EnvironmentObject private var userSettings: UserSettings
   @ObservedObject private var openAtLogin = OpenAtLogin.shared
 
+  private let windowLevels: [(String, Int)] = [
+    ("normal", NSWindow.Level.normal.rawValue),  // 0
+    ("floating", NSWindow.Level.floating.rawValue),  // 3
+    ("modalPanel", NSWindow.Level.modalPanel.rawValue),  // 8
+    ("mainMenu", NSWindow.Level.mainMenu.rawValue),  // 24
+    ("statusBar (Default)", NSWindow.Level.statusBar.rawValue),  // 25
+    ("popUpMenu", NSWindow.Level.popUpMenu.rawValue),  // 101
+    ("screenSaver", NSWindow.Level.screenSaver.rawValue),  // 1000
+    // ("submenu", NSWindow.Level.submenu.rawValue), // == floating
+    // ("tornOffMenu", NSWindow.Level.tornOffMenu.rawValue), // == floating
+  ]
+
   var body: some View {
     VStack(alignment: .leading, spacing: 25.0) {
       GroupBox(label: Text("Basic")) {
@@ -58,6 +70,16 @@ struct SettingsMainView: View {
                 Text("Allow overlapping with Dock")
               }
               .switchToggleStyle()
+
+              Picker(selection: $userSettings.widgetWindowLevel, label: Text("Window level:")) {
+                ForEach(windowLevels, id: \.0) { level in
+                  Text("\(level.0): \(level.1)").tag(level.1)
+                }
+              }
+              Text(
+                "The higher the window level number, the more frontmost the window will appear"
+              )
+              .font(.caption)
             }
           }
 
