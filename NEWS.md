@@ -1,7 +1,10 @@
 # Changelog
 
-## Beta
+## TrueWidget 2.2.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.2.0/TrueWidget-2.2.0.dmg)
+-   📅 Release date
+    -   Mar 31, 2025
 -   ✨ New Features
     -   Added a feature to show system uptime.
     -   Added a feature to show awake time.
