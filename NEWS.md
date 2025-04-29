@@ -1,5 +1,10 @@
 # Changelog
 
+## Beta
+
+-   ✨ New Features
+    -   The date display format can now be changed. You can choose between RFC 3339 and the current locale's formats.
+
 ## TrueWidget 2.2.0
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.2.0/TrueWidget-2.2.0.dmg)
