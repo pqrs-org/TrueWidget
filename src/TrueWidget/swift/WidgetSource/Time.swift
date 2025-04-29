@@ -13,48 +13,70 @@ extension WidgetSource {
 
       init(now: Date, timeZone: TimeZone, dateStyle: DateStyle) {
         let formatter1 = DateFormatter()
-        formatter1.locale = Locale.current
         formatter1.timeZone = timeZone
 
         let formatter2 = DateFormatter()
-        formatter2.locale = Locale.current
         formatter2.timeZone = timeZone
+
+        if let languageCode = Locale.preferredLanguages.first {
+          formatter1.locale = Locale(identifier: languageCode)
+          formatter2.locale = formatter1.locale
+        } else {
+          formatter1.locale = Locale.current
+          formatter2.locale = formatter1.locale
+        }
 
         switch dateStyle {
         case .rfc3339:
+          formatter1.locale = Locale(identifier: "en_US_POSIX")
           formatter1.dateFormat = "yyyy-MM-dd"
           date = formatter1.string(from: now)
 
         case .rfc3339WithDayName:
+          formatter1.locale = Locale(identifier: "en_US_POSIX")
           formatter1.dateFormat = "yyyy-MM-dd (EEE)"
           date = formatter1.string(from: now)
 
         case .short:
           formatter1.dateStyle = .short
+          formatter1.timeStyle = .none
           date = formatter1.string(from: now)
 
         case .shortWithDayName:
           formatter1.dateStyle = .short
-          formatter2.dateFormat = " (EEE)"
-          date = formatter1.string(from: now) + formatter2.string(from: now)
+          formatter1.timeStyle = .none
+          formatter2.setLocalizedDateFormatFromTemplate("EEE")
+          date = String(
+            format: "%@ (%@)", formatter1.string(from: now), formatter2.string(from: now))
 
         case .medium:
           formatter1.dateStyle = .medium
+          formatter1.timeStyle = .none
           date = formatter1.string(from: now)
 
         case .mediumWithDayName:
           formatter1.dateStyle = .medium
-          formatter2.dateFormat = " (EEE)"
-          date = formatter1.string(from: now) + formatter2.string(from: now)
+          formatter1.timeStyle = .none
+          formatter2.setLocalizedDateFormatFromTemplate("EEE")
+          date = String(
+            format: "%@ (%@)", formatter1.string(from: now), formatter2.string(from: now))
 
         case .long:
           formatter1.dateStyle = .long
+          formatter1.timeStyle = .none
           date = formatter1.string(from: now)
 
         case .longWithDayName:
           formatter1.dateStyle = .long
-          formatter2.dateFormat = " (EEE)"
-          date = formatter1.string(from: now) + formatter2.string(from: now)
+          formatter1.timeStyle = .none
+          formatter2.setLocalizedDateFormatFromTemplate("EEE")
+          date = String(
+            format: "%@ (%@)", formatter1.string(from: now), formatter2.string(from: now))
+
+        case .full:
+          formatter1.dateStyle = .full
+          formatter1.timeStyle = .none
+          date = formatter1.string(from: now)
         }
 
         var calendar = Calendar.current

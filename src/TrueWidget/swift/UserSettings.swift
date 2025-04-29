@@ -42,6 +42,7 @@ enum DateStyle: String {
   case mediumWithDayName
   case long
   case longWithDayName
+  case full
 }
 
 struct TimeZoneTimeSetting: Identifiable, Codable {

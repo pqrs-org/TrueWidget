@@ -17,6 +17,7 @@ struct DateStylePicker: View {
       Text("Medium with the day of the week").tag(DateStyle.mediumWithDayName.rawValue)
       Text("Long").tag(DateStyle.long.rawValue)
       Text("Long with the day of the week").tag(DateStyle.longWithDayName.rawValue)
+      Text("Full").tag(DateStyle.full.rawValue)
     }
   }
 }
