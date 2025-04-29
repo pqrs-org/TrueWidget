@@ -10,8 +10,8 @@ extension WidgetSource {
     private var helperProxy: HelperProtocol?
 
     @Published public var bundleVersions: [String: [String: String]] = [:]
-    let timer: AsyncTimerSequence<ContinuousClock>
-    var timerTask: Task<Void, Never>?
+    private let timer: AsyncTimerSequence<ContinuousClock>
+    private var timerTask: Task<Void, Never>?
 
     typealias ProxyResponse = [String: [String: String]]
 

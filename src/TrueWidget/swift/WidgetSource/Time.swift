@@ -93,8 +93,9 @@ extension WidgetSource {
     @Published public var localTime: DateTime?
     @Published public var timeZoneTimes: [String: DateTime] = [:]
 
-    let timer: AsyncTimerSequence<ContinuousClock>
-    var timerTask: Task<Void, Never>?
+    private var cancellables = Set<AnyCancellable>()
+    private let timer: AsyncTimerSequence<ContinuousClock>
+    private var timerTask: Task<Void, Never>?
 
     init(userSettings: UserSettings) {
       self.userSettings = userSettings
@@ -111,6 +112,13 @@ extension WidgetSource {
           update()
         }
       }
+
+      userSettings.objectWillChange.sink { [weak self] _ in
+        Task { @MainActor in
+          guard let self = self else { return }
+          self.update()
+        }
+      }.store(in: &cancellables)
     }
 
     // Since timerTask strongly references self, make sure to call cancelTimer when Time is no longer used.

@@ -14,8 +14,8 @@ extension WidgetSource {
     @Published public var userName = ""
     @Published public var appleAccount = ""
 
-    let timer: AsyncTimerSequence<ContinuousClock>
-    var timerTask: Task<Void, Never>?
+    private let timer: AsyncTimerSequence<ContinuousClock>
+    private var timerTask: Task<Void, Never>?
 
     typealias ProxyResponse = String
 

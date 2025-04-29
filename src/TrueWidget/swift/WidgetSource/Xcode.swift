@@ -13,8 +13,8 @@ extension WidgetSource {
     @Published public var path = ""
     @Published public var pathState = PathState.notInstalled
 
-    let timer: AsyncTimerSequence<ContinuousClock>
-    var timerTask: Task<Void, Never>?
+    private let timer: AsyncTimerSequence<ContinuousClock>
+    private var timerTask: Task<Void, Never>?
 
     init() {
       timer = AsyncTimerSequence(
