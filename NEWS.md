@@ -1,7 +1,10 @@
 # Changelog
 
-## Beta
+## TrueWidget 2.3.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.3.0/TrueWidget-2.3.0.dmg)
+-   📅 Release date
+    -   Apr 29, 2025
 -   ✨ New Features
     -   The date display format can now be changed. You can choose between RFC 3339 and the current locale's formats.
 
