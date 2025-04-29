@@ -67,6 +67,8 @@ struct SettingsTimeView: View {
 
             Text("(Default: 12 pt)")
           }
+
+          DateStylePicker()
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)

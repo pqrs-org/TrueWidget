@@ -67,6 +67,8 @@ struct SettingsCompactView: View {
 
             Text("(Default: 10 pt)")
           }
+
+          DateStylePicker()
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)

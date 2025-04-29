@@ -33,6 +33,17 @@ enum CPUUsageType: String {
   case latest
 }
 
+enum DateStyle: String {
+  case rfc3339
+  case rfc3339WithDayName
+  case short
+  case shortWithDayName
+  case medium
+  case mediumWithDayName
+  case long
+  case longWithDayName
+}
+
 struct TimeZoneTimeSetting: Identifiable, Codable {
   var id = UUID().uuidString
   var show = false
@@ -106,6 +117,7 @@ final class UserSettings: ObservableObject {
   @AppStorage("showLocalTime") var showLocalTime: Bool = true
   @AppStorage("localTimeFontSize") var localTimeFontSize: Double = 36.0
   @AppStorage("localTimeSecondsFontSize") var localTimeSecondsFontSize: Double = 18.0
+  @AppStorage("dateStyle") var dateStyle: String = DateStyle.rfc3339WithDayName.rawValue
   @AppStorage("showLocalDate") var showLocalDate: Bool = true
   @AppStorage("localDateFontSize") var localDateFontSize: Double = 12.0
 

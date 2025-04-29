@@ -11,20 +11,58 @@ extension WidgetSource {
       public let minute: Int
       public let second: Int
 
-      init(_ components: DateComponents) {
-        let weekdaySymbol = Calendar.current.shortWeekdaySymbols[(components.weekday ?? 1) - 1]
+      init(now: Date, timeZone: TimeZone, dateStyle: DateStyle) {
+        let formatter1 = DateFormatter()
+        formatter1.locale = Locale.current
+        formatter1.timeZone = timeZone
 
-        date = String(
-          format: "%04d-%02d-%02d (%@)",
-          components.year ?? 0,
-          components.month ?? 0,
-          components.day ?? 0,
-          weekdaySymbol
-        )
+        let formatter2 = DateFormatter()
+        formatter2.locale = Locale.current
+        formatter2.timeZone = timeZone
 
-        hour = components.hour ?? 0
-        minute = components.minute ?? 0
-        second = components.second ?? 0
+        switch dateStyle {
+        case .rfc3339:
+          formatter1.dateFormat = "yyyy-MM-dd"
+          date = formatter1.string(from: now)
+
+        case .rfc3339WithDayName:
+          formatter1.dateFormat = "yyyy-MM-dd (EEE)"
+          date = formatter1.string(from: now)
+
+        case .short:
+          formatter1.dateStyle = .short
+          date = formatter1.string(from: now)
+
+        case .shortWithDayName:
+          formatter1.dateStyle = .short
+          formatter2.dateFormat = " (EEE)"
+          date = formatter1.string(from: now) + formatter2.string(from: now)
+
+        case .medium:
+          formatter1.dateStyle = .medium
+          date = formatter1.string(from: now)
+
+        case .mediumWithDayName:
+          formatter1.dateStyle = .medium
+          formatter2.dateFormat = " (EEE)"
+          date = formatter1.string(from: now) + formatter2.string(from: now)
+
+        case .long:
+          formatter1.dateStyle = .long
+          date = formatter1.string(from: now)
+
+        case .longWithDayName:
+          formatter1.dateStyle = .long
+          formatter2.dateFormat = " (EEE)"
+          date = formatter1.string(from: now) + formatter2.string(from: now)
+        }
+
+        var calendar = Calendar.current
+        calendar.timeZone = timeZone
+
+        hour = calendar.component(.hour, from: now)
+        minute = calendar.component(.minute, from: now)
+        second = calendar.component(.second, from: now)
       }
     }
 
@@ -69,28 +107,22 @@ extension WidgetSource {
         return
       }
 
-      let calendar = Calendar.current
-      let components = calendar.dateComponents(
-        [
-          .year, .month, .day,
-          .hour, .minute, .second,
-          .weekday,
-        ], from: now)
-
-      localTime = DateTime(components)
+      if let dateStyle = DateStyle(rawValue: userSettings.dateStyle) {
+        localTime = DateTime(now: now, timeZone: Calendar.current.timeZone, dateStyle: dateStyle)
+      }
     }
 
     private func updateTimeZoneTimes(_ now: Date) {
-      let calendar = Calendar.current
       var times: [String: DateTime] = [:]
 
       userSettings.timeZoneTimeSettings.forEach { setting in
         if setting.show && times[setting.abbreviation] == nil {
           if let identifier = TimeZone.abbreviationDictionary[setting.abbreviation] {
             if let timeZone = TimeZone(identifier: identifier) {
-              let components = calendar.dateComponents(in: timeZone, from: now)
-
-              times[setting.abbreviation] = DateTime(components)
+              if let dateStyle = DateStyle(rawValue: userSettings.dateStyle) {
+                times[setting.abbreviation] = DateTime(
+                  now: now, timeZone: timeZone, dateStyle: dateStyle)
+              }
             }
           }
         }
