@@ -76,34 +76,17 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
   // TopCommand
   //
 
-  private var topCommandTask: Task<Void, Never>?
-  private var topCommandData: TopCommandData = TopCommandData()
-
-  @objc func topCommand(reply: @escaping (Double, [[String: String]]) -> Void) {
-    if topCommandTask == nil {
-      topCommandTask = Task {
-        do {
-          for try await data in topCommandStream() {
-            Task { @MainActor in
-              topCommandData = data
-            }
-          }
-        } catch {
-          print("error in topCommandStream: \(error)")
-          stopTopCommand()
-        }
-      }
-    }
-
+  @objc func topCommand(reply: @escaping @Sendable (Double, [[String: String]]) -> Void) {
     Task { @MainActor in
-      reply(topCommandData.cpuUsage, topCommandData.processes)
+      let snapshot = TopCommandHandler.shared.snapshot()
+      reply(snapshot.cpuUsage, snapshot.processes)
     }
   }
 
   @objc func stopTopCommand() {
-    topCommandTask?.cancel()
-    topCommandTask = nil
-    topCommandData = TopCommandData()
+    Task { @MainActor in
+      TopCommandHandler.shared.stop()
+    }
   }
 }
 

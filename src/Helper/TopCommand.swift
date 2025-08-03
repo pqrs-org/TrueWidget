@@ -116,3 +116,34 @@ func topCommandStream() -> AsyncThrowingStream<TopCommandData, Error> {
     }
   }
 }
+
+@MainActor
+class TopCommandHandler {
+  static let shared = TopCommandHandler()
+
+  private var task: Task<Void, Never>?
+  private var data: TopCommandData = TopCommandData()
+
+  func snapshot() -> TopCommandData {
+    if task == nil {
+      task = Task {
+        do {
+          for try await d in topCommandStream() {
+            data = d
+          }
+        } catch {
+          print("error in topCommandStream: \(error)")
+          stop()
+        }
+      }
+    }
+
+    return data
+  }
+
+  func stop() {
+    task?.cancel()
+    task = nil
+    data = TopCommandData()
+  }
+}

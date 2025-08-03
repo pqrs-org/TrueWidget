@@ -20,6 +20,6 @@ protocol HelperProtocol {
   // TopCommand
   //
 
-  func topCommand(reply: @escaping (Double, [[String: String]]) -> Void)
+  func topCommand(reply: @escaping @Sendable (Double, [[String: String]]) -> Void)
   func stopTopCommand()
 }
