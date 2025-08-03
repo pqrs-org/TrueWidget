@@ -1,5 +1,10 @@
 # Changelog
 
+## Beta
+
+-   ⚡️ Improvements
+    -   Migrated to Swift 6.
+
 ## TrueWidget 2.3.0
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.3.0/TrueWidget-2.3.0.dmg)
