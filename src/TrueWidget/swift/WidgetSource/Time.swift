@@ -3,6 +3,7 @@ import Combine
 import SwiftUI
 
 extension WidgetSource {
+  @MainActor
   public class Time: ObservableObject {
     public struct DateTime: Identifiable {
       public let id = UUID()

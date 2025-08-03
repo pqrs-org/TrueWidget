@@ -3,6 +3,7 @@ import Combine
 import Foundation
 
 extension WidgetSource {
+  @MainActor
   public class Xcode: ObservableObject {
     public enum PathState {
       case notInstalled

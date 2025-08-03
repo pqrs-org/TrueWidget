@@ -1,6 +1,7 @@
 import CoreGraphics
 import SwiftUI
 
+@MainActor
 public class DisplayMonitor: ObservableObject {
   @Published var displayCount = 0
 

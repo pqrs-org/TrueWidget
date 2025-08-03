@@ -3,6 +3,7 @@ import Combine
 import Foundation
 
 extension WidgetSource {
+  @MainActor
   public class Bundle: ObservableObject {
     private var userSettings: UserSettings
 

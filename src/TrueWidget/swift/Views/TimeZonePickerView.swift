@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct TimeZonePickerView: View {
+  @MainActor
   class Source {
     struct TimeZoneEntry: Identifiable {
       let id = UUID()

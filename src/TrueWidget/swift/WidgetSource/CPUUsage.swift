@@ -3,6 +3,7 @@ import Combine
 import Foundation
 
 extension WidgetSource {
+  @MainActor
   public class CPUUsage: ObservableObject {
     private var userSettings: UserSettings
 
