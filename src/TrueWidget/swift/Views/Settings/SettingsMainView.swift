@@ -31,16 +31,12 @@ struct SettingsMainView: View {
             OpenAtLogin.shared.update(register: value)
           }
 
-          if openAtLogin.error.count > 0 {
-            VStack {
-              Label(
-                openAtLogin.error,
-                systemImage: "exclamationmark.circle.fill"
-              )
-              .padding()
-            }
-            .foregroundColor(Color.errorForeground)
-            .background(Color.errorBackground)
+          if !openAtLogin.error.isEmpty {
+            Label(
+              openAtLogin.error,
+              systemImage: ErrorBorder.icon
+            )
+            .modifier(ErrorBorder())
           }
 
           Toggle(isOn: $showMenuBarExtra) {

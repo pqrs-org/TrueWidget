@@ -18,9 +18,11 @@ struct BundlePickerView: View {
           .fixedSize(horizontal: false, vertical: true)
 
         if let error = errorMessage {
-          Text(error)
-            .foregroundColor(Color.errorForeground)
-            .background(Color.errorBackground)
+          Label(
+            error,
+            systemImage: ErrorBorder.icon
+          )
+          .modifier(ErrorBorder())
         }
       }
 
