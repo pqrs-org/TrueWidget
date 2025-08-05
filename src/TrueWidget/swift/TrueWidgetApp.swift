@@ -229,7 +229,6 @@ class MainWindowController: NSWindowController, NSWindowDelegate {
     window.level = NSWindow.Level(userSettings.widgetWindowLevel)
     window.collectionBehavior.insert(.canJoinAllSpaces)
     window.collectionBehavior.insert(.ignoresCycle)
-    window.collectionBehavior.insert(.stationary)
     window.contentView = NSHostingView(
       rootView: ContentView(window: window, userSettings: userSettings)
         .openSettingsAccess()
