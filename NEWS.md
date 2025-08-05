@@ -4,6 +4,7 @@
 
 -   ⚡️ Improvements
     -   Migrated to Swift 6.
+    -   Updated the window behavior to be hidden in Mission Control.
 
 ## TrueWidget 2.3.0
 
