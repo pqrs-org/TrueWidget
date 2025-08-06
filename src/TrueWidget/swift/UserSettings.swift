@@ -64,6 +64,7 @@ final class UserSettings: ObservableObject {
   }
 
   @AppStorage("initialOpenAtLoginRegistered") var initialOpenAtLoginRegistered: Bool = false
+  @AppStorage("showAdditionalMenuItems") var showAdditionalMenuItems: Bool = false
 
   //
   // Layout

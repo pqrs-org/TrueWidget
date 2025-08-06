@@ -136,6 +136,18 @@ struct TrueWidgetApp: App {
           }
         )
 
+        if userSettings.showAdditionalMenuItems {
+          Button(
+            action: {
+              Updater.shared.checkForUpdatesWithBetaVersion()
+            },
+            label: {
+              Label("Check for beta updates...", systemImage: "hare")
+                .labelStyle(.titleAndIcon)
+            }
+          )
+        }
+
         Divider()
 
         Button(

@@ -44,6 +44,12 @@ struct SettingsMainView: View {
           }
           .switchToggleStyle()
 
+          Toggle(isOn: $userSettings.showAdditionalMenuItems) {
+            Text("Show additional menu items")
+          }
+          .switchToggleStyle()
+          .disabled(!showMenuBarExtra)
+
           Picker(selection: $userSettings.widgetAppearance, label: Text("Appearance:")) {
             Text("Normal").tag(WidgetAppearance.normal.rawValue)
             Text("Compact").tag(WidgetAppearance.compact.rawValue)
