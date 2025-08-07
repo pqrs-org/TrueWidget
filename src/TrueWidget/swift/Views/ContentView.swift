@@ -38,10 +38,7 @@ struct ContentView: View {
             MainCPUUsageView(userSettings: userSettings)
           }
 
-          if userSettings.showLocalTime
-            || userSettings.showLocalDate
-            || !userSettings.timeZoneTimeSettings.filter({ $0.show }).isEmpty
-          {
+          if MainTimeView.isVisible(for: userSettings) {
             MainTimeView(userSettings: userSettings)
           }
         }
