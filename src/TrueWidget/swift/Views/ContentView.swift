@@ -30,7 +30,7 @@ struct ContentView: View {
             MainXcodeView(userSettings: userSettings)
           }
 
-          if !userSettings.bundleSettings.filter({ $0.show }).isEmpty {
+          if MainBundleView.isVisible(for: userSettings) {
             MainBundleView(userSettings: userSettings)
           }
 

@@ -9,6 +9,10 @@ struct MainBundleView: View {
     _bundle = StateObject(wrappedValue: WidgetSource.Bundle(userSettings: userSettings))
   }
 
+  static func isVisible(for userSettings: UserSettings) -> Bool {
+    return !userSettings.bundleSettings.filter({ $0.show }).isEmpty
+  }
+
   var body: some View {
     VStack(alignment: .trailing, spacing: 0) {
       ForEach(userSettings.bundleSettings) { setting in
