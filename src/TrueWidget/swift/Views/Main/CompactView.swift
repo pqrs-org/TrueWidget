@@ -13,7 +13,7 @@ struct CompactView: View {
         CompactTimeView(userSettings: userSettings)
       }
 
-      if userSettings.compactShowCPUUsage {
+      if CompactCPUUsageView.isVisible(for: userSettings) {
         CompactCPUUsageView(userSettings: userSettings)
       }
     }

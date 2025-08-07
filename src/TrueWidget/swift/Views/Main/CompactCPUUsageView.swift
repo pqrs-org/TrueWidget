@@ -9,6 +9,10 @@ struct CompactCPUUsageView: View {
     _cpuUsage = StateObject(wrappedValue: WidgetSource.CPUUsage(userSettings: userSettings))
   }
 
+  static func isVisible(for userSettings: UserSettings) -> Bool {
+    return userSettings.compactShowCPUUsage
+  }
+
   var body: some View {
     //
     // CPU usage
