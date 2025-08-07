@@ -9,6 +9,11 @@ struct CompactTimeView: View {
     _time = StateObject(wrappedValue: WidgetSource.Time(userSettings: userSettings))
   }
 
+  static func isVisible(for userSettings: UserSettings) -> Bool {
+    return userSettings.compactShowLocalDate
+      || userSettings.compactShowLocalTime
+  }
+
   var body: some View {
     VStack(alignment: .trailing, spacing: 0) {
       if userSettings.compactShowLocalDate {
