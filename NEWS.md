@@ -7,6 +7,7 @@
 -   ⚡️ Improvements
     -   Migrated to Swift 6.
     -   Updated the window behavior to be hidden in Mission Control.
+    -   Sparkle Framework has been updated.
 
 ## TrueWidget 2.3.0
 
