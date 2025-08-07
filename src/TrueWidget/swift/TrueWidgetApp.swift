@@ -128,6 +128,7 @@ struct TrueWidgetApp: App {
 
         Button(
           action: {
+            NSApp.activate(ignoringOtherApps: true)
             Updater.shared.checkForUpdatesStableOnly()
           },
           label: {
@@ -139,6 +140,7 @@ struct TrueWidgetApp: App {
         if userSettings.showAdditionalMenuItems {
           Button(
             action: {
+              NSApp.activate(ignoringOtherApps: true)
               Updater.shared.checkForUpdatesWithBetaVersion()
             },
             label: {
