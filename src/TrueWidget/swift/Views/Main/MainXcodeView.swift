@@ -9,6 +9,10 @@ struct MainXcodeView: View {
     _xcode = StateObject(wrappedValue: WidgetSource.Xcode())
   }
 
+  static func isVisible(for userSettings: UserSettings) -> Bool {
+    return userSettings.showXcode
+  }
+
   var body: some View {
     VStack(alignment: .trailing, spacing: 0) {
       Text(xcode.path)

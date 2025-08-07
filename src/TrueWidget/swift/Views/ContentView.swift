@@ -26,7 +26,7 @@ struct ContentView: View {
             MainOperatingSystemView(userSettings: userSettings)
           }
 
-          if userSettings.showXcode {
+          if MainXcodeView.isVisible(for: userSettings) {
             MainXcodeView(userSettings: userSettings)
           }
 
