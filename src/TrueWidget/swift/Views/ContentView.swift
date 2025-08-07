@@ -34,7 +34,7 @@ struct ContentView: View {
             MainBundleView(userSettings: userSettings)
           }
 
-          if userSettings.showCPUUsage {
+          if MainCPUUsageView.isVisible(for: userSettings) {
             MainCPUUsageView(userSettings: userSettings)
           }
 
