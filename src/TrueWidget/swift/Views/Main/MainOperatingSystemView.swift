@@ -10,21 +10,33 @@ struct MainOperatingSystemView: View {
       wrappedValue: WidgetSource.OperatingSystem(userSettings: userSettings))
   }
 
+  static func isVisible(for userSettings: UserSettings) -> Bool {
+    return userSettings.showOperatingSystem
+      || userSettings.showUptime
+      || userSettings.showAwakeTime
+      || userSettings.showHostName
+      || userSettings.showRootVolumeName
+      || userSettings.showUserName
+      || userSettings.showAppleAccount
+  }
+
   var body: some View {
     //
     // Operating system
     //
 
     VStack(spacing: 0) {
-      HStack(alignment: .center, spacing: 0) {
-        Text("macOS ")
+      if userSettings.showOperatingSystem || userSettings.showUptime {
+        HStack(alignment: .center, spacing: 0) {
+          if userSettings.showOperatingSystem {
+            Text("macOS \(operatingSystem.version)")
+          }
 
-        Text(operatingSystem.version)
+          Spacer()
 
-        Spacer()
-
-        if userSettings.showUptime {
-          Text("up \(operatingSystem.uptime)")
+          if userSettings.showUptime {
+            Text("up \(operatingSystem.uptime)")
+          }
         }
       }
 

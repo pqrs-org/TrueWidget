@@ -31,42 +31,40 @@ struct SettingsOperatingSystemView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
       }
 
-      if userSettings.showOperatingSystem {
-        GroupBox(label: Text("Advanced")) {
-          VStack(alignment: .leading) {
-            Toggle(isOn: $userSettings.showUptime) {
-              Text("Show uptime")
-            }
-            .switchToggleStyle()
-
-            Toggle(isOn: $userSettings.showAwakeTime) {
-              Text("Show awake time")
-            }
-            .switchToggleStyle()
-
-            Toggle(isOn: $userSettings.showHostName) {
-              Text("Show host name")
-            }
-            .switchToggleStyle()
-
-            Toggle(isOn: $userSettings.showRootVolumeName) {
-              Text("Show root volume name")
-            }
-            .switchToggleStyle()
-
-            Toggle(isOn: $userSettings.showUserName) {
-              Text("Show user name")
-            }
-            .switchToggleStyle()
-
-            Toggle(isOn: $userSettings.showAppleAccount) {
-              Text("Show Apple Account")
-            }
-            .switchToggleStyle()
+      GroupBox(label: Text("Advanced")) {
+        VStack(alignment: .leading) {
+          Toggle(isOn: $userSettings.showUptime) {
+            Text("Show uptime")
           }
-          .padding()
-          .frame(maxWidth: .infinity, alignment: .leading)
+          .switchToggleStyle()
+
+          Toggle(isOn: $userSettings.showAwakeTime) {
+            Text("Show awake time")
+          }
+          .switchToggleStyle()
+
+          Toggle(isOn: $userSettings.showHostName) {
+            Text("Show host name")
+          }
+          .switchToggleStyle()
+
+          Toggle(isOn: $userSettings.showRootVolumeName) {
+            Text("Show root volume name")
+          }
+          .switchToggleStyle()
+
+          Toggle(isOn: $userSettings.showUserName) {
+            Text("Show user name")
+          }
+          .switchToggleStyle()
+
+          Toggle(isOn: $userSettings.showAppleAccount) {
+            Text("Show Apple Account")
+          }
+          .switchToggleStyle()
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }

@@ -22,7 +22,7 @@ struct ContentView: View {
         CompactView(userSettings: userSettings)
       } else {
         VStack(alignment: .leading, spacing: 10.0) {
-          if userSettings.showOperatingSystem {
+          if MainOperatingSystemView.isVisible(for: userSettings) {
             MainOperatingSystemView(userSettings: userSettings)
           }
 
