@@ -1,7 +1,10 @@
 # Changelog
 
-## Beta
+## TrueWidget 2.4.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.4.0/TrueWidget-2.4.0.dmg)
+-   📅 Release date
+    -   Aug 9, 2025
 -   ✨ New Features
     -   Added `Show additional menu items` option.
 -   ⚡️ Improvements
