@@ -36,7 +36,8 @@ struct CompactCPUUsageView: View {
             cpuUsage.usageAverageDecimal))
       }
     }
-    .font(.custom("Menlo", size: userSettings.compactCPUUsageFontSize))
+    .font(.system(size: userSettings.compactCPUUsageFontSize))
+    .monospaced()
     .frame(maxWidth: .infinity, alignment: .trailing)
     .onDisappear {
       cpuUsage.cancelTimer()

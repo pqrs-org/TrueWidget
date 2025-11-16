@@ -18,7 +18,8 @@ struct CompactTimeView: View {
     VStack(alignment: .trailing, spacing: 0) {
       if userSettings.compactShowLocalDate {
         Text(time.localTime?.date ?? "---")
-          .font(.custom("Menlo", size: userSettings.compactLocalDateFontSize))
+          .font(.system(size: userSettings.compactLocalDateFontSize))
+          .monospaced()
           .padding(.bottom, 4.0)
       }
 
@@ -34,7 +35,8 @@ struct CompactTimeView: View {
                   time.localTime?.minute ?? 0
                 )
             )
-            .font(.custom("Menlo", size: userSettings.compactLocalTimeFontSize))
+            .font(.system(size: userSettings.compactLocalTimeFontSize))
+            .monospaced()
           }
 
           if userSettings.compactLocalTimeSecondsFontSize > 0 {
@@ -46,7 +48,8 @@ struct CompactTimeView: View {
                   time.localTime?.second ?? 0
                 )
             )
-            .font(.custom("Menlo", size: userSettings.compactLocalTimeSecondsFontSize))
+            .font(.system(size: userSettings.compactLocalTimeSecondsFontSize))
+            .monospaced()
           }
         }
       }

@@ -27,13 +27,15 @@ struct MainCPUUsageView: View {
           Text(String(format: "% 3d", cpuUsage.usageInteger))
 
           Text(String(format: ".%02d%%", cpuUsage.usageDecimal))
-            .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
+            .font(.system(size: userSettings.cpuUsageFontSize / 2))
+            .monospaced()
         } else {
           // Moving average
           Text(String(format: "% 3d", cpuUsage.usageAverageInteger))
 
           Text(String(format: ".%02d%%", cpuUsage.usageAverageDecimal))
-            .font(.custom("Menlo", size: userSettings.cpuUsageFontSize / 2))
+            .font(.system(size: userSettings.cpuUsageFontSize / 2))
+            .monospaced()
         }
       }
       .if(!userSettings.showProcesses) {
@@ -43,7 +45,8 @@ struct MainCPUUsageView: View {
           alignment: .bottom
         )
       }
-      .font(.custom("Menlo", size: userSettings.cpuUsageFontSize))
+      .font(.system(size: userSettings.cpuUsageFontSize))
+      .monospaced()
 
       if userSettings.showProcesses {
         VStack(alignment: .trailing, spacing: 0) {
@@ -55,7 +58,8 @@ struct MainCPUUsageView: View {
         }
         .padding(.vertical, 4.0)
         .padding(.horizontal, 10.0)
-        .font(.custom("Menlo", size: userSettings.processesFontSize))
+        .font(.system(size: userSettings.processesFontSize))
+        .monospaced()
         .border(.gray)
       }
     }

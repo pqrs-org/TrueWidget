@@ -19,7 +19,8 @@ struct MainTimeView: View {
     VStack(alignment: .trailing, spacing: 0) {
       if userSettings.showLocalDate {
         Text(time.localTime?.date ?? "---")
-          .font(.custom("Menlo", size: userSettings.localDateFontSize))
+          .font(.system(size: userSettings.localDateFontSize))
+          .monospaced()
           .padding(.bottom, 4.0)
       }
 
@@ -35,7 +36,8 @@ struct MainTimeView: View {
                   time.localTime?.minute ?? 0
                 )
             )
-            .font(.custom("Menlo", size: userSettings.localTimeFontSize))
+            .font(.system(size: userSettings.localTimeFontSize))
+            .monospaced()
           }
 
           if userSettings.localTimeSecondsFontSize > 0 {
@@ -47,7 +49,8 @@ struct MainTimeView: View {
                   time.localTime?.second ?? 0
                 )
             )
-            .font(.custom("Menlo", size: userSettings.localTimeSecondsFontSize))
+            .font(.system(size: userSettings.localTimeSecondsFontSize))
+            .monospaced()
           }
         }
       }
@@ -58,11 +61,13 @@ struct MainTimeView: View {
             let dateTime = time.timeZoneTimes[setting.abbreviation]
 
             Text(String(format: "%@: ", setting.abbreviation))
-              .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
+              .font(.system(size: userSettings.timeZoneTimeFontSize))
+              .monospaced()
 
             if userSettings.timeZoneDateFontSize > 0 {
               Text(String(format: "%@ ", dateTime?.date ?? "---"))
-                .font(.custom("Menlo", size: userSettings.timeZoneDateFontSize))
+                .font(.system(size: userSettings.timeZoneDateFontSize))
+                .monospaced()
             }
 
             if userSettings.timeZoneTimeFontSize > 0 {
@@ -75,7 +80,8 @@ struct MainTimeView: View {
                     dateTime?.minute ?? 0,
                     dateTime?.second ?? 0)
               )
-              .font(.custom("Menlo", size: userSettings.timeZoneTimeFontSize))
+              .font(.system(size: userSettings.timeZoneTimeFontSize))
+              .monospaced()
             }
           }
         }
