@@ -1,5 +1,12 @@
 # Changelog
 
+## Beta
+
+-   ⚡️ Improvements
+    -   Updated the app icon.
+    -   Added support for Liquid Glass.
+    -   Sparkle Framework has been updated.
+
 ## TrueWidget 2.4.0
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.4.0/TrueWidget-2.4.0.dmg)
