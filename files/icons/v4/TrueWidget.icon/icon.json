@@ -7,6 +7,7 @@
       "layers" : [
         {
           "glass" : false,
+          "hidden" : false,
           "image-name" : "TrueWidget.png",
           "name" : "TrueWidget"
         }
