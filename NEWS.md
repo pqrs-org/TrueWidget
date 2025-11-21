@@ -1,7 +1,10 @@
 # Changelog
 
-## Beta
+## TrueWidget 2.5.0
 
+-   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.5.0/TrueWidget-2.5.0.dmg)
+-   📅 Release date
+    -   Nov 21, 2025
 -   ⚡️ Improvements
     -   Updated the app icon.
     -   Added support for Liquid Glass.
