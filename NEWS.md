@@ -1,5 +1,10 @@
 # Changelog
 
+## Beta
+
+-   ⚡️ Improvements
+    -   Updated the menu icons.
+
 ## TrueWidget 2.5.0
 
 -   [📦 Download](https://github.com/pqrs-org/TrueWidget/releases/download/v2.5.0/TrueWidget-2.5.0.dmg)
