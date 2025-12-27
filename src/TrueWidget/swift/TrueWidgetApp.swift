@@ -119,7 +119,7 @@ struct TrueWidgetApp: App {
         Divider()
 
         SettingsLink {
-          Label("Settings...", systemImage: "gearshape")
+          Label("Settings...", systemImage: "gear")
             .labelStyle(.titleAndIcon)
         } preAction: {
           NSApp.activate(ignoringOtherApps: true)
@@ -157,7 +157,7 @@ struct TrueWidgetApp: App {
             NSApp.terminate(nil)
           },
           label: {
-            Label("Quit TrueWidget", systemImage: "xmark")
+            Label("Quit TrueWidget", systemImage: "xmark.rectangle")
               .labelStyle(.titleAndIcon)
           }
         )
