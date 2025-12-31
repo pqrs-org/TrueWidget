@@ -179,6 +179,10 @@ public struct ExtraFeatures {
       autoVolumeUnmountRecords = records
     }
 
+    func resetAutoVolumeUnmountRecords() {
+      autoVolumeUnmountRecords = [:]
+    }
+
     private func currentBootTimeEpoch() -> TimeInterval? {
       var bootTime = timeval()
       var size = MemoryLayout<timeval>.size
