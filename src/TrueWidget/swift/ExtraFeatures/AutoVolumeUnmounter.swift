@@ -32,6 +32,16 @@ public struct ExtraFeatures {
         interval: .seconds(5),
         clock: .continuous
       )
+    }
+
+    @MainActor deinit {
+      stop()
+    }
+
+    func start() {
+      guard timerTask == nil else {
+        return
+      }
 
       timerTask = Task { @MainActor in
         checkAndUnmount()
@@ -42,13 +52,9 @@ public struct ExtraFeatures {
       }
     }
 
-    deinit {
+    func stop() {
       timerTask?.cancel()
-    }
-
-    // Since timerTask strongly references self, call cancelTimer when AutoVolumeUnmounter is no longer needed.
-    func cancelTimer() {
-      timerTask?.cancel()
+      timerTask = nil
     }
 
     private func checkAndUnmount() {
