@@ -1,6 +1,8 @@
 import AsyncAlgorithms
 import DiskArbitration
 import Foundation
+import IOKit
+import IOKit.storage
 import OSLog
 import SwiftUI
 
@@ -23,6 +25,13 @@ public struct ExtraFeatures {
     private var timerTask: Task<Void, Never>?
     private var unmountingVolumeUUIDs: Set<String> = []
     private let daSession: DASession
+
+    struct MountedVolume: Identifiable {
+      let id: String
+      let name: String
+      let path: String
+      let isMounted: Bool
+    }
 
     init() {
       guard let session = DASessionCreate(kCFAllocatorDefault) else {
@@ -192,6 +201,89 @@ public struct ExtraFeatures {
 
     func resetAutoVolumeUnmountRecords() {
       autoVolumeUnmountRecords = [:]
+    }
+
+    func fetchMountedVolumes() -> [MountedVolume] {
+      guard let matching = IOServiceMatching(kIOMediaClass) else {
+        logger.error("IOServiceMatching failed")
+        return []
+      }
+
+      var iterator: io_iterator_t = 0
+      let result = IOServiceGetMatchingServices(kIOMainPortDefault, matching, &iterator)
+      guard result == KERN_SUCCESS else {
+        logger.error("IOServiceGetMatchingServices failed: \(result)")
+        return []
+      }
+
+      defer {
+        IOObjectRelease(iterator)
+      }
+
+      var resultsByUUID: [String: MountedVolume] = [:]
+
+      while case let service = IOIteratorNext(iterator), service != 0 {
+        defer {
+          IOObjectRelease(service)
+        }
+
+        guard let disk = DADiskCreateFromIOMedia(kCFAllocatorDefault, daSession, service),
+          let description = DADiskCopyDescription(disk) as? [CFString: Any]
+        else {
+          continue
+        }
+
+        if let mountable = description[kDADiskDescriptionVolumeMountableKey] as? Bool,
+          !mountable
+        {
+          continue
+        }
+
+        guard let rawUUID = description[kDADiskDescriptionVolumeUUIDKey] else {
+          continue
+        }
+
+        let uuid = volumeUUIDString(from: rawUUID)
+        if uuid.isEmpty {
+          continue
+        }
+
+        let name =
+          (description[kDADiskDescriptionVolumeNameKey] as? String)
+          ?? (description[kDADiskDescriptionMediaBSDNameKey] as? String)
+          ?? uuid
+        let path = (description[kDADiskDescriptionVolumePathKey] as? URL)?.path ?? ""
+        let isMounted = !path.isEmpty
+
+        let volume = MountedVolume(id: uuid, name: name, path: path, isMounted: isMounted)
+
+        if let existing = resultsByUUID[uuid] {
+          if !existing.isMounted && isMounted {
+            resultsByUUID[uuid] = volume
+          }
+        } else {
+          resultsByUUID[uuid] = volume
+        }
+      }
+
+      return resultsByUUID.values.sorted {
+        $0.name.localizedStandardCompare($1.name) == .orderedAscending
+      }
+    }
+
+    private func volumeUUIDString(from rawUUID: Any) -> String {
+      let rawAsCF = rawUUID as CFTypeRef
+      if CFGetTypeID(rawAsCF) == CFUUIDGetTypeID() {
+        // swiftlint:disable:next force_cast
+        let cfuuid = rawAsCF as! CFUUID
+        return CFUUIDCreateString(kCFAllocatorDefault, cfuuid) as String
+      }
+
+      if let uuidString = rawUUID as? String {
+        return uuidString
+      }
+
+      return ""
     }
 
     private func currentBootTimeEpoch() -> TimeInterval? {
