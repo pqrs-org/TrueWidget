@@ -2,6 +2,7 @@ import AsyncAlgorithms
 import DiskArbitration
 import Foundation
 import OSLog
+import SwiftUI
 
 public struct ExtraFeatures {
   @MainActor
@@ -11,6 +12,8 @@ public struct ExtraFeatures {
       category: String(describing: AutoVolumeUnmounter.self))
 
     static let shared = AutoVolumeUnmounter()
+
+    @AppStorage("autoVolumeUnmountRecords") private var autoVolumeUnmountRecordsData: Data = Data()
 
     let targetVolumeUUIDs = [
       "830EBDAC-2B79-41AB-AA1E-6F5B05A8ADAB"  // SSD
@@ -58,6 +61,10 @@ public struct ExtraFeatures {
     }
 
     private func checkAndUnmount() {
+      guard let bootTimeEpoch = currentBootTimeEpoch() else {
+        return
+      }
+
       let resourceKeys: Set<URLResourceKey> = [
         .volumeUUIDStringKey
       ]
@@ -68,6 +75,8 @@ public struct ExtraFeatures {
           options: []
         ) ?? []
 
+      let unmountRecords = autoVolumeUnmountRecords
+
       for volumeURL in mountedVolumes {
         guard let values = try? volumeURL.resourceValues(forKeys: resourceKeys),
           let uuid = values.volumeUUIDString
@@ -76,6 +85,12 @@ public struct ExtraFeatures {
         }
 
         guard targetVolumeUUIDs.contains(uuid) else {
+          continue
+        }
+
+        if let lastUnmount = unmountRecords[uuid],
+          lastUnmount >= bootTimeEpoch
+        {
           continue
         }
 
@@ -123,7 +138,7 @@ public struct ExtraFeatures {
       }
     }
 
-    private static let unmountCallback: DADiskUnmountCallback = { _, _, context in
+    private static let unmountCallback: DADiskUnmountCallback = { _, dissenter, context in
       guard let context else {
         return
       }
@@ -132,9 +147,48 @@ public struct ExtraFeatures {
       let owner = unmountContext.owner
       let uuid = unmountContext.uuid
 
+      let succeeded = (dissenter == nil)
       Task { @MainActor in
+        if succeeded {
+          owner?.markUnmounted(uuid: uuid)
+        }
         owner?.unmountingVolumeUUIDs.remove(uuid)
       }
+    }
+
+    private var autoVolumeUnmountRecords: [String: TimeInterval] {
+      get {
+        guard !autoVolumeUnmountRecordsData.isEmpty,
+          let decoded = try? JSONDecoder().decode(
+            [String: TimeInterval].self, from: autoVolumeUnmountRecordsData)
+        else {
+          return [:]
+        }
+        return decoded
+      }
+      set {
+        if let data = try? JSONEncoder().encode(newValue) {
+          autoVolumeUnmountRecordsData = data
+        }
+      }
+    }
+
+    private func markUnmounted(uuid: String) {
+      var records = autoVolumeUnmountRecords
+      records[uuid] = Date().timeIntervalSince1970
+      autoVolumeUnmountRecords = records
+    }
+
+    private func currentBootTimeEpoch() -> TimeInterval? {
+      var bootTime = timeval()
+      var size = MemoryLayout<timeval>.size
+
+      let result = sysctlbyname("kern.boottime", &bootTime, &size, nil, 0)
+      if result != 0 {
+        return nil
+      }
+
+      return TimeInterval(bootTime.tv_sec)
     }
   }
 }
