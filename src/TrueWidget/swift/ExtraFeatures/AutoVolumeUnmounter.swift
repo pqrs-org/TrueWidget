@@ -62,6 +62,7 @@ public struct ExtraFeatures {
 
     private func checkAndUnmount() {
       guard let bootTimeEpoch = currentBootTimeEpoch() else {
+        logger.error("kern.boottime failed")
         return
       }
 
@@ -111,6 +112,7 @@ public struct ExtraFeatures {
           volumeURL as CFURL
         )
       else {
+        logger.error("DADiskCreateFromVolumePath failed url:\(volumeURL) uuid:\(uuid)")
         unmountingVolumeUUIDs.remove(uuid)
         return
       }
@@ -148,9 +150,18 @@ public struct ExtraFeatures {
       let uuid = unmountContext.uuid
 
       let succeeded = (dissenter == nil)
+      let errorMessage =
+        dissenter.map {
+          let status = AutoVolumeUnmounter.dissenterStatus(dissenter: $0)
+          let reason = AutoVolumeUnmounter.dissenterStatusString(dissenter: $0)
+          return "DADiskUnmount failed uuid:\(uuid) status:\(status) reason:\(reason)"
+        } ?? ""
+
       Task { @MainActor in
         if succeeded {
           owner?.markUnmounted(uuid: uuid)
+        } else {
+          owner?.logger.error("\(errorMessage)")
         }
         owner?.unmountingVolumeUUIDs.remove(uuid)
       }
@@ -193,6 +204,18 @@ public struct ExtraFeatures {
       }
 
       return TimeInterval(bootTime.tv_sec)
+    }
+
+    private static func dissenterStatus(dissenter: DADissenter) -> Int {
+      let status = DADissenterGetStatus(dissenter)
+      return Int(status)
+    }
+
+    private static func dissenterStatusString(dissenter: DADissenter) -> String {
+      guard let cfString = DADissenterGetStatusString(dissenter) else {
+        return "unknown"
+      }
+      return String(cfString)
     }
   }
 }
