@@ -247,6 +247,14 @@ public struct ExtraFeatures {
         nil
       )
 
+      DARegisterDiskDescriptionChangedCallback(
+        daSession,
+        nil,
+        nil,
+        AutoVolumeUnmounter.diskDescriptionChangedCallback,
+        nil
+      )
+
       isDiskCallbacksRegistered = true
     }
 
@@ -268,20 +276,36 @@ public struct ExtraFeatures {
         nil
       )
 
+      DAUnregisterCallback(
+        daSession,
+        unsafeBitCast(
+          AutoVolumeUnmounter.diskDescriptionChangedCallback, to: UnsafeMutableRawPointer.self),
+        nil
+      )
+
       isDiskCallbacksRegistered = false
     }
 
-    private static let diskAppearedCallback: DADiskAppearedCallback = { _, context in
-      Task { @MainActor in
-        AutoVolumeUnmounter.shared.refreshAutoUnmountCandidateVolumes()
+    private static let diskAppearedCallback: DADiskAppearedCallback =
+      { _, _ in
+        Task { @MainActor in
+          AutoVolumeUnmounter.shared.refreshAutoUnmountCandidateVolumes()
+        }
       }
-    }
 
-    private static let diskDisappearedCallback: DADiskDisappearedCallback = { _, context in
-      Task { @MainActor in
-        AutoVolumeUnmounter.shared.refreshAutoUnmountCandidateVolumes()
+    private static let diskDisappearedCallback: DADiskDisappearedCallback =
+      { _, _ in
+        Task { @MainActor in
+          AutoVolumeUnmounter.shared.refreshAutoUnmountCandidateVolumes()
+        }
       }
-    }
+
+    private static let diskDescriptionChangedCallback: DADiskDescriptionChangedCallback =
+      { _, _, _ in
+        Task { @MainActor in
+          AutoVolumeUnmounter.shared.refreshAutoUnmountCandidateVolumes()
+        }
+      }
 
     private func diskutilApfsListPlist() -> Data? {
       let command = "/usr/sbin/diskutil"
