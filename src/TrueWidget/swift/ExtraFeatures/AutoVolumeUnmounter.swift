@@ -14,6 +14,9 @@ public struct ExtraFeatures {
 
     static let shared = AutoVolumeUnmounter()
 
+    // To run auto-unmount only once per volume after boot,
+    // we remember the time when auto-unmount ran
+    // and unmount only if it has not been performed since the last boot.
     @AppStorage("autoVolumeUnmountRecords") private var autoVolumeUnmountRecordsData: Data = Data()
 
     @CodableAppStorage("autoVolumeUnmounterTargetVolumeUUIDs") private var targetVolumeUUIDs:
@@ -29,6 +32,7 @@ public struct ExtraFeatures {
       let name: String
       let path: String
       let roles: [String]
+      let isInternal: Bool
     }
 
     init() {
@@ -303,7 +307,7 @@ public struct ExtraFeatures {
 
           let daInfo =
             deviceIdentifier.isEmpty
-            ? (name: nil, path: nil)
+            ? (name: nil, path: nil, isInternal: nil)
             : diskArbitrationVolumeInfo(bsdName: deviceIdentifier)
 
           let path = daInfo.path ?? ""
@@ -321,7 +325,8 @@ public struct ExtraFeatures {
               ?? (volume["Name"] as? String)
                 ?? (deviceIdentifier.isEmpty ? uuid : deviceIdentifier),
             path: path,
-            roles: roles
+            roles: roles,
+            isInternal: daInfo.isInternal ?? false
           )
 
           resultsByUUID[uuid] = mountedVolume
@@ -333,19 +338,22 @@ public struct ExtraFeatures {
       }
     }
 
-    private func diskArbitrationVolumeInfo(bsdName: String) -> (name: String?, path: String?) {
+    private func diskArbitrationVolumeInfo(
+      bsdName: String
+    ) -> (name: String?, path: String?, isInternal: Bool?) {
       guard let disk = DADiskCreateFromBSDName(kCFAllocatorDefault, daSession, bsdName) else {
         logger.error("DADiskCreateFromBSDName failed: \(bsdName)")
-        return (nil, nil)
+        return (nil, nil, nil)
       }
 
       guard let description = DADiskCopyDescription(disk) as? [CFString: Any] else {
-        return (nil, nil)
+        return (nil, nil, nil)
       }
 
       let name = description[kDADiskDescriptionVolumeNameKey] as? String
       let path = (description[kDADiskDescriptionVolumePathKey] as? URL)?.path
-      return (name, path)
+      let isInternal = description[kDADiskDescriptionDeviceInternalKey] as? Bool
+      return (name, path, isInternal)
     }
 
     private func rootVolumeBSDName() -> String? {
