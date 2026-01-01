@@ -7,12 +7,12 @@ import SwiftUI
 
 public struct ExtraFeatures {
   @MainActor
-  final class AutoVolumeUnmounter {
+  final class AutoVolumeUnmounter: ObservableObject {
+    static let shared = AutoVolumeUnmounter()
+
     private let logger = Logger(
       subsystem: Bundle.main.bundleIdentifier ?? "unknown",
       category: String(describing: AutoVolumeUnmounter.self))
-
-    static let shared = AutoVolumeUnmounter()
 
     // To run auto-unmount only once per volume after boot,
     // we remember the time when auto-unmount ran
@@ -26,6 +26,9 @@ public struct ExtraFeatures {
     private var timerTask: Task<Void, Never>?
     private var unmountingVolumeUUIDs: Set<String> = []
     private let daSession: DASession
+    private var isDiskCallbacksRegistered = false
+
+    @Published private(set) var autoUnmountCandidateVolumes: [AutoUnmountCandidateVolume] = []
 
     struct AutoUnmountCandidateVolume: Identifiable {
       let id: String
@@ -35,7 +38,7 @@ public struct ExtraFeatures {
       let isInternal: Bool
     }
 
-    init() {
+    fileprivate init() {
       guard let session = DASessionCreate(kCFAllocatorDefault) else {
         fatalError("DASessionCreate failed")
       }
@@ -46,6 +49,7 @@ public struct ExtraFeatures {
         interval: .seconds(5),
         clock: .continuous
       )
+
     }
 
     @MainActor deinit {
@@ -56,6 +60,9 @@ public struct ExtraFeatures {
       guard timerTask == nil else {
         return
       }
+
+      registerDiskCallbacks()
+      refreshAutoUnmountCandidateVolumes()
 
       timerTask = Task { @MainActor in
         checkAndUnmount()
@@ -69,6 +76,8 @@ public struct ExtraFeatures {
     func stop() {
       timerTask?.cancel()
       timerTask = nil
+
+      unregisterDiskCallbacks()
     }
 
     private func checkAndUnmount() {
@@ -130,7 +139,7 @@ public struct ExtraFeatures {
 
       logger.info("unmount url:\(volumeURL) uuid:\(uuid)")
 
-      let context = UnmountContext(owner: self, uuid: uuid)
+      let context = UnmountContext(uuid: uuid)
       let unmanaged = Unmanaged.passRetained(context)
 
       DADiskUnmount(
@@ -142,11 +151,9 @@ public struct ExtraFeatures {
     }
 
     private final class UnmountContext {
-      weak var owner: AutoVolumeUnmounter?
       let uuid: String
 
-      init(owner: AutoVolumeUnmounter, uuid: String) {
-        self.owner = owner
+      init(uuid: String) {
         self.uuid = uuid
       }
     }
@@ -157,7 +164,6 @@ public struct ExtraFeatures {
       }
 
       let unmountContext = Unmanaged<UnmountContext>.fromOpaque(context).takeRetainedValue()
-      let owner = unmountContext.owner
       let uuid = unmountContext.uuid
 
       let succeeded = (dissenter == nil)
@@ -170,11 +176,11 @@ public struct ExtraFeatures {
 
       Task { @MainActor in
         if succeeded {
-          owner?.markUnmounted(uuid: uuid)
+          AutoVolumeUnmounter.shared.markUnmounted(uuid: uuid)
         } else {
-          owner?.logger.error("\(errorMessage)")
+          AutoVolumeUnmounter.shared.logger.error("\(errorMessage)")
         }
-        owner?.unmountingVolumeUUIDs.remove(uuid)
+        AutoVolumeUnmounter.shared.unmountingVolumeUUIDs.remove(uuid)
       }
     }
 
@@ -205,7 +211,11 @@ public struct ExtraFeatures {
       autoVolumeUnmountRecords = [:]
     }
 
-    func autoUnmountCandidateVolumes() -> [AutoUnmountCandidateVolume] {
+    func refreshAutoUnmountCandidateVolumes() {
+      autoUnmountCandidateVolumes = loadAutoUnmountCandidateVolumes()
+    }
+
+    private func loadAutoUnmountCandidateVolumes() -> [AutoUnmountCandidateVolume] {
       // We want to exclude volumes like EFI, Recovery, and Update from the result.
       // To distinguish those volumes, we need to check the APFS Volume Roles.
       // The only reliable source for APFS Volume Roles is `diskutil apfs list -plist`.
@@ -216,6 +226,61 @@ public struct ExtraFeatures {
       }
 
       return parseDiskutilApfsList(data: data)
+    }
+
+    private func registerDiskCallbacks() {
+      guard !isDiskCallbacksRegistered else {
+        return
+      }
+
+      DARegisterDiskAppearedCallback(
+        daSession,
+        nil,
+        AutoVolumeUnmounter.diskAppearedCallback,
+        nil
+      )
+
+      DARegisterDiskDisappearedCallback(
+        daSession,
+        nil,
+        AutoVolumeUnmounter.diskDisappearedCallback,
+        nil
+      )
+
+      isDiskCallbacksRegistered = true
+    }
+
+    private func unregisterDiskCallbacks() {
+      guard isDiskCallbacksRegistered else {
+        return
+      }
+
+      DAUnregisterCallback(
+        daSession,
+        unsafeBitCast(AutoVolumeUnmounter.diskAppearedCallback, to: UnsafeMutableRawPointer.self),
+        nil
+      )
+
+      DAUnregisterCallback(
+        daSession,
+        unsafeBitCast(
+          AutoVolumeUnmounter.diskDisappearedCallback, to: UnsafeMutableRawPointer.self),
+        nil
+      )
+
+      isDiskCallbacksRegistered = false
+    }
+
+    private static let diskAppearedCallback: DADiskAppearedCallback = { _, context in
+      Task { @MainActor in
+        AutoVolumeUnmounter.shared.refreshAutoUnmountCandidateVolumes()
+      }
+    }
+
+    private static let diskDisappearedCallback: DADiskDisappearedCallback = { _, context in
+      Task { @MainActor in
+        AutoVolumeUnmounter.shared.refreshAutoUnmountCandidateVolumes()
+      }
     }
 
     private func diskutilApfsListPlist() -> Data? {
