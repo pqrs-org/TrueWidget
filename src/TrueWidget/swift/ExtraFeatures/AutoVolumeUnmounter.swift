@@ -1,8 +1,7 @@
 import AsyncAlgorithms
+import Darwin
 import DiskArbitration
 import Foundation
-import IOKit
-import IOKit.storage
 import OSLog
 import SwiftUI
 
@@ -17,20 +16,19 @@ public struct ExtraFeatures {
 
     @AppStorage("autoVolumeUnmountRecords") private var autoVolumeUnmountRecordsData: Data = Data()
 
-    let targetVolumeUUIDs = [
-      "830EBDAC-2B79-41AB-AA1E-6F5B05A8ADAB"  // SSD
-    ]
+    @CodableAppStorage("autoVolumeUnmounterTargetVolumeUUIDs") private var targetVolumeUUIDs:
+      [String] = []
 
     private let timer: AsyncTimerSequence<ContinuousClock>
     private var timerTask: Task<Void, Never>?
     private var unmountingVolumeUUIDs: Set<String> = []
     private let daSession: DASession
 
-    struct MountedVolume: Identifiable {
+    struct AutoUnmountCandidateVolume: Identifiable {
       let id: String
       let name: String
       let path: String
-      let isMounted: Bool
+      let roles: [String]
     }
 
     init() {
@@ -203,66 +201,130 @@ public struct ExtraFeatures {
       autoVolumeUnmountRecords = [:]
     }
 
-    func fetchMountedVolumes() -> [MountedVolume] {
-      guard let matching = IOServiceMatching(kIOMediaClass) else {
-        logger.error("IOServiceMatching failed")
+    func autoUnmountCandidateVolumes() -> [AutoUnmountCandidateVolume] {
+      // We want to exclude volumes like EFI, Recovery, and Update from the result.
+      // To distinguish those volumes, we need to check the APFS Volume Roles.
+      // The only reliable source for APFS Volume Roles is `diskutil apfs list -plist`.
+      // Therefore, we build the volume list using diskutil and then append additional details via DiskArbitration.
+
+      guard let data = diskutilApfsListPlist() else {
         return []
       }
 
-      var iterator: io_iterator_t = 0
-      let result = IOServiceGetMatchingServices(kIOMainPortDefault, matching, &iterator)
-      guard result == KERN_SUCCESS else {
-        logger.error("IOServiceGetMatchingServices failed: \(result)")
+      return parseDiskutilApfsList(data: data)
+    }
+
+    private func diskutilApfsListPlist() -> Data? {
+      let command = "/usr/sbin/diskutil"
+      guard FileManager.default.fileExists(atPath: command) else {
+        logger.error("diskutil not found")
+        return nil
+      }
+
+      let process = Process()
+      process.launchPath = command
+      process.arguments = [
+        "apfs",
+        "list",
+        "-plist",
+      ]
+      process.environment = [
+        "LANG": "C",
+        "LC_ALL": "C",
+      ]
+
+      let pipe = Pipe()
+      process.standardOutput = pipe
+      process.standardError = Pipe()
+
+      do {
+        try process.run()
+        process.waitUntilExit()
+      } catch {
+        logger.error("diskutil failed to run")
+        return nil
+      }
+
+      guard process.terminationStatus == 0 else {
+        logger.error("diskutil failed status:\(process.terminationStatus)")
+        return nil
+      }
+
+      guard let data = try? pipe.fileHandleForReading.readToEnd(), !data.isEmpty else {
+        logger.error("diskutil returned empty plist")
+        return nil
+      }
+
+      return data
+    }
+
+    private func parseDiskutilApfsList(data: Data) -> [AutoUnmountCandidateVolume] {
+      var resultsByUUID: [String: AutoUnmountCandidateVolume] = [:]
+      let excludedRoles: Set<String> = [
+        "Preboot",
+        "xART",
+        "Hardware",
+        "Recovery",
+        "Update",
+      ]
+
+      guard
+        let plist = try? PropertyListSerialization.propertyList(
+          from: data,
+          options: [],
+          format: nil
+        ),
+        let root = plist as? [String: Any]
+      else {
+        logger.error("diskutil plist parse failed")
         return []
       }
 
-      defer {
-        IOObjectRelease(iterator)
-      }
+      // The root volume is treated differently from other volumes,
+      // and DiskArbitration does not provide its volume path.
+      // Therefore, we need to obtain the root volume information using a different method and exclude it from the results.
+      let rootBSDNames = normalizedVolumeBSDNames(rootVolumeBSDName())
 
-      var resultsByUUID: [String: MountedVolume] = [:]
-
-      while case let service = IOIteratorNext(iterator), service != 0 {
-        defer {
-          IOObjectRelease(service)
-        }
-
-        guard let disk = DADiskCreateFromIOMedia(kCFAllocatorDefault, daSession, service),
-          let description = DADiskCopyDescription(disk) as? [CFString: Any]
-        else {
-          continue
-        }
-
-        if let mountable = description[kDADiskDescriptionVolumeMountableKey] as? Bool,
-          !mountable
-        {
-          continue
-        }
-
-        guard let rawUUID = description[kDADiskDescriptionVolumeUUIDKey] else {
-          continue
-        }
-
-        let uuid = volumeUUIDString(from: rawUUID)
-        if uuid.isEmpty {
-          continue
-        }
-
-        let name =
-          (description[kDADiskDescriptionVolumeNameKey] as? String)
-          ?? (description[kDADiskDescriptionMediaBSDNameKey] as? String)
-          ?? uuid
-        let path = (description[kDADiskDescriptionVolumePathKey] as? URL)?.path ?? ""
-        let isMounted = !path.isEmpty
-
-        let volume = MountedVolume(id: uuid, name: name, path: path, isMounted: isMounted)
-
-        if let existing = resultsByUUID[uuid] {
-          if !existing.isMounted && isMounted {
-            resultsByUUID[uuid] = volume
+      for container in root["Containers"] as? [[String: Any]] ?? [] {
+        for volume in (container["Volumes"] as? [[String: Any]]) ?? [] {
+          guard let uuid = (volume["APFSVolumeUUID"] as? String) else {
+            continue
           }
-        } else {
-          resultsByUUID[uuid] = volume
+
+          let roles = volume["Roles"] as? [String] ?? []
+          if roles.contains(where: { excludedRoles.contains($0) }) {
+            continue
+          }
+
+          let deviceIdentifier = (volume["DeviceIdentifier"] as? String) ?? ""
+          if rootBSDNames.contains(deviceIdentifier) {
+            continue
+          }
+
+          let daInfo =
+            deviceIdentifier.isEmpty
+            ? (name: nil, path: nil)
+            : diskArbitrationVolumeInfo(bsdName: deviceIdentifier)
+
+          let path = daInfo.path ?? ""
+          if path == "/"
+            || path.hasPrefix("/Library/")  // /Library/Developer/CoreSimulator/...
+            || path.hasPrefix("/private/")  // /private/var/run/com.apple.security.cryptexd/...
+            || path.hasPrefix("/System/")  // /System/Volumes/...
+          {
+            continue
+          }
+
+          let mountedVolume = AutoUnmountCandidateVolume(
+            id: uuid,
+            name: daInfo.name
+              ?? (volume["Name"] as? String)
+                ?? (deviceIdentifier.isEmpty ? uuid : deviceIdentifier),
+            path: path,
+            roles: roles
+          )
+
+          resultsByUUID[uuid] = mountedVolume
         }
       }
 
@@ -271,19 +333,61 @@ public struct ExtraFeatures {
       }
     }
 
-    private func volumeUUIDString(from rawUUID: Any) -> String {
-      let rawAsCF = rawUUID as CFTypeRef
-      if CFGetTypeID(rawAsCF) == CFUUIDGetTypeID() {
-        // swiftlint:disable:next force_cast
-        let cfuuid = rawAsCF as! CFUUID
-        return CFUUIDCreateString(kCFAllocatorDefault, cfuuid) as String
+    private func diskArbitrationVolumeInfo(bsdName: String) -> (name: String?, path: String?) {
+      guard let disk = DADiskCreateFromBSDName(kCFAllocatorDefault, daSession, bsdName) else {
+        logger.error("DADiskCreateFromBSDName failed: \(bsdName)")
+        return (nil, nil)
       }
 
-      if let uuidString = rawUUID as? String {
-        return uuidString
+      guard let description = DADiskCopyDescription(disk) as? [CFString: Any] else {
+        return (nil, nil)
       }
 
-      return ""
+      let name = description[kDADiskDescriptionVolumeNameKey] as? String
+      let path = (description[kDADiskDescriptionVolumePathKey] as? URL)?.path
+      return (name, path)
+    }
+
+    private func rootVolumeBSDName() -> String? {
+      var stats = statfs()
+      guard statfs("/", &stats) == 0 else {
+        logger.error("statfs failed for /")
+        return nil
+      }
+
+      let device = withUnsafePointer(to: &stats.f_mntfromname.0) {
+        String(cString: $0)
+      }
+      if device.hasPrefix("/dev/") {
+        return String(device.dropFirst(5))
+      }
+      return device.isEmpty ? nil : device
+    }
+
+    // The volume BSD name is normally in the diskXsY format (e.g., disk3s1).
+    // However, under some conditions it can appear as diskXsYsZ.
+    // (We could not find official documentation, but it tends to happen for snapshot-based mounts.)
+    // DeviceIdentifier from `diskutil apfs list -plist` always uses the diskXsY format.
+    // Therefore, if the BSD name is diskXsYsZ, include the diskXsY form as well so we can compare them.
+    private func normalizedVolumeBSDNames(_ rootBSDName: String?) -> Set<String> {
+      guard let rootBSDName, !rootBSDName.isEmpty else {
+        return []
+      }
+
+      var names: Set<String> = [rootBSDName]
+      let pattern = "^(disk\\d+s\\d+)s\\d+$"
+      if let regex = try? NSRegularExpression(pattern: pattern),
+        let match = regex.firstMatch(
+          in: rootBSDName,
+          range: NSRange(rootBSDName.startIndex..., in: rootBSDName)
+        ),
+        match.numberOfRanges > 1,
+        let baseRange = Range(match.range(at: 1), in: rootBSDName)
+      {
+        names.insert(String(rootBSDName[baseRange]))
+      }
+
+      return names
     }
 
     private func currentBootTimeEpoch() -> TimeInterval? {
