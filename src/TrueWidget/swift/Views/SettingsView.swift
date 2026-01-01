@@ -10,6 +10,7 @@ enum TabTag: String {
   case compact
   case update
   case action
+  case extra
 }
 
 struct SettingsView: View {
@@ -72,8 +73,14 @@ struct SettingsView: View {
           Label("Quit, Restart", systemImage: "xmark.rectangle")
         }
         .tag(TabTag.action)
+
+      SettingsExtraView()
+        .tabItem {
+          Label("Extra", systemImage: "puzzlepiece.extension")
+        }
+        .tag(TabTag.extra)
     }
     .scenePadding()
-    .frame(width: 600)
+    .frame(width: 800)
   }
 }

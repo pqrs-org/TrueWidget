@@ -43,6 +43,7 @@ struct SettingsAutoVolumeUnmounterView: View {
               .switchToggleStyle()
             }
           }
+          .frame(height: 300)
         }
       }
       .padding()
