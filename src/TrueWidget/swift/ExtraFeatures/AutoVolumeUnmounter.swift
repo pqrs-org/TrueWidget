@@ -86,24 +86,10 @@ public struct ExtraFeatures {
         return
       }
 
-      let resourceKeys: Set<URLResourceKey> = [
-        .volumeUUIDStringKey
-      ]
-
-      let mountedVolumes =
-        FileManager.default.mountedVolumeURLs(
-          includingResourceValuesForKeys: Array(resourceKeys),
-          options: []
-        ) ?? []
-
       let unmountRecords = autoVolumeUnmountRecords
 
-      for volumeURL in mountedVolumes {
-        guard let values = try? volumeURL.resourceValues(forKeys: resourceKeys),
-          let uuid = values.volumeUUIDString
-        else {
-          continue
-        }
+      for volume in autoUnmountCandidateVolumes {
+        let uuid = volume.id
 
         guard targetVolumeUUIDs.contains(uuid) else {
           continue
@@ -120,11 +106,18 @@ public struct ExtraFeatures {
         }
 
         unmountingVolumeUUIDs.insert(uuid)
-        unmount(volumeURL: volumeURL, uuid: uuid)
+        unmount(volume: volume)
       }
     }
 
-    private func unmount(volumeURL: URL, uuid: String) {
+    private func unmount(volume: AutoUnmountCandidateVolume) {
+      guard !volume.path.isEmpty else {
+        logger.error("unmount skipped due to empty path uuid:\(volume.id)")
+        unmountingVolumeUUIDs.remove(volume.id)
+        return
+      }
+
+      let volumeURL = URL(fileURLWithPath: volume.path)
       guard
         let disk = DADiskCreateFromVolumePath(
           kCFAllocatorDefault,
@@ -132,14 +125,14 @@ public struct ExtraFeatures {
           volumeURL as CFURL
         )
       else {
-        logger.error("DADiskCreateFromVolumePath failed url:\(volumeURL) uuid:\(uuid)")
-        unmountingVolumeUUIDs.remove(uuid)
+        logger.error("DADiskCreateFromVolumePath failed url:\(volumeURL) uuid:\(volume.id)")
+        unmountingVolumeUUIDs.remove(volume.id)
         return
       }
 
-      logger.info("unmount url:\(volumeURL) uuid:\(uuid)")
+      logger.info("unmount url:\(volumeURL) uuid:\(volume.id)")
 
-      let context = UnmountContext(uuid: uuid)
+      let context = UnmountContext(uuid: volume.id)
       let unmanaged = Unmanaged.passRetained(context)
 
       DADiskUnmount(
