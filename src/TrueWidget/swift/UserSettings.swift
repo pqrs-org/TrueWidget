@@ -186,4 +186,15 @@ final class UserSettings: ObservableObject {
   //
 
   @AppStorage("autoCompactDisplayCount") var autoCompactDisplayCount: Int = 1
+
+  //
+  // Extra features
+  //
+
+  @CodableAppStorage("autoVolumeUnmounterTargetVolumeUUIDs")
+  var autoVolumeUnmounterTargetVolumeUUIDs: [String] = [] {
+    willSet {
+      objectWillChange.send()
+    }
+  }
 }
