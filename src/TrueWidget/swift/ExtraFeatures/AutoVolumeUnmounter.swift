@@ -128,63 +128,30 @@ public struct ExtraFeatures {
         return
       }
 
-      let volumeURL = URL(fileURLWithPath: volume.path)
-      guard
-        let disk = DADiskCreateFromVolumePath(
-          kCFAllocatorDefault,
-          daSession,
-          volumeURL as CFURL
-        )
-      else {
-        logger.error("DADiskCreateFromVolumePath failed url:\(volumeURL) uuid:\(volume.id)")
+      guard let proxy = HelperClient.shared.proxy else {
+        logger.error("helper proxy unavailable for unmount uuid:\(volume.id)")
         unmountingVolumeUUIDs.remove(volume.id)
         return
       }
 
-      logger.info("unmount url:\(volumeURL) uuid:\(volume.id)")
+      let path = volume.path
+      logger.info("unmount path:\(path) uuid:\(volume.id)")
 
-      let context = UnmountContext(uuid: volume.id)
-      let unmanaged = Unmanaged.passRetained(context)
-
-      DADiskUnmount(
-        disk,
-        DADiskUnmountOptions(kDADiskUnmountOptionDefault),
-        AutoVolumeUnmounter.unmountCallback,
-        unmanaged.toOpaque()
-      )
-    }
-
-    private final class UnmountContext {
-      let uuid: String
-
-      init(uuid: String) {
-        self.uuid = uuid
-      }
-    }
-
-    private static let unmountCallback: DADiskUnmountCallback = { _, dissenter, context in
-      guard let context else {
-        return
-      }
-
-      let unmountContext = Unmanaged<UnmountContext>.fromOpaque(context).takeRetainedValue()
-      let uuid = unmountContext.uuid
-
-      let succeeded = (dissenter == nil)
-      let errorMessage =
-        dissenter.map {
-          let status = AutoVolumeUnmounter.dissenterStatus(dissenter: $0)
-          let reason = AutoVolumeUnmounter.dissenterStatusString(dissenter: $0)
-          return "DADiskUnmount failed uuid:\(uuid) status:\(status) reason:\(reason)"
-        } ?? ""
-
-      Task { @MainActor in
-        if succeeded {
-          AutoVolumeUnmounter.shared.markUnmounted(uuid: uuid)
-        } else {
-          AutoVolumeUnmounter.shared.logger.error("\(errorMessage, privacy: .public)")
+      proxy.unmountVolume(path: path) { succeeded, errorMessage in
+        Task { @MainActor in
+          if succeeded {
+            AutoVolumeUnmounter.shared.markUnmounted(uuid: volume.id)
+          } else if !errorMessage.isEmpty {
+            AutoVolumeUnmounter.shared.logger.error(
+              "diskutil unmount failed uuid:\(volume.id) stderr:\(errorMessage, privacy: .public)"
+            )
+          } else {
+            AutoVolumeUnmounter.shared.logger.error(
+              "diskutil unmount failed uuid:\(volume.id)"
+            )
+          }
+          AutoVolumeUnmounter.shared.unmountingVolumeUUIDs.remove(volume.id)
         }
-        AutoVolumeUnmounter.shared.unmountingVolumeUUIDs.remove(uuid)
       }
     }
 
@@ -417,7 +384,7 @@ public struct ExtraFeatures {
             continue
           }
 
-          let mountedVolume = AutoUnmountCandidateVolume(
+          resultsByUUID[uuid] = AutoUnmountCandidateVolume(
             id: uuid,
             name: daInfo.name
               ?? (volume["Name"] as? String)
@@ -426,8 +393,6 @@ public struct ExtraFeatures {
             roles: roles,
             isInternal: daInfo.isInternal ?? false
           )
-
-          resultsByUUID[uuid] = mountedVolume
         }
       }
 
@@ -508,16 +473,5 @@ public struct ExtraFeatures {
       return TimeInterval(bootTime.tv_sec)
     }
 
-    private static func dissenterStatus(dissenter: DADissenter) -> Int {
-      let status = DADissenterGetStatus(dissenter)
-      return Int(status)
-    }
-
-    private static func dissenterStatusString(dissenter: DADissenter) -> String {
-      guard let cfString = DADissenterGetStatusString(dissenter) else {
-        return "unknown"
-      }
-      return String(cfString)
-    }
   }
 }

@@ -94,19 +94,44 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
   //
 
   @objc func apfsListPlist(reply: @escaping (Data?, String) -> Void) {
+    runDiskutil(arguments: ["apfs", "list", "-plist"]) { result in
+      switch result {
+      case .success(let output):
+        if output.isEmpty {
+          reply(nil, "diskutil returned empty plist")
+        } else {
+          reply(output, "")
+        }
+      case .failure(let error):
+        reply(nil, error.message)
+      }
+    }
+  }
+
+  @objc func unmountVolume(path: String, reply: @escaping (Bool, String) -> Void) {
+    runDiskutil(arguments: ["unmount", path]) { result in
+      switch result {
+      case .success:
+        reply(true, "")
+      case .failure(let error):
+        reply(false, error.message)
+      }
+    }
+  }
+
+  private func runDiskutil(
+    arguments: [String],
+    reply: @escaping (Result<Data, DiskutilError>) -> Void
+  ) {
     let command = "/usr/sbin/diskutil"
     guard FileManager.default.fileExists(atPath: command) else {
-      reply(nil, "diskutil not found")
+      reply(.failure(DiskutilError(message: "diskutil not found")))
       return
     }
 
     let process = Process()
     process.launchPath = command
-    process.arguments = [
-      "apfs",
-      "list",
-      "-plist",
-    ]
+    process.arguments = arguments
     process.environment = [
       "LANG": "C",
       "LC_ALL": "C",
@@ -121,7 +146,7 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
       try process.run()
       process.waitUntilExit()
     } catch {
-      reply(nil, "diskutil failed to run")
+      reply(.failure(DiskutilError(message: "diskutil failed to run")))
       return
     }
 
@@ -129,17 +154,16 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
     let errorMessage = String(data: errorData, encoding: .utf8) ?? ""
 
     guard process.terminationStatus == 0 else {
-      reply(nil, errorMessage)
+      reply(.failure(DiskutilError(message: errorMessage)))
       return
     }
 
-    let data = (try? outputPipe.fileHandleForReading.readToEnd()) ?? Data()
-    if data.isEmpty {
-      reply(nil, "diskutil returned empty plist")
-      return
-    }
+    let outputData = (try? outputPipe.fileHandleForReading.readToEnd()) ?? Data()
+    reply(.success(outputData))
+  }
 
-    reply(data, errorMessage)
+  private struct DiskutilError: Error {
+    let message: String
   }
 }
 
