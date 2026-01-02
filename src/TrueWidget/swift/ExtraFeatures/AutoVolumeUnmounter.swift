@@ -55,10 +55,6 @@ public struct ExtraFeatures {
 
     }
 
-    @MainActor deinit {
-      stop()
-    }
-
     func start() {
       guard timerTask == nil else {
         return
