@@ -32,9 +32,13 @@ xcode:
 
 run:
 	open build/Release/TrueWidget.app
+	make log
 
 swift-format:
 	find . -name '*.swift' -print0 | xargs -0 swift-format -i
 
 install:
 	rsync -a --delete build/Release/TrueWidget.app /Applications
+
+log:
+	/usr/bin/log stream --predicate 'subsystem == "org.pqrs.TrueWidget"' --info --debug
