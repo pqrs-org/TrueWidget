@@ -123,19 +123,19 @@ public struct ExtraFeatures {
 
     private func unmount(volume: AutoUnmountCandidateVolume) {
       guard !volume.path.isEmpty else {
-        logger.error("unmount skipped due to empty path uuid:\(volume.id)")
+        logger.error("unmount skipped due to empty path uuid:\(volume.id, privacy: .public)")
         unmountingVolumeUUIDs.remove(volume.id)
         return
       }
 
       guard let proxy = HelperClient.shared.proxy else {
-        logger.error("helper proxy unavailable for unmount uuid:\(volume.id)")
+        logger.error("helper proxy unavailable for unmount uuid:\(volume.id, privacy: .public)")
         unmountingVolumeUUIDs.remove(volume.id)
         return
       }
 
       let path = volume.path
-      logger.info("unmount path:\(path) uuid:\(volume.id)")
+      logger.info("unmount path:\(path, privacy: .public) uuid:\(volume.id, privacy: .public)")
 
       proxy.unmountVolume(path: path) { succeeded, errorMessage in
         Task { @MainActor in
@@ -143,11 +143,11 @@ public struct ExtraFeatures {
             AutoVolumeUnmounter.shared.markUnmounted(uuid: volume.id)
           } else if !errorMessage.isEmpty {
             AutoVolumeUnmounter.shared.logger.error(
-              "diskutil unmount failed uuid:\(volume.id) stderr:\(errorMessage, privacy: .public)"
+              "diskutil unmount failed uuid:\(volume.id, privacy: .public) stderr:\(errorMessage, privacy: .public)"
             )
           } else {
             AutoVolumeUnmounter.shared.logger.error(
-              "diskutil unmount failed uuid:\(volume.id)"
+              "diskutil unmount failed uuid:\(volume.id, privacy: .public)"
             )
           }
           AutoVolumeUnmounter.shared.unmountingVolumeUUIDs.remove(volume.id)
@@ -405,7 +405,7 @@ public struct ExtraFeatures {
       bsdName: String
     ) -> (name: String?, path: String?, isInternal: Bool?) {
       guard let disk = DADiskCreateFromBSDName(kCFAllocatorDefault, daSession, bsdName) else {
-        logger.error("DADiskCreateFromBSDName failed: \(bsdName)")
+        logger.error("DADiskCreateFromBSDName failed: \(bsdName, privacy: .public)")
         return (nil, nil, nil)
       }
 
