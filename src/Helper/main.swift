@@ -151,14 +151,16 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
     }
 
     let errorData = (try? errorPipe.fileHandleForReading.readToEnd()) ?? Data()
+    let outputData = (try? outputPipe.fileHandleForReading.readToEnd()) ?? Data()
     let errorMessage = String(data: errorData, encoding: .utf8) ?? ""
+    let outputMessage = String(data: outputData, encoding: .utf8) ?? ""
 
     guard process.terminationStatus == 0 else {
-      reply(.failure(DiskutilError(message: errorMessage)))
+      let message = errorMessage.isEmpty ? outputMessage : errorMessage
+      reply(.failure(DiskutilError(message: message)))
       return
     }
 
-    let outputData = (try? outputPipe.fileHandleForReading.readToEnd()) ?? Data()
     reply(.success(outputData))
   }
 
