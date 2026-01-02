@@ -27,6 +27,9 @@ public struct ExtraFeatures {
     private var unmountingVolumeUUIDs: Set<String> = []
     private let daSession: DASession
     private var isDiskCallbacksRegistered = false
+    private var refreshTask: Task<Void, Never>?
+    private var refreshContinuation: AsyncStream<Void>.Continuation?
+    private let refreshInterval: TimeInterval = 1.0
 
     @Published private(set) var autoUnmountCandidateVolumes: [AutoUnmountCandidateVolume] = []
 
@@ -61,7 +64,10 @@ public struct ExtraFeatures {
         return
       }
 
+      startRefreshTask()
+
       registerDiskCallbacks()
+
       refreshAutoUnmountCandidateVolumes()
 
       timerTask = Task { @MainActor in
@@ -78,6 +84,11 @@ public struct ExtraFeatures {
       timerTask = nil
 
       unregisterDiskCallbacks()
+
+      refreshTask?.cancel()
+      refreshTask = nil
+      refreshContinuation?.finish()
+      refreshContinuation = nil
     }
 
     private func checkAndUnmount() {
@@ -205,10 +216,31 @@ public struct ExtraFeatures {
     }
 
     func refreshAutoUnmountCandidateVolumes() {
-      autoUnmountCandidateVolumes = loadAutoUnmountCandidateVolumes()
+      refreshContinuation?.yield(())
+    }
+
+    private func startRefreshTask() {
+      guard refreshTask == nil else {
+        return
+      }
+
+      let stream = AsyncStream<Void> { continuation in
+        refreshContinuation = continuation
+      }
+
+      refreshTask = Task { @MainActor in
+        for await _ in stream.debounce(
+          for: .seconds(refreshInterval),
+          clock: .continuous
+        ) {
+          autoUnmountCandidateVolumes = loadAutoUnmountCandidateVolumes()
+        }
+      }
     }
 
     private func loadAutoUnmountCandidateVolumes() -> [AutoUnmountCandidateVolume] {
+      logger.info("loadAutoUnmountCandidateVolumes")
+
       // We want to exclude volumes like EFI, Recovery, and Update from the result.
       // To distinguish those volumes, we need to check the APFS Volume Roles.
       // The only reliable source for APFS Volume Roles is `diskutil apfs list -plist`.
