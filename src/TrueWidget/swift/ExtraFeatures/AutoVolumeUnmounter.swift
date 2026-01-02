@@ -235,12 +235,12 @@ public struct ExtraFeatures {
           for: .seconds(refreshInterval),
           clock: .continuous
         ) {
-          autoUnmountCandidateVolumes = loadAutoUnmountCandidateVolumes()
+          autoUnmountCandidateVolumes = await loadAutoUnmountCandidateVolumes()
         }
       }
     }
 
-    private func loadAutoUnmountCandidateVolumes() -> [AutoUnmountCandidateVolume] {
+    private func loadAutoUnmountCandidateVolumes() async -> [AutoUnmountCandidateVolume] {
       logger.info("loadAutoUnmountCandidateVolumes")
 
       // We want to exclude volumes like EFI, Recovery, and Update from the result.
@@ -248,7 +248,7 @@ public struct ExtraFeatures {
       // The only reliable source for APFS Volume Roles is `diskutil apfs list -plist`.
       // Therefore, we build the volume list using diskutil and then append additional details via DiskArbitration.
 
-      guard let data = diskutilApfsListPlist() else {
+      guard let data = await diskutilApfsListPlist() else {
         return []
       }
 
@@ -334,53 +334,30 @@ public struct ExtraFeatures {
         }
       }
 
-    private func diskutilApfsListPlist() -> Data? {
-      let command = "/usr/sbin/diskutil"
-      guard FileManager.default.fileExists(atPath: command) else {
-        logger.error("diskutil not found")
-        return nil
+    private func diskutilApfsListPlist() async -> Data? {
+      await withCheckedContinuation { continuation in
+        guard let proxy = HelperClient.shared.proxy else {
+          logger.error("helper proxy unavailable")
+          continuation.resume(returning: nil)
+          return
+        }
+
+        proxy.apfsListPlist { data, errorMessage in
+          if let data, !data.isEmpty {
+            continuation.resume(returning: data)
+            return
+          }
+
+          if !errorMessage.isEmpty {
+            self.logger.error(
+              "diskutil failed in helper stderr:\(errorMessage, privacy: .public)"
+            )
+          } else {
+            self.logger.error("diskutil failed in helper")
+          }
+          continuation.resume(returning: nil)
+        }
       }
-
-      let process = Process()
-      process.launchPath = command
-      process.arguments = [
-        "apfs",
-        "list",
-        "-plist",
-      ]
-      process.environment = [
-        "LANG": "C",
-        "LC_ALL": "C",
-      ]
-
-      let pipe = Pipe()
-      process.standardOutput = pipe
-      let errorPipe = Pipe()
-      process.standardError = errorPipe
-
-      do {
-        try process.run()
-        process.waitUntilExit()
-      } catch {
-        logger.error("diskutil failed to run")
-        return nil
-      }
-
-      guard process.terminationStatus == 0 else {
-        let errorData = (try? errorPipe.fileHandleForReading.readToEnd()) ?? Data()
-        let errorMessage = String(data: errorData, encoding: .utf8) ?? ""
-        logger.error(
-          "diskutil failed status:\(process.terminationStatus) stderr:\(errorMessage, privacy: .public)"
-        )
-        return nil
-      }
-
-      guard let data = try? pipe.fileHandleForReading.readToEnd(), !data.isEmpty else {
-        logger.error("diskutil returned empty plist")
-        return nil
-      }
-
-      return data
     }
 
     private func parseDiskutilApfsList(data: Data) -> [AutoUnmountCandidateVolume] {

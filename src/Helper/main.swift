@@ -88,6 +88,59 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
       TopCommandHandler.shared.stop()
     }
   }
+
+  //
+  // Diskutil
+  //
+
+  @objc func apfsListPlist(reply: @escaping (Data?, String) -> Void) {
+    let command = "/usr/sbin/diskutil"
+    guard FileManager.default.fileExists(atPath: command) else {
+      reply(nil, "diskutil not found")
+      return
+    }
+
+    let process = Process()
+    process.launchPath = command
+    process.arguments = [
+      "apfs",
+      "list",
+      "-plist",
+    ]
+    process.environment = [
+      "LANG": "C",
+      "LC_ALL": "C",
+    ]
+
+    let outputPipe = Pipe()
+    let errorPipe = Pipe()
+    process.standardOutput = outputPipe
+    process.standardError = errorPipe
+
+    do {
+      try process.run()
+      process.waitUntilExit()
+    } catch {
+      reply(nil, "diskutil failed to run")
+      return
+    }
+
+    let errorData = (try? errorPipe.fileHandleForReading.readToEnd()) ?? Data()
+    let errorMessage = String(data: errorData, encoding: .utf8) ?? ""
+
+    guard process.terminationStatus == 0 else {
+      reply(nil, errorMessage)
+      return
+    }
+
+    let data = (try? outputPipe.fileHandleForReading.readToEnd()) ?? Data()
+    if data.isEmpty {
+      reply(nil, "diskutil returned empty plist")
+      return
+    }
+
+    reply(data, errorMessage)
+  }
 }
 
 let service = HelperService()

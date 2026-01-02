@@ -22,4 +22,10 @@ protocol HelperProtocol {
 
   func topCommand(reply: @escaping @Sendable (Double, [[String: String]]) -> Void)
   func stopTopCommand()
+
+  //
+  // Diskutil
+  //
+
+  func apfsListPlist(reply: @escaping (Data?, String) -> Void)
 }
