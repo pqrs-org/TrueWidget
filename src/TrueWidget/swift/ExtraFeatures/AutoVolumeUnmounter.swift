@@ -32,6 +32,7 @@ public struct ExtraFeatures {
     private let refreshInterval: TimeInterval = 1.0
 
     @Published private(set) var autoUnmountCandidateVolumes: [AutoUnmountCandidateVolume] = []
+    @Published private(set) var volumeStatusByUUID: [String: VolumeStatus] = [:]
 
     struct AutoUnmountCandidateVolume: Identifiable {
       let id: String
@@ -39,6 +40,38 @@ public struct ExtraFeatures {
       let path: String
       let roles: [String]
       let isInternal: Bool
+    }
+
+    struct VolumeStatus: Equatable {
+      enum Kind {
+        case disabled
+        case unmounting
+        case autoUnmounted
+        case neverMounted
+        case unmountError
+      }
+
+      let kind: Kind
+      let detail: String?
+      let checkedAt: Date
+
+      var displayText: String {
+        switch kind {
+        case .disabled:
+          return "Disabled"
+        case .unmounting:
+          return "Unmounting"
+        case .autoUnmounted:
+          return "Already auto-unmounted"
+        case .neverMounted:
+          return "Not mounted yet"
+        case .unmountError:
+          if let detail, !detail.isEmpty {
+            return "Unmount error: \(detail)"
+          }
+          return "Unmount error"
+        }
+      }
     }
 
     fileprivate init() {
@@ -103,16 +136,19 @@ public struct ExtraFeatures {
         let uuid = volume.id
 
         guard targetVolumeUUIDs.contains(uuid) else {
+          updateVolumeStatus(uuid: uuid, kind: .disabled, detail: nil)
           continue
         }
 
         if let lastUnmount = unmountRecords[uuid],
           lastUnmount >= bootTimeEpoch
         {
+          updateVolumeStatus(uuid: uuid, kind: .autoUnmounted, detail: nil)
           continue
         }
 
         guard !unmountingVolumeUUIDs.contains(uuid) else {
+          updateVolumeStatus(uuid: uuid, kind: .unmounting, detail: nil)
           continue
         }
 
@@ -125,12 +161,14 @@ public struct ExtraFeatures {
       guard !volume.path.isEmpty else {
         logger.error("unmount skipped due to empty path uuid:\(volume.id, privacy: .public)")
         unmountingVolumeUUIDs.remove(volume.id)
+        updateVolumeStatus(uuid: volume.id, kind: .neverMounted, detail: nil)
         return
       }
 
       guard let proxy = HelperClient.shared.proxy else {
         logger.error("helper proxy unavailable for unmount uuid:\(volume.id, privacy: .public)")
         unmountingVolumeUUIDs.remove(volume.id)
+        updateVolumeStatus(uuid: volume.id, kind: .unmountError, detail: "helper client error")
         return
       }
 
@@ -141,14 +179,20 @@ public struct ExtraFeatures {
         Task { @MainActor in
           if succeeded {
             AutoVolumeUnmounter.shared.markUnmounted(uuid: volume.id)
+            AutoVolumeUnmounter.shared.updateVolumeStatus(
+              uuid: volume.id, kind: .autoUnmounted, detail: nil)
           } else if !errorMessage.isEmpty {
             AutoVolumeUnmounter.shared.logger.error(
               "diskutil unmount failed uuid:\(volume.id, privacy: .public) stderr:\(errorMessage, privacy: .public)"
             )
+            AutoVolumeUnmounter.shared.updateVolumeStatus(
+              uuid: volume.id, kind: .unmountError, detail: errorMessage)
           } else {
             AutoVolumeUnmounter.shared.logger.error(
               "diskutil unmount failed uuid:\(volume.id, privacy: .public)"
             )
+            AutoVolumeUnmounter.shared.updateVolumeStatus(
+              uuid: volume.id, kind: .unmountError, detail: "unknown error")
           }
           AutoVolumeUnmounter.shared.unmountingVolumeUUIDs.remove(volume.id)
         }
@@ -176,6 +220,15 @@ public struct ExtraFeatures {
       var records = autoVolumeUnmountRecords
       records[uuid] = Date().timeIntervalSince1970
       autoVolumeUnmountRecords = records
+    }
+
+    private func updateVolumeStatus(uuid: String, kind: VolumeStatus.Kind, detail: String?) {
+      volumeStatusByUUID[uuid] = VolumeStatus(
+        kind: kind,
+        detail: detail,
+        checkedAt: Date()
+      )
+      objectWillChange.send()
     }
 
     func resetAutoVolumeUnmountRecords() {

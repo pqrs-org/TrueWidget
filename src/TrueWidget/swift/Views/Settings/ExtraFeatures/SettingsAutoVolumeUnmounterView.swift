@@ -5,6 +5,14 @@ struct SettingsAutoVolumeUnmounterView: View {
 
   @ObservedObject private var autoVolumeUnmounter = ExtraFeatures.AutoVolumeUnmounter.shared
 
+  private static let statusDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale.current
+    formatter.dateStyle = .short
+    formatter.timeStyle = .medium
+    return formatter
+  }()
+
   var body: some View {
     GroupBox(label: Text("Automatic volume unmounting")) {
       VStack(alignment: .leading, spacing: 12.0) {
@@ -33,27 +41,20 @@ struct SettingsAutoVolumeUnmounterView: View {
           } else {
             List {
               ForEach(autoVolumeUnmounter.autoUnmountCandidateVolumes) { volume in
-                Toggle(isOn: targetBinding(for: volume.id)) {
-                  VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 2) {
+                  Toggle(isOn: targetBinding(for: volume.id)) {
                     Label(
                       volume.name,
                       systemImage: volume.isInternal ? "internaldrive" : "externaldrive")
+                  }
+                  .switchToggleStyle()
 
-                    Label("Volume UUID: \(volume.id)", image: "clear")
-                      .textSelection(.enabled)
-                      .font(.caption)
-
-                    Label(
-                      volume.path != ""
-                        ? "Path: \(volume.path)"
-                        : "Unmounted",
-                      image: "clear"
-                    )
+                  Label("Volume UUID: \(volume.id)", image: "clear")
                     .textSelection(.enabled)
                     .font(.caption)
-                  }
+
+                  statusLabel(for: volume.id)
                 }
-                .switchToggleStyle()
               }
             }
             .frame(height: 300)
@@ -82,5 +83,28 @@ struct SettingsAutoVolumeUnmounterView: View {
         userSettings.autoVolumeUnmounterTargetVolumeUUIDs = targets
       }
     )
+  }
+
+  private func statusLabel(for uuid: String) -> some View {
+    let status = autoVolumeUnmounter.volumeStatusByUUID[uuid]
+
+    return Label("Status: \(statusText(status))", image: "clear")
+      .textSelection(.enabled)
+      .font(.caption)
+      .foregroundStyle(
+        status == nil ? .secondary : .primary
+      )
+  }
+
+  private func statusText(_ status: ExtraFeatures.AutoVolumeUnmounter.VolumeStatus?) -> String {
+    guard let status else {
+      return ""
+    }
+
+    if status.kind == .disabled {
+      return status.displayText
+    } else {
+      return status.displayText + " [\(Self.statusDateFormatter.string(from: status.checkedAt))]"
+    }
   }
 }

@@ -156,7 +156,8 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
     let outputMessage = String(data: outputData, encoding: .utf8) ?? ""
 
     guard process.terminationStatus == 0 else {
-      let message = errorMessage.isEmpty ? outputMessage : errorMessage
+      let message =
+        "terminationStatus:\(process.terminationStatus) [\(command) \(arguments.joined(separator: " "))] \(errorMessage.isEmpty ? outputMessage : errorMessage)"
       reply(.failure(DiskutilError(message: message)))
       return
     }
