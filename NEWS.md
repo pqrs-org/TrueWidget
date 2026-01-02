@@ -2,6 +2,8 @@
 
 ## Beta
 
+-   ✨ New Features
+    -   Added an extra feature: Automatic volume unmounting.
 -   ⚡️ Improvements
     -   Updated the menu icons.
 
