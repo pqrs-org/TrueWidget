@@ -355,7 +355,8 @@ public struct ExtraFeatures {
 
       let pipe = Pipe()
       process.standardOutput = pipe
-      process.standardError = Pipe()
+      let errorPipe = Pipe()
+      process.standardError = errorPipe
 
       do {
         try process.run()
@@ -366,7 +367,11 @@ public struct ExtraFeatures {
       }
 
       guard process.terminationStatus == 0 else {
-        logger.error("diskutil failed status:\(process.terminationStatus)")
+        let errorData = (try? errorPipe.fileHandleForReading.readToEnd()) ?? Data()
+        let errorMessage = String(data: errorData, encoding: .utf8) ?? ""
+        logger.error(
+          "diskutil failed status:\(process.terminationStatus) stderr:\(errorMessage, privacy: .public)"
+        )
         return nil
       }
 
