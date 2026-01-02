@@ -191,6 +191,8 @@ final class UserSettings: ObservableObject {
   // Extra features
   //
 
+  @AppStorage("autoVolumeUnmounterEnabled") var autoVolumeUnmounterEnabled: Bool = false
+
   @CodableAppStorage("autoVolumeUnmounterTargetVolumeUUIDs")
   var autoVolumeUnmounterTargetVolumeUUIDs: [String] = [] {
     willSet {

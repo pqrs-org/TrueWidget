@@ -55,6 +55,14 @@ struct TrueWidgetApp: App {
     }.store(in: &cancellables)
 
     Updater.shared.checkForUpdatesInBackground()
+
+    // Note: Comment this out when you want to reset AutoVolumeUnmounter state for debugging.
+    //
+    // ExtraFeatures.AutoVolumeUnmounter.shared.resetAutoVolumeUnmountRecords()
+
+    if userSettings.autoVolumeUnmounterEnabled {
+      ExtraFeatures.AutoVolumeUnmounter.shared.start()
+    }
   }
 
   @State var selectedOption = "Normal"

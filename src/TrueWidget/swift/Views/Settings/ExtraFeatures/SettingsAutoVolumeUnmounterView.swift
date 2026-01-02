@@ -6,7 +6,7 @@ struct SettingsAutoVolumeUnmounterView: View {
   @ObservedObject private var autoVolumeUnmounter = ExtraFeatures.AutoVolumeUnmounter.shared
 
   var body: some View {
-    GroupBox(label: Text("Auto volume unmount")) {
+    GroupBox(label: Text("Automatic volume unmounting")) {
       VStack(alignment: .leading, spacing: 12.0) {
         Label(
           "Volumes selected here are automatically unmounted once when TrueWidget launches.",
@@ -14,36 +14,50 @@ struct SettingsAutoVolumeUnmounterView: View {
         )
         .modifier(InfoBorder())
 
-        if autoVolumeUnmounter.autoUnmountCandidateVolumes.isEmpty {
-          Text("No unmountable volumes found.")
-            .font(.caption)
-        } else {
-          List {
-            ForEach(autoVolumeUnmounter.autoUnmountCandidateVolumes) { volume in
-              Toggle(isOn: targetBinding(for: volume.id)) {
-                VStack(alignment: .leading, spacing: 2) {
-                  Label(
-                    volume.name,
-                    systemImage: volume.isInternal ? "internaldrive" : "externaldrive")
+        Toggle(isOn: $userSettings.autoVolumeUnmounterEnabled) {
+          Text("Enable automatic volume unmounting")
+        }
+        .switchToggleStyle()
+        .onChange(of: userSettings.autoVolumeUnmounterEnabled) { isEnabled in
+          if isEnabled {
+            autoVolumeUnmounter.start()
+          } else {
+            autoVolumeUnmounter.stop()
+          }
+        }
 
-                  Label("Volume UUID: \(volume.id)", image: "clear")
+        if userSettings.autoVolumeUnmounterEnabled {
+          if autoVolumeUnmounter.autoUnmountCandidateVolumes.isEmpty {
+            Text("No unmountable volumes found.")
+              .font(.caption)
+          } else {
+            List {
+              ForEach(autoVolumeUnmounter.autoUnmountCandidateVolumes) { volume in
+                Toggle(isOn: targetBinding(for: volume.id)) {
+                  VStack(alignment: .leading, spacing: 2) {
+                    Label(
+                      volume.name,
+                      systemImage: volume.isInternal ? "internaldrive" : "externaldrive")
+
+                    Label("Volume UUID: \(volume.id)", image: "clear")
+                      .textSelection(.enabled)
+                      .font(.caption)
+
+                    Label(
+                      volume.path != ""
+                        ? "Path: \(volume.path)"
+                        : "Unmounted",
+                      image: "clear"
+                    )
                     .textSelection(.enabled)
                     .font(.caption)
-
-                  Label(
-                    volume.path != ""
-                      ? "Path: \(volume.path)"
-                      : "Unmounted",
-                    image: "clear"
-                  )
-                  .textSelection(.enabled)
-                  .font(.caption)
+                  }
                 }
+                .switchToggleStyle()
               }
-              .switchToggleStyle()
             }
+            .frame(height: 300)
           }
-          .frame(height: 300)
         }
       }
       .padding()

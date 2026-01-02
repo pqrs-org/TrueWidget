@@ -80,6 +80,10 @@ public struct ExtraFeatures {
     }
 
     func stop() {
+      guard timerTask != nil else {
+        return
+      }
+
       timerTask?.cancel()
       timerTask = nil
 
