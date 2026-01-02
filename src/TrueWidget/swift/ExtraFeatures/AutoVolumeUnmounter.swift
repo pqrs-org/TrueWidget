@@ -205,6 +205,12 @@ public struct ExtraFeatures {
           autoUnmountCandidateVolumes = await loadAutoUnmountCandidateVolumes()
         }
       }
+
+      // Waiting for debounce introduces lag and delays UI updates,
+      // so we run the first refresh manually.
+      Task { @MainActor in
+        autoUnmountCandidateVolumes = await loadAutoUnmountCandidateVolumes()
+      }
     }
 
     private func loadAutoUnmountCandidateVolumes() async -> [AutoUnmountCandidateVolume] {
