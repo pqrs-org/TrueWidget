@@ -216,6 +216,8 @@ public struct ExtraFeatures {
     }
 
     func refreshAutoUnmountCandidateVolumes() {
+      // refreshAutoUnmountCandidateVolumes gets called many times at once immediately after
+      // registerDiskCallbacks (via diskAppearedCallback, etc.), so we debounce to coalesce updates.
       refreshContinuation?.yield(())
     }
 
