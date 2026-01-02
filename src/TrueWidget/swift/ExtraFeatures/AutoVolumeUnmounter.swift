@@ -182,7 +182,7 @@ public struct ExtraFeatures {
         if succeeded {
           AutoVolumeUnmounter.shared.markUnmounted(uuid: uuid)
         } else {
-          AutoVolumeUnmounter.shared.logger.error("\(errorMessage)")
+          AutoVolumeUnmounter.shared.logger.error("\(errorMessage, privacy: .public)")
         }
         AutoVolumeUnmounter.shared.unmountingVolumeUUIDs.remove(uuid)
       }
