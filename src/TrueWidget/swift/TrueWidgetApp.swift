@@ -58,7 +58,7 @@ struct TrueWidgetApp: App {
 
     // Note: Comment this out when you want to reset AutoVolumeUnmounter state for debugging.
     //
-    ExtraFeatures.AutoVolumeUnmounter.shared.resetAutoVolumeUnmountRecords()
+    // ExtraFeatures.AutoVolumeUnmounter.shared.resetAutoVolumeUnmountRecords()
 
     if userSettings.autoVolumeUnmounterEnabled {
       ExtraFeatures.AutoVolumeUnmounter.shared.start()
