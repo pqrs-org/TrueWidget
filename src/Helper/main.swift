@@ -108,17 +108,6 @@ class HelperService: NSObject, NSXPCListenerDelegate, HelperProtocol {
     }
   }
 
-  @objc func unmountVolume(path: String, reply: @escaping (Bool, String) -> Void) {
-    runDiskutil(arguments: ["unmount", path]) { result in
-      switch result {
-      case .success:
-        reply(true, "")
-      case .failure(let error):
-        reply(false, error.message)
-      }
-    }
-  }
-
   private func runDiskutil(
     arguments: [String],
     reply: @escaping (Result<Data, DiskutilError>) -> Void

@@ -28,5 +28,4 @@ protocol HelperProtocol {
   //
 
   func apfsListPlist(reply: @escaping (Data?, String) -> Void)
-  func unmountVolume(path: String, reply: @escaping (Bool, String) -> Void)
 }
