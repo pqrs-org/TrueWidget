@@ -93,6 +93,8 @@ public struct ExtraFeatures {
         return
       }
 
+      _ = PrivilegedHelperClient.shared.registerDaemon()
+
       startRefreshTask()
 
       registerDiskCallbacks()
@@ -122,6 +124,8 @@ public struct ExtraFeatures {
       refreshTask = nil
       refreshContinuation?.finish()
       refreshContinuation = nil
+
+      // Do not unregister LaunchDaemons here.
     }
 
     private func checkAndUnmount() {
@@ -165,17 +169,15 @@ public struct ExtraFeatures {
         return
       }
 
-      guard let proxy = HelperClient.shared.proxy else {
-        logger.error("helper proxy unavailable for unmount uuid:\(volume.id, privacy: .public)")
-        unmountingVolumeUUIDs.remove(volume.id)
-        updateVolumeStatus(uuid: volume.id, kind: .unmountError, detail: "helper client error")
-        return
-      }
+      unmountUsingPrivilegedHelper(volume: volume)
+    }
 
+    private func unmountUsingPrivilegedHelper(volume: AutoUnmountCandidateVolume) {
       let path = volume.path
-      logger.info("unmount path:\(path, privacy: .public) uuid:\(volume.id, privacy: .public)")
+      logger.info(
+        "unmount (privileged) path:\(path, privacy: .public) uuid:\(volume.id, privacy: .public)")
 
-      proxy.unmountVolume(path: path) { succeeded, errorMessage in
+      PrivilegedHelperClient.shared.unmountVolume(path: path) { succeeded, errorMessage in
         Task { @MainActor in
           if succeeded {
             AutoVolumeUnmounter.shared.markUnmounted(uuid: volume.id)
@@ -183,13 +185,13 @@ public struct ExtraFeatures {
               uuid: volume.id, kind: .autoUnmounted, detail: nil)
           } else if !errorMessage.isEmpty {
             AutoVolumeUnmounter.shared.logger.error(
-              "diskutil unmount failed uuid:\(volume.id, privacy: .public) stderr:\(errorMessage, privacy: .public)"
+              "unmount failed uuid:\(volume.id, privacy: .public) stderr:\(errorMessage, privacy: .public)"
             )
             AutoVolumeUnmounter.shared.updateVolumeStatus(
               uuid: volume.id, kind: .unmountError, detail: errorMessage)
           } else {
             AutoVolumeUnmounter.shared.logger.error(
-              "diskutil unmount failed uuid:\(volume.id, privacy: .public)"
+              "unmount failed uuid:\(volume.id, privacy: .public)"
             )
             AutoVolumeUnmounter.shared.updateVolumeStatus(
               uuid: volume.id, kind: .unmountError, detail: "unknown error")
@@ -531,6 +533,5 @@ public struct ExtraFeatures {
 
       return TimeInterval(bootTime.tv_sec)
     }
-
   }
 }

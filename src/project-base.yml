@@ -27,16 +27,40 @@ targets:
           - 'Info.plist.in'
           - 'embedded.provisionprofile'
       - path: Helper/HelperProtocol.swift
+      - path: PrivilegedHelper/PrivilegedHelperProtocol.swift
     settings:
       base:
         ASSETCATALOG_COMPILER_APPICON_NAME: ''
         OTHER_SWIFT_FLAGS: '-warnings-as-errors'
         DEAD_CODE_STRIPPING: 'YES'
         SWIFT_VERSION: '6.0'
+        # SMAppService requires codesigning
+        CODE_SIGN_ENTITLEMENTS: ''
+        CODE_SIGN_IDENTITY: 'Apple Development'
+        CODE_SIGN_STYLE: Automatic
+        # Sign to Run Locally
+        CODE_SIGN_IDENTITY[sdk=macosx*]: '-'
     dependencies:
       - package: AsyncAlgorithms
       - package: SettingsAccess
+      # SMAppService.register fails with "Operation not permitted" unless ServiceManagement.framework is explicitly linked.
+      - sdk: ServiceManagement.framework
       - target: TrueWidget Helper
+      - target: TrueWidget Privileged Helper
+
+  TrueWidget Privileged Helper:
+    type: tool
+    platform: macOS
+    deploymentTarget: '13.0'
+    sources:
+      - path: PrivilegedHelper
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.pqrs.TrueWidget.PrivilegedHelper
+        INFOPLIST_FILE: 'PrivilegedHelper/Info.plist'
+        OTHER_SWIFT_FLAGS: '-warnings-as-errors'
+        DEAD_CODE_STRIPPING: 'YES'
+        SWIFT_VERSION: '6.0'
 
   TrueWidget Helper:
     type: xpc-service

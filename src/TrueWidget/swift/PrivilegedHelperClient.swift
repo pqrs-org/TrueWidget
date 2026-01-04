@@ -1,0 +1,85 @@
+import Foundation
+import OSLog
+import ServiceManagement
+
+@MainActor
+final class PrivilegedHelperClient {
+  static let shared = PrivilegedHelperClient()
+  private static let serviceName = "org.pqrs.TrueWidget.PrivilegedHelper"
+
+  private let logger = Logger(
+    subsystem: Bundle.main.bundleIdentifier ?? "unknown",
+    category: String(describing: PrivilegedHelperClient.self))
+
+  private let daemonService = SMAppService.daemon(plistName: serviceName + ".plist")
+  private var connection: NSXPCConnection?
+  private var proxy: PrivilegedHelperProtocol?
+
+  func registerDaemon() -> Bool {
+    do {
+      try daemonService.register()
+    } catch {
+      logger.error("SMAppService register failed: \(String(describing: error), privacy: .public)")
+      return false
+    }
+
+    return daemonService.status == .enabled
+  }
+
+  func unregisterDaemon() {
+    do {
+      try daemonService.unregister()
+    } catch {
+      logger.error("SMAppService unregister failed: \(String(describing: error), privacy: .public)")
+    }
+
+    disconnect()
+  }
+
+  func unmountVolume(path: String, reply: @escaping (Bool, String) -> Void) {
+    Task { @MainActor in
+      guard ensureRegistered() else {
+        reply(false, "SMAppService register failed")
+        return
+      }
+
+      guard let proxy = ensureConnected() else {
+        reply(false, "privileged helper unavailable")
+        return
+      }
+
+      proxy.unmountVolume(path: path, reply: reply)
+    }
+  }
+
+  private func ensureRegistered() -> Bool {
+    if daemonService.status == .enabled {
+      return true
+    }
+
+    return registerDaemon()
+  }
+
+  private func ensureConnected() -> PrivilegedHelperProtocol? {
+    if connection == nil {
+      connection = NSXPCConnection(
+        machServiceName: privilegedHelperMachServiceName,
+        options: .privileged
+      )
+      connection?.remoteObjectInterface = NSXPCInterface(with: PrivilegedHelperProtocol.self)
+      connection?.resume()
+    }
+
+    if proxy == nil {
+      proxy = connection?.remoteObjectProxy as? PrivilegedHelperProtocol
+    }
+
+    return proxy
+  }
+
+  private func disconnect() {
+    connection?.invalidate()
+    connection = nil
+    proxy = nil
+  }
+}

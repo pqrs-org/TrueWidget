@@ -2,6 +2,9 @@ all:
 	/usr/bin/python3 ../scripts/update_version.py
 	bash run-xcodegen.sh
 	xcodebuild -configuration Release -alltargets SYMROOT="$(CURDIR)/build"
+# Copy LaunchDaemons
+	mkdir -p build/Release/TrueWidget.app/Contents/Library/LaunchDaemons
+	cp LaunchDaemons/org.pqrs.TrueWidget.PrivilegedHelper.plist build/Release/TrueWidget.app/Contents/Library/LaunchDaemons
 # Copy embedded.provisionprofile
 	cp TrueWidget/TrueWidget.provisionprofile build/Release/TrueWidget.app/Contents/embedded.provisionprofile
 	$(MAKE) codesign
@@ -14,6 +17,11 @@ clean: purge-swift-package-manager-cache
 codesign:
 # Helper
 	bash ../scripts/codesign.sh 'build/Release/TrueWidget.app/Contents/XPCServices/TrueWidget Helper.xpc' $(CURDIR)/Helper/Helper.entitlements
+# Privileged Helper
+	bash ../scripts/codesign.sh \
+	  'build/Release/TrueWidget.app/Contents/Resources/TrueWidget Privileged Helper' \
+	  $(CURDIR)/PrivilegedHelper/PrivilegedHelper.entitlements \
+	  org.pqrs.TrueWidget.PrivilegedHelper
 # Sparkle
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc $(CURDIR)/org.sparkle-project.Downloader.entitlements
