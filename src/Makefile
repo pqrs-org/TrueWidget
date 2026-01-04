@@ -50,3 +50,6 @@ install:
 
 log:
 	/usr/bin/log stream --predicate 'subsystem == "org.pqrs.TrueWidget"' --info --debug
+
+check-privileged-helper-info-plist:
+	otool -P 'build/Release/TrueWidget.app/Contents/Resources/TrueWidget Privileged Helper'

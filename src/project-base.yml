@@ -58,6 +58,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: org.pqrs.TrueWidget.PrivilegedHelper
         INFOPLIST_FILE: 'PrivilegedHelper/Info.plist'
+        CREATE_INFOPLIST_SECTION_IN_BINARY: 'YES'
         OTHER_SWIFT_FLAGS: '-warnings-as-errors'
         DEAD_CODE_STRIPPING: 'YES'
         SWIFT_VERSION: '6.0'
