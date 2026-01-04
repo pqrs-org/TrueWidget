@@ -2,7 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
+    <!--
+      PrivilegedHelper must be sandboxed to avoid the following error:
+      ```
+      SMAppService target executable must be sandboxed because the app is sandboxed
+      ```
+    -->
     <key>com.apple.security.app-sandbox</key>
-    <false/>
+    <true/>
   </dict>
 </plist>
