@@ -27,11 +27,18 @@ do_codesign() {
         entitlements="--entitlements $2"
     fi
 
+    local identifier=""
+    if [[ -n "${3:-}" ]]; then
+        identifier="--identifier $3"
+    fi
+
     codesign \
         --force \
         --options runtime \
+        --timestamp \
         --sign "$CODE_SIGN_IDENTITY" \
         $entitlements \
+        $identifier \
         "$1" 2>&1 |
         grep -v ': replacing existing signature'
 
@@ -47,6 +54,7 @@ do_codesign() {
 set +u # allow undefined variables
 target_path="$1"
 entitlements_path="$2"
+identifier="${3:-}"
 set -u # forbid undefined variables
 
-do_codesign "$target_path" "$entitlements_path"
+do_codesign "$target_path" "$entitlements_path" "$identifier"
