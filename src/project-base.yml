@@ -43,8 +43,6 @@ targets:
     dependencies:
       - package: AsyncAlgorithms
       - package: SettingsAccess
-      # SMAppService.register fails with "Operation not permitted" unless ServiceManagement.framework is explicitly linked.
-      - sdk: ServiceManagement.framework
       - target: TrueWidget Helper
       - target: TrueWidget Privileged Helper
 
