@@ -17,6 +17,24 @@ final class PrivilegedHelperClient {
 
   func registerDaemon() -> Bool {
     do {
+      // Regarding daemons, performing the following steps causes inconsistencies in the user approval database,
+      // so the process will not start again until it is unregistered and then registered again.
+      //
+      // 1. Register a daemon.
+      // 2. Approve the daemon.
+      // 3. The database is reset using `sfltool resetbtm`.
+      // 4. Restart macOS.
+      //
+      // When this happens, the service status becomes .notFound.
+      // So, if the service status is .notFound, we call unregister before register to avoid this issue.
+      //
+      // Another case where it becomes .notFound is when it has never actually been registered before.
+      // Even in this case, calling unregister will not have any negative impact.
+
+      if daemonService.status == .notFound {
+        unregisterDaemon()
+      }
+
       try daemonService.register()
     } catch {
       logger.error("SMAppService register failed: \(String(describing: error), privacy: .public)")
