@@ -169,6 +169,9 @@ public struct ExtraFeatures {
         return
       }
 
+      // Unmounting requires administrator privileges, so it's executed via PrivilegedHelper.
+      // (Depending on the macOS version it may be possible with normal privileges,
+      // but at least on macOS 14 administrator privileges are required.)
       unmountUsingPrivilegedHelper(volume: volume)
     }
 
