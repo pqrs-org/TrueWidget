@@ -50,9 +50,11 @@ class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemon
     let context = UnmountContext(reply: reply)
     let unmanaged = Unmanaged.passRetained(context)
 
+    // An issues occur where macOS 13 Data volumes cannot be unmounted on macOS 26.
+    // So we specify kDADiskUnmountOptionForce as the option.
     DADiskUnmount(
       disk,
-      DADiskUnmountOptions(kDADiskUnmountOptionDefault),
+      DADiskUnmountOptions(kDADiskUnmountOptionForce),
       PrivilegedDaemonService.unmountCallback,
       unmanaged.toOpaque()
     )
