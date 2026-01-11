@@ -1,9 +1,13 @@
+import AppKit
+import ServiceManagement
 import SwiftUI
 
 struct SettingsAutoVolumeUnmounterView: View {
   @EnvironmentObject private var userSettings: UserSettings
+  @Environment(\.scenePhase) private var scenePhase
 
   @ObservedObject private var autoVolumeUnmounter = ExtraFeatures.AutoVolumeUnmounter.shared
+  @State private var daemonStatus = PrivilegedHelperClient.shared.daemonStatus()
 
   private static let statusDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -22,6 +26,14 @@ struct SettingsAutoVolumeUnmounterView: View {
         )
         .modifier(InfoBorder())
 
+        if userSettings.autoVolumeUnmounterEnabled && daemonStatus != .enabled {
+          Label(
+            privilegedHelperWarningText(),
+            systemImage: WarningBorder.icon
+          )
+          .modifier(WarningBorder())
+        }
+
         Toggle(isOn: $userSettings.autoVolumeUnmounterEnabled) {
           Text("Enable automatic volume unmounting")
         }
@@ -32,6 +44,7 @@ struct SettingsAutoVolumeUnmounterView: View {
           } else {
             autoVolumeUnmounter.stop()
           }
+          refreshPrivilegedHelperStatus()
         }
 
         if userSettings.autoVolumeUnmounterEnabled {
@@ -63,6 +76,17 @@ struct SettingsAutoVolumeUnmounterView: View {
       }
       .padding()
       .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    .onAppear {
+      refreshPrivilegedHelperStatus()
+    }
+    .onChange(of: scenePhase) { phase in
+      if phase == .active {
+        refreshPrivilegedHelperStatus()
+      }
+    }
+    .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+      refreshPrivilegedHelperStatus()
     }
   }
 
@@ -105,6 +129,22 @@ struct SettingsAutoVolumeUnmounterView: View {
       return status.displayText
     } else {
       return status.displayText + " [\(Self.statusDateFormatter.string(from: status.checkedAt))]"
+    }
+  }
+
+  private func refreshPrivilegedHelperStatus() {
+    daemonStatus = PrivilegedHelperClient.shared.daemonStatus()
+  }
+
+  private func privilegedHelperWarningText() -> String {
+    switch daemonStatus {
+    case .requiresApproval:
+      return
+        "TrueWidget Privileged Helper is required to unmount volumes. Enable Background Activity in System Settings."
+    case .notFound:
+      return "Privileged Helper was not found. Reinstall TrueWidget."
+    default:
+      return "Privileged Helper is not running."
     }
   }
 }

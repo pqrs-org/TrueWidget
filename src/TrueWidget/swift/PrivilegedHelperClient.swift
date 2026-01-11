@@ -54,6 +54,10 @@ final class PrivilegedHelperClient {
     disconnect()
   }
 
+  func daemonStatus() -> SMAppService.Status {
+    return daemonService.status
+  }
+
   func unmountVolume(path: String, reply: @escaping (Bool, String) -> Void) {
     Task { @MainActor in
       guard ensureRegistered() else {
