@@ -58,7 +58,12 @@ struct SettingsAutoVolumeUnmounterView: View {
                   Toggle(isOn: targetBinding(for: volume.id)) {
                     Label(
                       volume.name,
-                      systemImage: volume.isInternal ? "internaldrive" : "externaldrive")
+                      systemImage:
+                        volume.path == ""
+                        ? "nosign"
+                        : volume.isInternal
+                          ? "internaldrive"
+                          : "externaldrive")
                   }
                   .switchToggleStyle()
 
