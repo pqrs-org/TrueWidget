@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <!--
-      PrivilegedHelper must be sandboxed to avoid the following error:
+      PrivilegedDaemon must be sandboxed to avoid the following error:
       ```
       SMAppService target executable must be sandboxed because the app is sandboxed
       ```

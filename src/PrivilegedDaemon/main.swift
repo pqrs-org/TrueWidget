@@ -2,12 +2,12 @@ import DiskArbitration
 import Foundation
 import OSLog
 
-class PrivilegedHelperService: NSObject, NSXPCListenerDelegate, PrivilegedHelperProtocol {
+class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemonProtocol {
   private let logger = Logger(
-    subsystem: "org.pqrs.TrueWidget.PrivilegedHelper",
-    category: String(describing: PrivilegedHelperService.self))
+    subsystem: "org.pqrs.TrueWidget.PrivilegedDaemon",
+    category: String(describing: PrivilegedDaemonService.self))
 
-  private let listener = NSXPCListener(machServiceName: privilegedHelperMachServiceName)
+  private let listener = NSXPCListener(machServiceName: privilegedDaemonMachServiceName)
   private let daSession: DASession?
 
   override init() {
@@ -27,7 +27,7 @@ class PrivilegedHelperService: NSObject, NSXPCListenerDelegate, PrivilegedHelper
     _ listener: NSXPCListener,
     shouldAcceptNewConnection newConnection: NSXPCConnection
   ) -> Bool {
-    newConnection.exportedInterface = NSXPCInterface(with: PrivilegedHelperProtocol.self)
+    newConnection.exportedInterface = NSXPCInterface(with: PrivilegedDaemonProtocol.self)
     newConnection.exportedObject = self
     newConnection.resume()
     return true
@@ -53,7 +53,7 @@ class PrivilegedHelperService: NSObject, NSXPCListenerDelegate, PrivilegedHelper
     DADiskUnmount(
       disk,
       DADiskUnmountOptions(kDADiskUnmountOptionDefault),
-      PrivilegedHelperService.unmountCallback,
+      PrivilegedDaemonService.unmountCallback,
       unmanaged.toOpaque()
     )
   }
@@ -83,7 +83,7 @@ class PrivilegedHelperService: NSObject, NSXPCListenerDelegate, PrivilegedHelper
   }
 }
 
-let service = PrivilegedHelperService()
+let service = PrivilegedDaemonService()
 service.run()
 
 RunLoop.current.run()

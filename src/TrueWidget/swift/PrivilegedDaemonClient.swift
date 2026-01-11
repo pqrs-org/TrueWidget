@@ -3,17 +3,17 @@ import OSLog
 import ServiceManagement
 
 @MainActor
-final class PrivilegedHelperClient {
-  static let shared = PrivilegedHelperClient()
-  private static let serviceName = "org.pqrs.TrueWidget.PrivilegedHelper"
+final class PrivilegedDaemonClient {
+  static let shared = PrivilegedDaemonClient()
+  private static let serviceName = "org.pqrs.TrueWidget.PrivilegedDaemon"
 
   private let logger = Logger(
     subsystem: Bundle.main.bundleIdentifier ?? "unknown",
-    category: String(describing: PrivilegedHelperClient.self))
+    category: String(describing: PrivilegedDaemonClient.self))
 
   private let daemonService = SMAppService.daemon(plistName: serviceName + ".plist")
   private var connection: NSXPCConnection?
-  private var proxy: PrivilegedHelperProtocol?
+  private var proxy: PrivilegedDaemonProtocol?
 
   func registerDaemon() -> Bool {
     do {
@@ -66,7 +66,7 @@ final class PrivilegedHelperClient {
       }
 
       guard let proxy = ensureConnected() else {
-        reply(false, "privileged helper unavailable")
+        reply(false, "Privileged Daemon unavailable")
         return
       }
 
@@ -82,18 +82,18 @@ final class PrivilegedHelperClient {
     return registerDaemon()
   }
 
-  private func ensureConnected() -> PrivilegedHelperProtocol? {
+  private func ensureConnected() -> PrivilegedDaemonProtocol? {
     if connection == nil {
       connection = NSXPCConnection(
-        machServiceName: privilegedHelperMachServiceName,
+        machServiceName: privilegedDaemonMachServiceName,
         options: .privileged
       )
-      connection?.remoteObjectInterface = NSXPCInterface(with: PrivilegedHelperProtocol.self)
+      connection?.remoteObjectInterface = NSXPCInterface(with: PrivilegedDaemonProtocol.self)
       connection?.resume()
     }
 
     if proxy == nil {
-      proxy = connection?.remoteObjectProxy as? PrivilegedHelperProtocol
+      proxy = connection?.remoteObjectProxy as? PrivilegedDaemonProtocol
     }
 
     return proxy

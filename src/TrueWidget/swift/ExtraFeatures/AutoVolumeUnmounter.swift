@@ -93,7 +93,7 @@ public struct ExtraFeatures {
         return
       }
 
-      _ = PrivilegedHelperClient.shared.registerDaemon()
+      _ = PrivilegedDaemonClient.shared.registerDaemon()
 
       startRefreshTask()
 
@@ -169,18 +169,18 @@ public struct ExtraFeatures {
         return
       }
 
-      // Unmounting requires administrator privileges, so it's executed via PrivilegedHelper.
+      // Unmounting requires administrator privileges, so it's executed via PrivilegedDaemon.
       // (Depending on the macOS version it may be possible with normal privileges,
       // but at least on macOS 14 administrator privileges are required.)
-      unmountUsingPrivilegedHelper(volume: volume)
+      unmountUsingPrivilegedDaemon(volume: volume)
     }
 
-    private func unmountUsingPrivilegedHelper(volume: AutoUnmountCandidateVolume) {
+    private func unmountUsingPrivilegedDaemon(volume: AutoUnmountCandidateVolume) {
       let path = volume.path
       logger.info(
         "unmount (privileged) path:\(path, privacy: .public) uuid:\(volume.id, privacy: .public)")
 
-      PrivilegedHelperClient.shared.unmountVolume(path: path) { succeeded, errorMessage in
+      PrivilegedDaemonClient.shared.unmountVolume(path: path) { succeeded, errorMessage in
         Task { @MainActor in
           if succeeded {
             AutoVolumeUnmounter.shared.markUnmounted(uuid: volume.id)

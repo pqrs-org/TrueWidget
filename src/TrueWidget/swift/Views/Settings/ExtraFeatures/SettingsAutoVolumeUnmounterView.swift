@@ -7,7 +7,7 @@ struct SettingsAutoVolumeUnmounterView: View {
   @Environment(\.scenePhase) private var scenePhase
 
   @ObservedObject private var autoVolumeUnmounter = ExtraFeatures.AutoVolumeUnmounter.shared
-  @State private var daemonStatus = PrivilegedHelperClient.shared.daemonStatus()
+  @State private var daemonStatus = PrivilegedDaemonClient.shared.daemonStatus()
 
   private static let statusDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -28,7 +28,7 @@ struct SettingsAutoVolumeUnmounterView: View {
 
         if userSettings.autoVolumeUnmounterEnabled && daemonStatus != .enabled {
           Label(
-            privilegedHelperWarningText(),
+            privilegedDaemonWarningText(),
             systemImage: WarningBorder.icon
           )
           .modifier(WarningBorder())
@@ -44,7 +44,7 @@ struct SettingsAutoVolumeUnmounterView: View {
           } else {
             autoVolumeUnmounter.stop()
           }
-          refreshPrivilegedHelperStatus()
+          refreshPrivilegedDaemonStatus()
         }
 
         if userSettings.autoVolumeUnmounterEnabled {
@@ -78,15 +78,15 @@ struct SettingsAutoVolumeUnmounterView: View {
       .frame(maxWidth: .infinity, alignment: .leading)
     }
     .onAppear {
-      refreshPrivilegedHelperStatus()
+      refreshPrivilegedDaemonStatus()
     }
     .onChange(of: scenePhase) { phase in
       if phase == .active {
-        refreshPrivilegedHelperStatus()
+        refreshPrivilegedDaemonStatus()
       }
     }
     .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
-      refreshPrivilegedHelperStatus()
+      refreshPrivilegedDaemonStatus()
     }
   }
 
@@ -132,19 +132,19 @@ struct SettingsAutoVolumeUnmounterView: View {
     }
   }
 
-  private func refreshPrivilegedHelperStatus() {
-    daemonStatus = PrivilegedHelperClient.shared.daemonStatus()
+  private func refreshPrivilegedDaemonStatus() {
+    daemonStatus = PrivilegedDaemonClient.shared.daemonStatus()
   }
 
-  private func privilegedHelperWarningText() -> String {
+  private func privilegedDaemonWarningText() -> String {
     switch daemonStatus {
     case .requiresApproval:
       return
-        "TrueWidget Privileged Helper is required to unmount volumes. Enable Background Activity in System Settings."
+        "TrueWidget Privileged Daemon is required to unmount volumes. Enable Background Activity in System Settings."
     case .notFound:
-      return "Privileged Helper was not found. Reinstall TrueWidget."
+      return "Privileged Daemon was not found. Reinstall TrueWidget."
     default:
-      return "Privileged Helper is not running."
+      return "Privileged Daemon is not running."
     }
   }
 }

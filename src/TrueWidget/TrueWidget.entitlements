@@ -14,7 +14,7 @@
     <array>
       <string>org.pqrs.TrueWidget-spks</string>
       <string>org.pqrs.TrueWidget-spki</string>
-      <string>org.pqrs.TrueWidget.PrivilegedHelper</string>
+      <string>org.pqrs.TrueWidget.PrivilegedDaemon</string>
     </array>
   </dict>
 </plist>
