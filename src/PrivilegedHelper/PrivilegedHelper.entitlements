@@ -2,7 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
+    <!--
+    Privileged Helper is launched from TrueWidget, so if sandboxing is enabled, a forbidden-sandbox-reinit error occurs.
+    To avoid this error, do not enable sandboxing in Privileged Helper and instead let it inherit the parent process sandbox.
+    -->
     <key>com.apple.security.app-sandbox</key>
-    <true/>
+    <false/>
   </dict>
 </plist>
