@@ -3,8 +3,11 @@ all:
 	bash run-xcodegen.sh
 	xcodebuild -configuration Release -alltargets SYMROOT="$(CURDIR)/build"
 # Copy LaunchDaemons
-	mkdir -p build/Release/TrueWidget.app/Contents/Library/LaunchDaemons
-	cp LaunchDaemons/org.pqrs.TrueWidget.PrivilegedDaemon.plist build/Release/TrueWidget.app/Contents/Library/LaunchDaemons
+	mkdir -p 'build/Release/TrueWidget Privileged Helper.app/Contents/Library'
+	cp -r PrivilegedHelper/LaunchDaemons 'build/Release/TrueWidget Privileged Helper.app/Contents/Library'
+# Copy TrueWidget Privileged Helper.app
+	mkdir -p 'build/Release/TrueWidget.app/Contents/Applications'
+	cp -r 'build/Release/TrueWidget Privileged Helper.app' 'build/Release/TrueWidget.app/Contents/Applications'
 # Copy embedded.provisionprofile
 	cp TrueWidget/TrueWidget.provisionprofile build/Release/TrueWidget.app/Contents/embedded.provisionprofile
 	$(MAKE) codesign
@@ -19,9 +22,12 @@ codesign:
 	bash ../scripts/codesign.sh 'build/Release/TrueWidget.app/Contents/XPCServices/TrueWidget Helper.xpc' $(CURDIR)/Helper/Helper.entitlements
 # Privileged Daemon
 	bash ../scripts/codesign.sh \
-	  'build/Release/TrueWidget.app/Contents/Resources/TrueWidget Privileged Daemon' \
-	  $(CURDIR)/PrivilegedDaemon/PrivilegedDaemon.entitlements \
-	  org.pqrs.TrueWidget.PrivilegedDaemon
+	  'build/Release/TrueWidget.app/Contents/Applications/TrueWidget Privileged Helper.app/Contents/Resources/TrueWidget Privileged Daemon' \
+	  $(CURDIR)/PrivilegedHelper/PrivilegedDaemon/PrivilegedDaemon.entitlements
+# Privileged Helper
+	bash ../scripts/codesign.sh \
+	  'build/Release/TrueWidget Privileged Helper.app' \
+	  $(CURDIR)/PrivilegedHelper/PrivilegedHelper.entitlements
 # Sparkle
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc $(CURDIR)/org.sparkle-project.Downloader.entitlements
@@ -52,4 +58,4 @@ log:
 	/usr/bin/log stream --predicate 'subsystem == "org.pqrs.TrueWidget"' --info --debug
 
 check-privileged-daemon-info-plist:
-	otool -P 'build/Release/TrueWidget.app/Contents/Resources/TrueWidget Privileged Daemon'
+	otool -P 'build/Release/TrueWidget.app/Contents/Applications/TrueWidget Privileged Helper.app/Contents/Resources/TrueWidget Privileged Daemon'
