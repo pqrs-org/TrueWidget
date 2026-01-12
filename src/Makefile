@@ -55,7 +55,7 @@ install:
 	rsync -a --delete build/Release/TrueWidget.app /Applications
 
 log:
-	/usr/bin/log stream --predicate 'subsystem == "org.pqrs.TrueWidget"' --info --debug
+	/usr/bin/log stream --predicate 'subsystem:^org.pqrs.TrueWidget' --info --debug
 
 check-privileged-daemon-info-plist:
 	otool -P 'build/Release/TrueWidget.app/Contents/Helpers/TrueWidget Privileged Helper.app/Contents/Resources/TrueWidget Privileged Daemon'
