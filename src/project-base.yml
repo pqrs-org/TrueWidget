@@ -61,6 +61,7 @@ targets:
     sources:
       - path: PrivilegedHelper/Info.plist
       - path: PrivilegedHelper/src
+      - path: TrueWidget/app.icns
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: org.pqrs.TrueWidget.PrivilegedHelper

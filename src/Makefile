@@ -6,8 +6,8 @@ all:
 	mkdir -p 'build/Release/TrueWidget Privileged Helper.app/Contents/Library'
 	cp -r PrivilegedHelper/LaunchDaemons 'build/Release/TrueWidget Privileged Helper.app/Contents/Library'
 # Copy TrueWidget Privileged Helper.app
-	mkdir -p 'build/Release/TrueWidget.app/Contents/Applications'
-	cp -r 'build/Release/TrueWidget Privileged Helper.app' 'build/Release/TrueWidget.app/Contents/Applications'
+	mkdir -p 'build/Release/TrueWidget.app/Contents/Helpers'
+	cp -r 'build/Release/TrueWidget Privileged Helper.app' 'build/Release/TrueWidget.app/Contents/Helpers'
 # Copy embedded.provisionprofile
 	cp TrueWidget/TrueWidget.provisionprofile build/Release/TrueWidget.app/Contents/embedded.provisionprofile
 	$(MAKE) codesign
@@ -22,11 +22,11 @@ codesign:
 	bash ../scripts/codesign.sh 'build/Release/TrueWidget.app/Contents/XPCServices/TrueWidget Helper.xpc' $(CURDIR)/Helper/Helper.entitlements
 # Privileged Daemon
 	bash ../scripts/codesign.sh \
-	  'build/Release/TrueWidget.app/Contents/Applications/TrueWidget Privileged Helper.app/Contents/Resources/TrueWidget Privileged Daemon' \
+	  'build/Release/TrueWidget.app/Contents/Helpers/TrueWidget Privileged Helper.app/Contents/Resources/TrueWidget Privileged Daemon' \
 	  $(CURDIR)/PrivilegedHelper/PrivilegedDaemon/PrivilegedDaemon.entitlements
 # Privileged Helper
 	bash ../scripts/codesign.sh \
-	  'build/Release/TrueWidget Privileged Helper.app' \
+	  'build/Release/TrueWidget.app/Contents/Helpers/TrueWidget Privileged Helper.app' \
 	  $(CURDIR)/PrivilegedHelper/PrivilegedHelper.entitlements
 # Sparkle
 	bash ../scripts/codesign.sh build/Release/TrueWidget.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc
@@ -58,4 +58,4 @@ log:
 	/usr/bin/log stream --predicate 'subsystem == "org.pqrs.TrueWidget"' --info --debug
 
 check-privileged-daemon-info-plist:
-	otool -P 'build/Release/TrueWidget.app/Contents/Applications/TrueWidget Privileged Helper.app/Contents/Resources/TrueWidget Privileged Daemon'
+	otool -P 'build/Release/TrueWidget.app/Contents/Helpers/TrueWidget Privileged Helper.app/Contents/Resources/TrueWidget Privileged Daemon'

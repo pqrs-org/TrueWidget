@@ -1,67 +1,79 @@
 import Foundation
 import OSLog
-import ServiceManagement
 
 @MainActor
 final class PrivilegedDaemonClient {
   static let shared = PrivilegedDaemonClient()
-  private static let serviceName = "org.pqrs.TrueWidget.PrivilegedDaemon"
 
   private let logger = Logger(
     subsystem: Bundle.main.bundleIdentifier ?? "unknown",
     category: String(describing: PrivilegedDaemonClient.self))
 
-  private let daemonService = SMAppService.daemon(plistName: serviceName + ".plist")
   private var connection: NSXPCConnection?
   private var proxy: PrivilegedDaemonProtocol?
 
   func registerDaemon() -> Bool {
-    do {
-      // Regarding daemons, performing the following steps causes inconsistencies in the user approval database,
-      // so the process will not start again until it is unregistered and then registered again.
-      //
-      // 1. Register a daemon.
-      // 2. Approve the daemon.
-      // 3. The database is reset using `sfltool resetbtm`.
-      // 4. Restart macOS.
-      //
-      // When this happens, the service status becomes .notFound.
-      // So, if the service status is .notFound, we call unregister before register to avoid this issue.
-      //
-      // Another case where it becomes .notFound is when it has never actually been registered before.
-      // Even in this case, calling unregister will not have any negative impact.
+    if daemonEnabled() {
+      return true
+    }
 
-      if daemonService.status == .notFound {
-        unregisterDaemon()
-      }
-
-      try daemonService.register()
-    } catch {
-      logger.error("SMAppService register failed: \(String(describing: error), privacy: .public)")
+    guard let result = runPrivilegedHelper(subcommand: "register") else {
       return false
     }
 
-    return daemonService.status == .enabled
+    if result.terminationStatus != 0 {
+      if result.output.isEmpty {
+        logger.error("Privileged Helper failed (register)")
+      } else {
+        logger.error("Privileged Helper failed (register): \(result.output, privacy: .public)")
+      }
+      return false
+    }
+
+    return daemonEnabled()
   }
 
   func unregisterDaemon() {
-    do {
-      try daemonService.unregister()
-    } catch {
-      logger.error("SMAppService unregister failed: \(String(describing: error), privacy: .public)")
+    if let result = runPrivilegedHelper(subcommand: "unregister"),
+      result.terminationStatus != 0
+    {
+      if result.output.isEmpty {
+        logger.error("Privileged Helper failed (unregister)")
+      } else {
+        logger.error("Privileged Helper failed (unregister): \(result.output, privacy: .public)")
+      }
     }
-
     disconnect()
   }
 
-  func daemonStatus() -> SMAppService.Status {
-    return daemonService.status
+  func daemonEnabled() -> Bool {
+    guard let result = runPrivilegedHelper(subcommand: "enabled") else {
+      return false
+    }
+
+    if result.terminationStatus == 0 {
+      return true
+    }
+
+    if result.terminationStatus == 1 {
+      return false
+    }
+
+    if !result.output.isEmpty {
+      logger.error(
+        "Privileged Helper enabled check failed: \(result.output, privacy: .public)"
+      )
+    } else {
+      logger.error("Privileged Helper enabled check failed")
+    }
+
+    return false
   }
 
   func unmountVolume(path: String, reply: @escaping (Bool, String) -> Void) {
     Task { @MainActor in
       guard ensureRegistered() else {
-        reply(false, "SMAppService register failed")
+        reply(false, "Privileged Helper register failed")
         return
       }
 
@@ -75,7 +87,7 @@ final class PrivilegedDaemonClient {
   }
 
   private func ensureRegistered() -> Bool {
-    if daemonService.status == .enabled {
+    if daemonEnabled() {
       return true
     }
 
@@ -103,5 +115,59 @@ final class PrivilegedDaemonClient {
     connection?.invalidate()
     connection = nil
     proxy = nil
+  }
+
+  private func runPrivilegedHelper(
+    subcommand: String
+  ) -> (terminationStatus: Int32, output: String)? {
+    guard let executableURL = privilegedHelperExecutableURL() else {
+      return nil
+    }
+
+    let process = Process()
+    process.executableURL = executableURL
+    process.arguments = [subcommand]
+    process.environment = [
+      "LC_ALL": "C"
+    ]
+
+    let pipe = Pipe()
+    process.standardOutput = pipe
+    process.standardError = pipe
+
+    do {
+      try process.run()
+      process.waitUntilExit()
+    } catch {
+      logger.error(
+        "Unable to launch Privileged Helper (\(subcommand, privacy: .public)): \(String(describing: error), privacy: .public)"
+      )
+      return nil
+    }
+
+    let output =
+      String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+    return (process.terminationStatus, output)
+  }
+
+  private func privilegedHelperExecutableURL() -> URL? {
+    let helperAppURL = Bundle.main.bundleURL.appendingPathComponent(
+      "Contents/Helpers/TrueWidget Privileged Helper.app"
+    )
+    guard let helperBundle = Bundle(url: helperAppURL) else {
+      logger.error(
+        "Privileged Helper bundle not found: \(helperAppURL.path, privacy: .public)"
+      )
+      return nil
+    }
+
+    guard let executableURL = helperBundle.executableURL else {
+      logger.error(
+        "Privileged Helper executable not found: \(helperAppURL.path, privacy: .public)"
+      )
+      return nil
+    }
+
+    return executableURL
   }
 }

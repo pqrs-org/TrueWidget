@@ -2,9 +2,9 @@ import Foundation
 import ServiceManagement
 
 enum Subcommand: String {
-  case register = "register"
-  case unregister = "unregister"
-  case enabled = "enabled"
+  case register
+  case unregister
+  case enabled
 }
 
 RunLoop.main.perform {

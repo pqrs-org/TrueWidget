@@ -1,5 +1,4 @@
 import AppKit
-import ServiceManagement
 import SwiftUI
 
 struct SettingsAutoVolumeUnmounterView: View {
@@ -7,7 +6,7 @@ struct SettingsAutoVolumeUnmounterView: View {
   @Environment(\.scenePhase) private var scenePhase
 
   @ObservedObject private var autoVolumeUnmounter = ExtraFeatures.AutoVolumeUnmounter.shared
-  @State private var daemonStatus = PrivilegedDaemonClient.shared.daemonStatus()
+  @State private var daemonEnabled = PrivilegedDaemonClient.shared.daemonEnabled()
 
   private static let statusDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -26,9 +25,9 @@ struct SettingsAutoVolumeUnmounterView: View {
         )
         .modifier(InfoBorder())
 
-        if userSettings.autoVolumeUnmounterEnabled && daemonStatus != .enabled {
+        if userSettings.autoVolumeUnmounterEnabled && !daemonEnabled {
           Label(
-            privilegedDaemonWarningText(),
+            "TrueWidget Privileged Daemon is required to unmount volumes. Enable Background Activity in System Settings.",
             systemImage: WarningBorder.icon
           )
           .modifier(WarningBorder())
@@ -169,18 +168,6 @@ struct SettingsAutoVolumeUnmounterView: View {
   }
 
   private func refreshPrivilegedDaemonStatus() {
-    daemonStatus = PrivilegedDaemonClient.shared.daemonStatus()
-  }
-
-  private func privilegedDaemonWarningText() -> String {
-    switch daemonStatus {
-    case .requiresApproval:
-      return
-        "TrueWidget Privileged Daemon is required to unmount volumes. Enable Background Activity in System Settings."
-    case .notFound:
-      return "Privileged Daemon was not found. Reinstall TrueWidget."
-    default:
-      return "Privileged Daemon is not running."
-    }
+    daemonEnabled = PrivilegedDaemonClient.shared.daemonEnabled()
   }
 }

@@ -4,13 +4,5 @@
   <dict>
     <key>com.apple.security.app-sandbox</key>
     <true/>
-
-    <!-- For Sparkle: https://sparkle-project.org/documentation/sandboxing/ -->
-    <key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
-    <array>
-      <string>org.pqrs.TrueWidget-spks</string>
-      <string>org.pqrs.TrueWidget-spki</string>
-      <string>org.pqrs.TrueWidget.PrivilegedDaemon</string>
-    </array>
   </dict>
 </plist>
