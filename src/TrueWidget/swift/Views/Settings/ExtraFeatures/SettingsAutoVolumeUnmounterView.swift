@@ -117,12 +117,20 @@ struct SettingsAutoVolumeUnmounterView: View {
   private func statusLabel(for uuid: String) -> some View {
     let status = autoVolumeUnmounter.volumeStatusByUUID[uuid]
 
-    return Label("Status: \(statusText(status))", image: "clear")
-      .textSelection(.enabled)
-      .font(.caption)
-      .foregroundStyle(
-        status == nil ? .secondary : .primary
-      )
+    return HStack(alignment: .center, spacing: 4.0) {
+      Label("Status:", image: "clear")
+
+      statusImage(status)
+
+      Text(statusText(status))
+        .textSelection(.enabled)
+    }
+    .font(.caption)
+    .foregroundStyle(
+      (status == nil || status?.kind == .disabled)
+        ? .secondary
+        : .primary
+    )
   }
 
   private func statusText(_ status: ExtraFeatures.AutoVolumeUnmounter.VolumeStatus?) -> String {
@@ -134,6 +142,29 @@ struct SettingsAutoVolumeUnmounterView: View {
       return status.displayText
     } else {
       return status.displayText + " [\(Self.statusDateFormatter.string(from: status.checkedAt))]"
+    }
+  }
+
+  private func statusImage(_ status: ExtraFeatures.AutoVolumeUnmounter.VolumeStatus?) -> some View {
+    guard let status else {
+      return Image("clear")
+    }
+
+    switch status.kind {
+    case .disabled:
+      return Image(systemName: "stop.circle")
+
+    case .unmounting:
+      return Image(systemName: "hourglass")
+
+    case .autoUnmounted:
+      return Image(systemName: "checkmark.square")
+
+    case .neverMounted:
+      return Image(systemName: "eyes")
+
+    case .unmountError:
+      return Image(systemName: "exclamationmark.circle.fill")
     }
   }
 
