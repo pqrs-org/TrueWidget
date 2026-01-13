@@ -22,11 +22,10 @@ final class PrivilegedDaemonClient {
     }
 
     if result.terminationStatus != 0 {
-      if result.output.isEmpty {
-        logger.error("Privileged Helper failed (register)")
-      } else {
-        logger.error("Privileged Helper failed (register): \(result.output, privacy: .public)")
-      }
+      logger.error(
+        "Privileged Helper register failed: terminationStatus:\(result.terminationStatus) output:\(result.output, privacy: .public)"
+      )
+
       return false
     }
 
@@ -37,11 +36,9 @@ final class PrivilegedDaemonClient {
     if let result = runPrivilegedHelper(subcommand: "unregister"),
       result.terminationStatus != 0
     {
-      if result.output.isEmpty {
-        logger.error("Privileged Helper failed (unregister)")
-      } else {
-        logger.error("Privileged Helper failed (unregister): \(result.output, privacy: .public)")
-      }
+      logger.error(
+        "Privileged Helper unregister failed: terminationStatus:\(result.terminationStatus) output:\(result.output, privacy: .public)"
+      )
     }
     disconnect()
   }
@@ -59,13 +56,9 @@ final class PrivilegedDaemonClient {
       return false
     }
 
-    if !result.output.isEmpty {
-      logger.error(
-        "Privileged Helper enabled check failed: \(result.output, privacy: .public)"
-      )
-    } else {
-      logger.error("Privileged Helper enabled check failed")
-    }
+    logger.error(
+      "Privileged Helper enabled check failed: terminationStatus:\(result.terminationStatus) output:\(result.output, privacy: .public)"
+    )
 
     return false
   }
