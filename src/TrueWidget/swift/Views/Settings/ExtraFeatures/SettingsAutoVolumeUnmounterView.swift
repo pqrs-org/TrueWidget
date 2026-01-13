@@ -1,4 +1,5 @@
 import AppKit
+import ServiceManagement
 import SwiftUI
 
 struct SettingsAutoVolumeUnmounterView: View {
@@ -25,14 +26,6 @@ struct SettingsAutoVolumeUnmounterView: View {
         )
         .modifier(InfoBorder())
 
-        if userSettings.autoVolumeUnmounterEnabled && !daemonEnabled {
-          Label(
-            "TrueWidget Privileged Daemon is required to unmount volumes. Enable Background Activity in System Settings.",
-            systemImage: WarningBorder.icon
-          )
-          .modifier(WarningBorder())
-        }
-
         Toggle(isOn: $userSettings.autoVolumeUnmounterEnabled) {
           Text("Enable automatic volume unmounting")
         }
@@ -44,6 +37,25 @@ struct SettingsAutoVolumeUnmounterView: View {
             autoVolumeUnmounter.stop()
           }
           refreshPrivilegedDaemonStatus()
+        }
+
+        if userSettings.autoVolumeUnmounterEnabled && !daemonEnabled {
+          VStack(alignment: .leading, spacing: 12.0) {
+            Label(
+              "To unmount volumes, the TrueWidget Privileged Helper must be enabled.",
+              systemImage: WarningBorder.icon
+            )
+
+            Button(
+              action: {
+                SMAppService.openSystemSettingsLoginItems()
+              },
+              label: {
+                Text("Open System Settings...")
+              }
+            )
+          }
+          .modifier(WarningBorder())
         }
 
         if userSettings.autoVolumeUnmounterEnabled {
