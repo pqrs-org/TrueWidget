@@ -79,6 +79,35 @@ final class PrivilegedDaemonClient {
     }
   }
 
+  func checkDaemonVersion(reply: @escaping (Bool, String) -> Void) {
+    Task { @MainActor in
+      guard
+        let appBundleVersion =
+          Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+      else {
+        reply(false, "CFBundleVersion is missing")
+        return
+      }
+
+      guard ensureRegistered() else {
+        reply(false, "Privileged Helper register failed")
+        return
+      }
+
+      guard let proxy = ensureConnected() else {
+        reply(false, "Privileged Daemon unavailable")
+        return
+      }
+
+      proxy.checkVersion(appBundleVersion: appBundleVersion) { succeeded, errorMessage in
+        if !succeeded {
+          self.disconnect()
+        }
+        reply(succeeded, errorMessage)
+      }
+    }
+  }
+
   private func ensureRegistered() -> Bool {
     if daemonEnabled() {
       return true

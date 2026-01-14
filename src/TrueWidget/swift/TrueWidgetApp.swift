@@ -1,6 +1,11 @@
 import Combine
+import OSLog
 import SettingsAccess
 import SwiftUI
+
+private let logger = Logger(
+  subsystem: Bundle.main.bundleIdentifier ?? "unknown",
+  category: String(describing: TrueWidgetApp.self))
 
 @main
 struct TrueWidgetApp: App {
@@ -55,6 +60,16 @@ struct TrueWidgetApp: App {
     }.store(in: &cancellables)
 
     Updater.shared.checkForUpdatesInBackground()
+
+    if PrivilegedDaemonClient.shared.daemonEnabled() {
+      PrivilegedDaemonClient.shared.checkDaemonVersion { succeeded, errorMessage in
+        if !succeeded {
+          logger.error(
+            "Privileged Daemon version check failed: \(errorMessage, privacy: .public)"
+          )
+        }
+      }
+    }
 
     // Note: Comment this out when you want to reset AutoVolumeUnmounter state for debugging.
     //
