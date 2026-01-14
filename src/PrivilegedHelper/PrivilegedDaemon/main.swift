@@ -12,6 +12,8 @@ class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemon
   private let daSession: DASession?
   private let expectedTeamID = PrivilegedDaemonService.loadTeamID()
   private let expectedBundleID = "org.pqrs.TrueWidget"
+  private let daemonVersion =
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
 
   override init() {
     daSession = DASessionCreate(kCFAllocatorDefault)
@@ -25,6 +27,7 @@ class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemon
   func run() {
     logger.info("expectedTeamID: \(self.expectedTeamID ?? "empty", privacy: .public)")
     logger.info("expectedBundleID: \(self.expectedBundleID, privacy: .public)")
+    logger.info("daemonVersion: \(self.daemonVersion, privacy: .public)")
 
     listener.resume()
   }
@@ -68,6 +71,24 @@ class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemon
       PrivilegedDaemonService.unmountCallback,
       unmanaged.toOpaque()
     )
+  }
+
+  @objc func checkVersion(appBundleVersion: String, reply: @escaping (Bool, String) -> Void) {
+    guard !appBundleVersion.isEmpty, !daemonVersion.isEmpty else {
+      reply(false, "Version unavailable")
+      return
+    }
+
+    if appBundleVersion == daemonVersion {
+      reply(true, "")
+      return
+    }
+
+    reply(false, "Version mismatch app:\(appBundleVersion) daemon:\(daemonVersion)")
+    Task {
+      try? await Task.sleep(for: .milliseconds(100))
+      exit(0)
+    }
   }
 
   private final class UnmountContext {
