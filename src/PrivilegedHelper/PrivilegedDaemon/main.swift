@@ -132,24 +132,7 @@ class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemon
       "anchor apple generic"
       + " and certificate leaf[subject.OU] = \"\(expectedTeamID)\""
       + " and identifier \"\(expectedBundleID)\""
-    var requirement: SecRequirement?
-    let requirementStatus = SecRequirementCreateWithString(
-      requirementString as CFString,
-      SecCSFlags(),
-      &requirement
-    )
-    guard requirementStatus == errSecSuccess, let requirement else {
-      logger.error("SecRequirementCreateWithString failed: \(requirementStatus, privacy: .public)")
-      return false
-    }
-
-    let validityStatus = SecStaticCodeCheckValidity(
-      guestStaticCode,
-      SecCSFlags(),
-      requirement
-    )
-    guard validityStatus == errSecSuccess else {
-      logger.error("SecStaticCodeCheckValidity failed: \(validityStatus, privacy: .public)")
+    if !Self.verifyCode(code: guestStaticCode, requirementString: requirementString) {
       return false
     }
 
