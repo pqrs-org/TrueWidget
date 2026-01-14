@@ -46,6 +46,25 @@ class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemon
     return true
   }
 
+  @objc func checkVersion(appBundleVersion: String, reply: @escaping (Bool, String) -> Void) {
+    guard !appBundleVersion.isEmpty, !daemonVersion.isEmpty else {
+      reply(false, "Version unavailable")
+      return
+    }
+
+    if appBundleVersion == daemonVersion {
+      reply(true, "")
+      return
+    }
+
+    reply(false, "Version mismatch app:\(appBundleVersion) daemon:\(daemonVersion)")
+    Task {
+      logger.info("Exit in checkVersion")
+      try? await Task.sleep(for: .milliseconds(100))
+      exit(0)
+    }
+  }
+
   @objc func unmountVolume(path: String, reply: @escaping (Bool, String) -> Void) {
     logger.info("unmountVolume path:\(path, privacy: .public)")
 
@@ -71,24 +90,6 @@ class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemon
       PrivilegedDaemonService.unmountCallback,
       unmanaged.toOpaque()
     )
-  }
-
-  @objc func checkVersion(appBundleVersion: String, reply: @escaping (Bool, String) -> Void) {
-    guard !appBundleVersion.isEmpty, !daemonVersion.isEmpty else {
-      reply(false, "Version unavailable")
-      return
-    }
-
-    if appBundleVersion == daemonVersion {
-      reply(true, "")
-      return
-    }
-
-    reply(false, "Version mismatch app:\(appBundleVersion) daemon:\(daemonVersion)")
-    Task {
-      try? await Task.sleep(for: .milliseconds(100))
-      exit(0)
-    }
   }
 
   private final class UnmountContext {
