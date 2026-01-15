@@ -436,7 +436,7 @@ public struct ExtraFeatures {
 
           let daInfo =
             deviceIdentifier.isEmpty
-            ? (name: nil, path: nil, isInternal: nil)
+            ? (name: nil, path: nil, model: nil, isInternal: nil)
             : diskArbitrationVolumeInfo(bsdName: deviceIdentifier)
 
           let path = daInfo.path ?? ""
@@ -445,6 +445,11 @@ public struct ExtraFeatures {
             || path.hasPrefix("/private/")  // /private/var/run/com.apple.security.cryptexd/...
             || path.hasPrefix("/System/")  // /System/Volumes/...
           {
+            continue
+          }
+
+          // Ignore dmg files
+          if daInfo.model == "Disk Image" {
             continue
           }
 
@@ -467,20 +472,21 @@ public struct ExtraFeatures {
 
     private func diskArbitrationVolumeInfo(
       bsdName: String
-    ) -> (name: String?, path: String?, isInternal: Bool?) {
+    ) -> (name: String?, path: String?, model: String?, isInternal: Bool?) {
       guard let disk = DADiskCreateFromBSDName(kCFAllocatorDefault, daSession, bsdName) else {
         logger.error("DADiskCreateFromBSDName failed: \(bsdName, privacy: .public)")
-        return (nil, nil, nil)
+        return (nil, nil, nil, nil)
       }
 
       guard let description = DADiskCopyDescription(disk) as? [CFString: Any] else {
-        return (nil, nil, nil)
+        return (nil, nil, nil, nil)
       }
 
       let name = description[kDADiskDescriptionVolumeNameKey] as? String
       let path = (description[kDADiskDescriptionVolumePathKey] as? URL)?.path
+      let model = description[kDADiskDescriptionDeviceModelKey] as? String
       let isInternal = description[kDADiskDescriptionDeviceInternalKey] as? Bool
-      return (name, path, isInternal)
+      return (name, path, model, isInternal)
     }
 
     private func rootVolumeBSDName() -> String? {
