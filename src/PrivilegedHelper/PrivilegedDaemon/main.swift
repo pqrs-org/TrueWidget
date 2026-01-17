@@ -172,7 +172,8 @@ class PrivilegedDaemonService: NSObject, NSXPCListenerDelegate, PrivilegedDaemon
     var code: SecCode?
     let status = SecCodeCopyGuestWithAttributes(nil, attributes, SecCSFlags(), &code)
     guard status == errSecSuccess, let code else {
-      logger.error("SecCodeCopyGuestWithAttributes failed: \(status, privacy: .public)")
+      let message = SecCopyErrorMessageString(status, nil) as String? ?? "unknown"
+      logger.error("SecCodeCopyGuestWithAttributes failed: \(message, privacy: .public)")
       return nil
     }
 
