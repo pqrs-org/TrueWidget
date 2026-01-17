@@ -152,7 +152,7 @@ struct SettingsAutoVolumeUnmounterView: View {
     if status.kind == .disabled {
       return status.displayText
     } else {
-      return status.displayText + " [\(Self.statusDateFormatter.string(from: status.checkedAt))]"
+      return status.displayText + " [\(Self.statusDateFormatter.string(from: status.time))]"
     }
   }
 

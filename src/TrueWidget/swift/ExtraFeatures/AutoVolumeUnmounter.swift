@@ -53,7 +53,7 @@ public struct ExtraFeatures {
 
       let kind: Kind
       let detail: String?
-      let checkedAt: Date
+      let time: Date
 
       var displayText: String {
         switch kind {
@@ -145,19 +145,24 @@ public struct ExtraFeatures {
         let uuid = volume.id
 
         guard targetVolumeUUIDs.contains(uuid) else {
-          updateVolumeStatus(uuid: uuid, kind: .disabled, detail: nil)
+          updateVolumeStatus(uuid: uuid, kind: .disabled, detail: nil, time: Date())
           continue
         }
 
         if let lastUnmount = unmountRecords[uuid],
           lastUnmount >= bootTimeEpoch
         {
-          updateVolumeStatus(uuid: uuid, kind: .autoUnmounted, detail: nil)
+          updateVolumeStatus(
+            uuid: uuid,
+            kind: .autoUnmounted,
+            detail: nil,
+            time: Date(timeIntervalSince1970: lastUnmount),
+          )
           continue
         }
 
         guard !unmountingVolumeUUIDs.contains(uuid) else {
-          updateVolumeStatus(uuid: uuid, kind: .unmounting, detail: nil)
+          updateVolumeStatus(uuid: uuid, kind: .unmounting, detail: nil, time: Date())
           continue
         }
 
@@ -170,7 +175,7 @@ public struct ExtraFeatures {
       guard !volume.path.isEmpty else {
         logger.error("unmount skipped due to empty path uuid:\(volume.id, privacy: .public)")
         unmountingVolumeUUIDs.remove(volume.id)
-        updateVolumeStatus(uuid: volume.id, kind: .neverMounted, detail: nil)
+        updateVolumeStatus(uuid: volume.id, kind: .neverMounted, detail: nil, time: Date())
         return
       }
 
@@ -187,22 +192,24 @@ public struct ExtraFeatures {
 
       PrivilegedDaemonClient.shared.unmountVolume(path: path) { succeeded, errorMessage in
         Task { @MainActor in
+          let now = Date()
+
           if succeeded {
-            AutoVolumeUnmounter.shared.markUnmounted(uuid: volume.id)
+            AutoVolumeUnmounter.shared.markUnmounted(uuid: volume.id, time: now)
             AutoVolumeUnmounter.shared.updateVolumeStatus(
-              uuid: volume.id, kind: .autoUnmounted, detail: nil)
+              uuid: volume.id, kind: .autoUnmounted, detail: nil, time: now)
           } else if !errorMessage.isEmpty {
             AutoVolumeUnmounter.shared.logger.error(
               "unmount failed uuid:\(volume.id, privacy: .public) stderr:\(errorMessage, privacy: .public)"
             )
             AutoVolumeUnmounter.shared.updateVolumeStatus(
-              uuid: volume.id, kind: .unmountError, detail: errorMessage)
+              uuid: volume.id, kind: .unmountError, detail: errorMessage, time: now)
           } else {
             AutoVolumeUnmounter.shared.logger.error(
               "unmount failed uuid:\(volume.id, privacy: .public)"
             )
             AutoVolumeUnmounter.shared.updateVolumeStatus(
-              uuid: volume.id, kind: .unmountError, detail: "unknown error")
+              uuid: volume.id, kind: .unmountError, detail: "unknown error", time: now)
           }
           AutoVolumeUnmounter.shared.unmountingVolumeUUIDs.remove(volume.id)
         }
@@ -226,17 +233,19 @@ public struct ExtraFeatures {
       }
     }
 
-    private func markUnmounted(uuid: String) {
+    private func markUnmounted(uuid: String, time: Date) {
       var records = autoVolumeUnmountRecords
-      records[uuid] = Date().timeIntervalSince1970
+      records[uuid] = time.timeIntervalSince1970
       autoVolumeUnmountRecords = records
     }
 
-    private func updateVolumeStatus(uuid: String, kind: VolumeStatus.Kind, detail: String?) {
+    private func updateVolumeStatus(
+      uuid: String, kind: VolumeStatus.Kind, detail: String?, time: Date
+    ) {
       volumeStatusByUUID[uuid] = VolumeStatus(
         kind: kind,
         detail: detail,
-        checkedAt: Date()
+        time: time,
       )
       objectWillChange.send()
     }
