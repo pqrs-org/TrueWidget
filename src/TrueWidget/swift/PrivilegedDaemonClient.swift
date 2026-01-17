@@ -13,6 +13,8 @@ final class PrivilegedDaemonClient {
   private var proxy: PrivilegedDaemonProtocol?
 
   func registerDaemon() -> Bool {
+    logger.info("registerDaemon")
+
     if daemonEnabled() {
       return true
     }
@@ -33,6 +35,8 @@ final class PrivilegedDaemonClient {
   }
 
   func unregisterDaemon() {
+    logger.info("unregisterDaemon")
+
     if let result = runPrivilegedHelper(subcommand: "unregister"),
       result.terminationStatus != 0
     {
