@@ -71,7 +71,7 @@ struct SettingsAutoVolumeUnmounterView: View {
                       volume.name,
                       systemImage:
                         volume.path == ""
-                        ? "nosign"
+                        ? "eject"
                         : volume.isInternal
                           ? "internaldrive"
                           : "externaldrive")
