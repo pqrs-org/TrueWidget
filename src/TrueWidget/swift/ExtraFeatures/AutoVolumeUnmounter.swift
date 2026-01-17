@@ -134,7 +134,12 @@ public struct ExtraFeatures {
         return
       }
 
-      let unmountRecords = autoVolumeUnmountRecords
+      var unmountRecords = autoVolumeUnmountRecords
+      let filteredUnmountRecords = unmountRecords.filter { targetVolumeUUIDs.contains($0.key) }
+      if filteredUnmountRecords.count != unmountRecords.count {
+        autoVolumeUnmountRecords = filteredUnmountRecords
+        unmountRecords = filteredUnmountRecords
+      }
 
       for volume in autoUnmountCandidateVolumes {
         let uuid = volume.id
