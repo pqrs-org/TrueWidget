@@ -8,7 +8,7 @@ packages:
   # (For example, the first build is with codesign, then the second build is without codesign.)
   AsyncAlgorithms:
     url: https://github.com/apple/swift-async-algorithms
-    from: 1.0.0
+    from: 1.1.1
   SettingsAccess:
     url: https://github.com/orchetect/SettingsAccess
     from: 2.1.0
