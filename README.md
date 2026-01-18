@@ -9,9 +9,9 @@ TrueWidget displays macOS version, CPU usage and local time on screen at all tim
 
 The advantages of this application are as follows:
 
--   Check macOS version and host name at a glance when using multiple versions of macOS on your Mac.
--   The CPU usage can be monitored not only by instantaneous usage, which can vary widely, but also by a moving average, which is less likely to be blurred, to determine recent trends.
--   The local time can be displayed in a size that is easy to read unlike the time on the menu bar, which is not legible when using high resolution.
+- Check macOS version and host name at a glance when using multiple versions of macOS on your Mac.
+- The CPU usage can be monitored not only by instantaneous usage, which can vary widely, but also by a moving average, which is less likely to be blurred, to determine recent trends.
+- The local time can be displayed in a size that is easy to read unlike the time on the menu bar, which is not legible when using high resolution.
 
 ## Web pages
 
@@ -25,11 +25,11 @@ macOS 13 Ventura or later
 
 System Requirements:
 
--   macOS 15.0+
--   Xcode 16.2+
--   Command Line Tools for Xcode
--   [XcodeGen](https://github.com/yonaskolb/XcodeGen)
--   [create-dmg](https://github.com/sindresorhus/create-dmg)
+- macOS 15.0+
+- Xcode 16.2+
+- Command Line Tools for Xcode
+- [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+- [create-dmg](https://github.com/sindresorhus/create-dmg)
 
 ### Steps
 
